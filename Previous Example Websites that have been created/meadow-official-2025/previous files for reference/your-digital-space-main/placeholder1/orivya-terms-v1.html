@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — Terms of Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a; --sage-light: #9bb3a4; --sage-dark: #6a8577;
+            --sage-subtle: rgba(125, 155, 138, 0.08);
+            --bg-base: #08080a; --bg-elevated: #0e0e11; --bg-surface: #141417;
+            --border-subtle: rgba(255, 255, 255, 0.04); --border-default: rgba(255, 255, 255, 0.07);
+            --text-primary: #fafafa; --text-secondary: #a1a1aa; --text-tertiary: #71717a; --text-muted: #52525b;
+            --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 20px; --space-xl: 24px; --space-2xl: 32px; --space-3xl: 48px;
+            --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+            --transition-fast: 0.15s ease;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus { outline: none; }
+        :focus-visible { outline: 2px solid rgba(125, 155, 138, 0.65); outline-offset: 3px; border-radius: var(--radius-sm); }
+        ::selection { background: var(--sage); color: white; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; line-height: 1.7; color: var(--text-primary); background: var(--bg-base); -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+
+        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+        /* Navigation */
+        .nav { position: fixed; top: 0; left: 0; right: 0; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; background: rgba(8, 8, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); z-index: 100; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-avatar { width: 28px; height: 24px; position: relative; }
+        .nav-avatar .body { width: 100%; height: 100%; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; position: relative; animation: breathe 5s ease-in-out infinite; }
+        .nav-avatar .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 6px; }
+        .nav-avatar .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; }
+        .nav-avatar .eye.left { width: 3px; height: 3px; }
+        .nav-avatar .eye.right { width: 2.5px; height: 2.5px; opacity: 0.9; }
+        .nav-wordmark { font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.3px; }
+        .nav-back { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: transparent; border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 13px; text-decoration: none; transition: all var(--transition-fast); }
+        .nav-back:hover { background: var(--bg-surface); color: var(--text-primary); }
+        .nav-back:active { transform: scale(0.97); }
+        .nav-back svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+        /* Main Content */
+        .main { max-width: 720px; margin: 0 auto; padding: 120px 24px 80px; }
+
+        .page-header { margin-bottom: var(--space-3xl); }
+        .page-title { font-size: 36px; font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-sm); }
+        .page-meta { font-size: 14px; color: var(--text-muted); }
+
+        .content h2 { font-size: 20px; font-weight: 600; color: var(--text-primary); margin-top: var(--space-3xl); margin-bottom: var(--space-md); }
+        .content h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-top: var(--space-xl); margin-bottom: var(--space-sm); }
+        .content p { color: var(--text-secondary); margin-bottom: var(--space-md); }
+        .content ul { color: var(--text-secondary); margin-bottom: var(--space-md); padding-left: var(--space-xl); }
+        .content li { margin-bottom: var(--space-xs); }
+        .content a { color: var(--sage); text-decoration: none; }
+        .content a:hover { text-decoration: underline; }
+        .content strong { color: var(--text-primary); font-weight: 500; }
+
+        .highlight-box { padding: var(--space-lg); background: var(--sage-subtle); border-left: 3px solid var(--sage); border-radius: 0 var(--radius-md) var(--radius-md) 0; margin: var(--space-xl) 0; }
+        .highlight-box p { color: var(--text-primary); margin-bottom: 0; }
+
+        /* Footer */
+        .footer { padding: var(--space-2xl) 24px; border-top: 1px solid var(--border-subtle); text-align: center; }
+        .footer-text { font-size: 13px; color: var(--text-muted); }
+        .footer-links { display: flex; justify-content: center; gap: var(--space-lg); margin-top: var(--space-sm); }
+        .footer-link { font-size: 13px; color: var(--text-tertiary); text-decoration: none; transition: color var(--transition-fast); }
+        .footer-link:hover { color: var(--sage); }
+
+        @media (max-width: 600px) {
+            .page-title { font-size: 28px; }
+            .main { padding: 100px 20px 60px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="orivya-iconic-v6.html" class="nav-logo">
+            <div class="nav-avatar"><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></div>
+            <span class="nav-wordmark">ORIVYA</span>
+        </a>
+        <a href="orivya-iconic-v6.html" class="nav-back">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+        </a>
+    </nav>
+
+    <main class="main">
+        <header class="page-header">
+            <h1 class="page-title">Terms of Service</h1>
+            <p class="page-meta">Last updated: December 2025</p>
+        </header>
+
+        <div class="content">
+            <div class="highlight-box">
+                <p><strong>Plain language summary:</strong> Orivya is a clarity companion — not a therapist, doctor, or financial advisor. Use it as a thinking partner, but always consult professionals for serious decisions.</p>
+            </div>
+
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using Orivya, you agree to be bound by these Terms of Service. If you disagree with any part, you may not access the service.</p>
+
+            <h2>2. Description of Service</h2>
+            <p>Orivya is an AI-powered clarity companion designed to help you think through decisions, recognize patterns, and gain self-understanding. The service includes:</p>
+            <ul>
+                <li>Conversational AI interactions</li>
+                <li>Pattern recognition and insights</li>
+                <li>Personal library of reflections</li>
+                <li>Decision tracking tools</li>
+            </ul>
+
+            <h2>3. Important Limitations</h2>
+            <h3>Orivya is NOT a substitute for:</h3>
+            <ul>
+                <li><strong>Mental health professionals:</strong> If you're experiencing mental health challenges, please consult a licensed therapist or counselor</li>
+                <li><strong>Medical advice:</strong> For health concerns, always consult qualified medical professionals</li>
+                <li><strong>Legal or financial counsel:</strong> Seek licensed professionals for legal or financial decisions</li>
+                <li><strong>Emergency services:</strong> If you're in crisis, contact emergency services immediately</li>
+            </ul>
+
+            <h3>AI Limitations</h3>
+            <p>While Orivya strives to be helpful, it may occasionally:</p>
+            <ul>
+                <li>Misunderstand context or nuance</li>
+                <li>Provide perspectives that don't resonate with you</li>
+                <li>Make observations that require human judgment to evaluate</li>
+            </ul>
+
+            <h2>4. User Responsibilities</h2>
+            <p>You agree to:</p>
+            <ul>
+                <li>Provide accurate information when creating an account</li>
+                <li>Maintain the security of your account credentials</li>
+                <li>Use the service in accordance with applicable laws</li>
+                <li>Not attempt to reverse-engineer or exploit the service</li>
+                <li>Not use Orivya for any illegal or harmful purposes</li>
+            </ul>
+
+            <h2>5. Intellectual Property</h2>
+            <p><strong>Your content:</strong> You retain ownership of all personal reflections, notes, and content you create within Orivya.</p>
+            <p><strong>Our content:</strong> The Orivya platform, including its design, features, and AI capabilities, is owned by Orivya and protected by intellectual property laws.</p>
+
+            <h2>6. Privacy</h2>
+            <p>Your privacy is fundamental to our service. Please review our <a href="orivya-privacy-v1.html">Privacy Policy</a> for details on how we collect, use, and protect your data.</p>
+
+            <h2>7. Subscription & Payment</h2>
+            <p>Certain features may require a paid subscription. By subscribing, you agree to:</p>
+            <ul>
+                <li>Pay all fees according to your selected plan</li>
+                <li>Automatic renewal unless cancelled before the billing date</li>
+                <li>Our refund policy as stated at time of purchase</li>
+            </ul>
+
+            <h2>8. Termination</h2>
+            <p>You may terminate your account at any time through Settings. We may terminate or suspend access if you violate these terms. Upon termination, your right to use the service ceases, and we may delete your data according to our data retention policy.</p>
+
+            <h2>9. Disclaimer of Warranties</h2>
+            <p>Orivya is provided "as is" without warranties of any kind. We do not guarantee that the service will be uninterrupted, error-free, or meet your specific expectations.</p>
+
+            <h2>10. Limitation of Liability</h2>
+            <p>To the fullest extent permitted by law, Orivya shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the service.</p>
+
+            <h2>11. Changes to Terms</h2>
+            <p>We may modify these terms at any time. Continued use of Orivya after changes constitutes acceptance. We will notify users of significant changes via email or in-app notification.</p>
+
+            <h2>12. Governing Law</h2>
+            <p>These terms are governed by applicable laws. Any disputes shall be resolved through appropriate legal channels in the jurisdiction where Orivya operates.</p>
+
+            <h2>13. Contact</h2>
+            <p>Questions about these terms? Contact us at <a href="/cdn-cgi/l/email-protection#402c2527212c002f32293639216e232f2d"><span class="__cf_email__" data-cfemail="a6cac3c1c7cae6c9d4cfd0dfc788c5c9cb">[email&#160;protected]</span></a></p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="footer-text">© 2025 Orivya. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="orivya-terms-v1.html" class="footer-link">Terms of Service</a>
+            <a href="orivya-privacy-v1.html" class="footer-link">Privacy Policy</a>
+            <a href="orivya-iconic-v6.html" class="footer-link">Home</a>
+        </div>
+    </footer>
+</body>
+</html>

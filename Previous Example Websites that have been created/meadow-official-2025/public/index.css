@@ -1,0 +1,11 @@
+/*
+  Meadow (Lovable-style)
+
+  The app currently relies on Tailwind via the CDN + inline config in `index.html`.
+  Vite’s production build keeps `<link rel="stylesheet" href="/index.css">` as-is,
+  so we ship this file to avoid a 404 in production.
+
+  Keep this file lightweight; prefer Tailwind utility classes + the inline CSS in `index.html`.
+*/
+
+

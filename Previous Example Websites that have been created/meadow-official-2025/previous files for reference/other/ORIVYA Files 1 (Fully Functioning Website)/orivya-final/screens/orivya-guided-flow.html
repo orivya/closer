@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Guided Reflection</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.3);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      --transition-slow: 400ms ease;
+      
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    textarea { font-family: inherit; background: none; border: none; color: inherit; resize: none; }
+    textarea:focus { outline: none; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    /* Layout */
+    .guided-flow {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100dvh;
+      position: relative;
+    }
+    
+    /* Sanctuary Vignette — Match Editor */
+    .guided-flow::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.3) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .guided-flow > * {
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Header */
+    .flow-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .flow-header { padding: var(--space-4) var(--space-8); }
+    }
+    
+    .flow-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .flow-close:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .flow-close svg { width: 22px; height: 22px; }
+    
+    .flow-progress {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .flow-progress-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--bg-surface-2);
+      transition: all var(--transition-normal);
+    }
+    .flow-progress-dot.is-active { background-color: var(--sage); }
+    .flow-progress-dot.is-complete { background-color: var(--sage-light); }
+    
+    .flow-step-label {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-left: var(--space-3);
+    }
+    
+    .flow-save {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .flow-save:hover { background-color: var(--bg-hover); color: var(--text-secondary); }
+    
+    /* Content */
+    .flow-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-8) var(--space-4);
+      padding-bottom: calc(var(--space-8) + 80px + var(--safe-area-bottom));
+      overflow-y: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    
+    .flow-content::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+    }
+    
+    @media (min-width: 768px) {
+      .flow-content {
+        padding: var(--space-12) var(--space-8);
+        padding-bottom: calc(var(--space-12) + 100px);
+      }
+    }
+    
+    .flow-content-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    /* Step */
+    .flow-step {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .flow-step.is-active { display: block; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Prompt */
+    .flow-prompt {
+      margin-bottom: var(--space-8);
+    }
+    .flow-prompt-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+    .flow-prompt-text {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    @media (min-width: 768px) {
+      .flow-prompt-text { font-size: var(--text-3xl); }
+    }
+    
+    /* Textarea — Match Editor Sanctuary */
+    .flow-textarea-wrapper {
+      position: relative;
+    }
+    .flow-textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: var(--space-5);
+      font-size: var(--text-lg);
+      line-height: 1.8;
+      color: var(--text-primary);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-lg);
+      caret-color: var(--sage);
+      transition: all var(--transition-fast);
+    }
+    .flow-textarea:focus {
+      outline: none;
+    }
+    .flow-textarea::placeholder { color: var(--text-muted); }
+    
+    @media (min-width: 768px) {
+      .flow-textarea {
+        min-height: 240px;
+        padding: var(--space-6);
+        font-size: var(--text-lg);
+      }
+    }
+    
+    .flow-textarea-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--space-3);
+    }
+    .flow-word-count {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .flow-skip {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      transition: color var(--transition-fast);
+    }
+    .flow-skip:hover { color: var(--text-secondary); }
+    
+    /* Quick Options (for check-in step) */
+    .quick-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+    }
+    .quick-option {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+    .quick-option:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-default);
+      color: var(--text-primary);
+    }
+    .quick-option.is-selected {
+      background-color: var(--sage-subtle);
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+    
+    /* Skip to Editor */
+    .flow-skip-full {
+      margin-top: var(--space-8);
+      text-align: center;
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-subtle);
+    }
+    .flow-skip-btn {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .flow-skip-btn:hover {
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+    }
+    
+    /* Summary Step */
+    .flow-summary {
+      text-align: center;
+    }
+    .flow-summary-icon {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-xl);
+      margin: 0 auto var(--space-6);
+    }
+    .flow-summary-icon svg { width: 28px; height: 28px; color: var(--sage); }
+    .flow-summary-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+    }
+    .flow-summary-desc {
+      font-size: var(--text-base);
+      color: var(--text-tertiary);
+      max-width: 400px;
+      margin: 0 auto var(--space-8);
+    }
+    
+    .flow-summary-stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-8);
+      margin-bottom: var(--space-8);
+    }
+    .flow-stat { text-align: center; }
+    .flow-stat-value {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .flow-stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .flow-summary-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    .summary-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      font-size: var(--text-base);
+      font-weight: 500;
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .summary-action svg { width: 18px; height: 18px; }
+    .summary-action--primary {
+      color: white;
+      background-color: var(--sage);
+    }
+    .summary-action--primary:hover { background-color: var(--sage-dark); }
+    .summary-action--secondary {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+    }
+    .summary-action--secondary:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    
+    /* Footer */
+    .flow-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4);
+      padding-bottom: calc(var(--space-4) + var(--safe-area-bottom));
+      background-color: var(--bg-elevated);
+      border-top: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .flow-footer {
+        padding: var(--space-5) var(--space-8);
+        padding-bottom: calc(var(--space-5) + var(--safe-area-bottom));
+      }
+    }
+    
+    .flow-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .flow-nav-btn svg { width: 18px; height: 18px; }
+    .flow-nav-btn--back {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+    }
+    .flow-nav-btn--back:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .flow-nav-btn--next {
+      color: white;
+      background-color: var(--sage);
+    }
+    .flow-nav-btn--next:hover { background-color: var(--sage-dark); }
+    .flow-nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Utility */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="guided-flow">
+    
+    <!-- Header -->
+    <header class="flow-header">
+      <button class="flow-close" onclick="closeFlow()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      
+      <div class="flow-progress">
+        <div class="flow-progress-dot is-active" data-step="1"></div>
+        <div class="flow-progress-dot" data-step="2"></div>
+        <div class="flow-progress-dot" data-step="3"></div>
+        <div class="flow-progress-dot" data-step="4"></div>
+        <span class="flow-step-label">Step <span id="currentStep">1</span> of 4</span>
+      </div>
+      
+      <button class="flow-save" onclick="saveProgress()">Save draft</button>
+    </header>
+    
+    <!-- Content -->
+    <main class="flow-content">
+      <div class="flow-content-inner">
+        
+        <!-- Step 1: Check-in -->
+        <div class="flow-step is-active" data-step="1">
+          <div class="flow-prompt">
+            <div class="flow-prompt-label">Want a place to start?</div>
+            <h1 class="flow-prompt-text">How are you arriving to this moment?</h1>
+          </div>
+          
+          <div class="quick-options">
+            <button class="quick-option" onclick="selectOption(this)">Clear-headed</button>
+            <button class="quick-option" onclick="selectOption(this)">A bit scattered</button>
+            <button class="quick-option" onclick="selectOption(this)">Heavy</button>
+            <button class="quick-option" onclick="selectOption(this)">Curious</button>
+            <button class="quick-option" onclick="selectOption(this)">Restless</button>
+            <button class="quick-option" onclick="selectOption(this)">Peaceful</button>
+          </div>
+          
+          <div class="flow-textarea-wrapper">
+            <textarea class="flow-textarea" id="step1Text" placeholder="Add any additional thoughts... (optional)" oninput="updateWordCount(1)"></textarea>
+            <div class="flow-textarea-footer">
+              <span class="flow-word-count" id="wordCount1">0 words</span>
+            </div>
+          </div>
+          
+          <div class="flow-skip-full">
+            <button class="flow-skip-btn" onclick="skipToEditor()">
+              Skip, just write
+            </button>
+          </div>
+        </div>
+        
+        <!-- Step 2: The prompt -->
+        <div class="flow-step" data-step="2">
+          <div class="flow-prompt">
+            <div class="flow-prompt-label">Today's reflection</div>
+            <h1 class="flow-prompt-text">What's one thing you've been avoiding thinking about?</h1>
+          </div>
+          
+          <div class="flow-textarea-wrapper">
+            <textarea class="flow-textarea" id="step2Text" placeholder="Take your time. There's no wrong answer..." oninput="updateWordCount(2)"></textarea>
+            <div class="flow-textarea-footer">
+              <span class="flow-word-count" id="wordCount2">0 words</span>
+              <button class="flow-skip" onclick="skipStep()">Skip this prompt</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 3: Go deeper -->
+        <div class="flow-step" data-step="3">
+          <div class="flow-prompt">
+            <div class="flow-prompt-label">Go deeper</div>
+            <h1 class="flow-prompt-text">What would change if you stopped avoiding it?</h1>
+          </div>
+          
+          <div class="flow-textarea-wrapper">
+            <textarea class="flow-textarea" id="step3Text" placeholder="Consider both what you might gain and what you might have to face..." oninput="updateWordCount(3)"></textarea>
+            <div class="flow-textarea-footer">
+              <span class="flow-word-count" id="wordCount3">0 words</span>
+              <button class="flow-skip" onclick="skipStep()">Skip this prompt</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Step 4: Summary -->
+        <div class="flow-step" data-step="4">
+          <div class="flow-summary">
+            <div class="flow-summary-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <h1 class="flow-summary-title">Reflection complete</h1>
+            <p class="flow-summary-desc">You've taken a meaningful moment to check in with yourself. Your thoughts have been saved.</p>
+            
+            <div class="flow-summary-stats">
+              <div class="flow-stat">
+                <div class="flow-stat-value" id="totalWords">0</div>
+                <div class="flow-stat-label">Words written</div>
+              </div>
+              <div class="flow-stat">
+                <div class="flow-stat-value" id="timeSpent">0</div>
+                <div class="flow-stat-label">Minutes</div>
+              </div>
+            </div>
+            
+            <div class="flow-summary-actions">
+              <button class="summary-action summary-action--primary" onclick="viewNote()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+                View your note
+              </button>
+              <button class="summary-action summary-action--secondary" onclick="goHome()">
+                Back to home
+              </button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="flow-footer" id="flowFooter">
+      <button class="flow-nav-btn flow-nav-btn--back hidden" id="backBtn" onclick="prevStep()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Back
+      </button>
+      
+      <div></div>
+      
+      <button class="flow-nav-btn flow-nav-btn--next" id="nextBtn" onclick="nextStep()">
+        Continue
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </footer>
+    
+  </div>
+  
+  <script>
+    let currentStep = 1;
+    const totalSteps = 4;
+    const startTime = Date.now();
+    
+    function updateProgress() {
+      document.querySelectorAll('.flow-progress-dot').forEach((dot, i) => {
+        const step = i + 1;
+        dot.classList.remove('is-active', 'is-complete');
+        if (step === currentStep) dot.classList.add('is-active');
+        if (step < currentStep) dot.classList.add('is-complete');
+      });
+      document.getElementById('currentStep').textContent = currentStep;
+      
+      // Update step visibility
+      document.querySelectorAll('.flow-step').forEach(step => {
+        step.classList.remove('is-active');
+      });
+      document.querySelector(`.flow-step[data-step="${currentStep}"]`).classList.add('is-active');
+      
+      // Update buttons
+      const backBtn = document.getElementById('backBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const footer = document.getElementById('flowFooter');
+      
+      backBtn.classList.toggle('hidden', currentStep === 1);
+      
+      if (currentStep === totalSteps) {
+        footer.classList.add('hidden');
+        calculateSummary();
+      } else {
+        footer.classList.remove('hidden');
+        nextBtn.innerHTML = currentStep === totalSteps - 1 ? 'Finish' : 'Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+      }
+    }
+    
+    function nextStep() {
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateProgress();
+      }
+    }
+    
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateProgress();
+      }
+    }
+    
+    function skipStep() {
+      nextStep();
+    }
+    
+    function skipToEditor() {
+      // Skip directly to blank editor without prompts
+      console.log('Skipping guided flow, opening blank editor');
+      alert('Opening Note Editor without prompts');
+      // In real implementation: navigate to Note Editor
+    }
+    
+    function selectOption(btn) {
+      document.querySelectorAll('.quick-option').forEach(opt => opt.classList.remove('is-selected'));
+      btn.classList.add('is-selected');
+    }
+    
+    function updateWordCount(step) {
+      const textarea = document.getElementById(`step${step}Text`);
+      const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+      document.getElementById(`wordCount${step}`).textContent = `${words} word${words !== 1 ? 's' : ''}`;
+    }
+    
+    function calculateSummary() {
+      let totalWords = 0;
+      for (let i = 1; i <= 3; i++) {
+        const textarea = document.getElementById(`step${i}Text`);
+        if (textarea) {
+          totalWords += textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+        }
+      }
+      document.getElementById('totalWords').textContent = totalWords;
+      
+      const minutes = Math.max(1, Math.round((Date.now() - startTime) / 60000));
+      document.getElementById('timeSpent').textContent = minutes;
+    }
+    
+    function closeFlow() {
+      if (confirm('Are you sure you want to leave? Your progress will be saved as a draft.')) {
+        console.log('Closing flow, saving draft');
+      }
+    }
+    
+    function saveProgress() {
+      console.log('Saving draft');
+    }
+    
+    function viewNote() {
+      console.log('Viewing saved note');
+    }
+    
+    function goHome() {
+      console.log('Going home');
+    }
+    
+    // Initialize
+    updateProgress();
+  </script>
+</body>
+</html>

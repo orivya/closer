@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Help & FAQ</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      
+      --z-sticky: 100;
+      
+      --header-height: 56px;
+      --tab-bar-height: 64px;
+      --content-max-width: 640px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    input { font-family: inherit; background: none; border: none; color: inherit; }
+    input:focus { outline: none; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    /* Header */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    .header-top {
+      display: flex;
+      align-items: center;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      gap: var(--space-3);
+    }
+    
+    @media (min-width: 768px) {
+      .header-top { padding: 0 var(--space-6); }
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .back-btn:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .back-btn svg { width: 22px; height: 22px; }
+    
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+    }
+    
+    /* Search */
+    .search-section {
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .search-section { padding: var(--space-4) var(--space-6); }
+    }
+    
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      height: 44px;
+      padding: 0 var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .search-bar:focus-within {
+      border-color: var(--sage);
+      background-color: var(--bg-surface-2);
+    }
+    .search-bar svg { width: 18px; height: 18px; color: var(--text-muted); flex-shrink: 0; }
+    .search-bar input {
+      flex: 1;
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    
+    /* Content */
+    .content {
+      padding: var(--space-6) var(--space-4);
+      padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom) + var(--space-8));
+    }
+    
+    @media (min-width: 768px) {
+      .content { padding: var(--space-8) var(--space-6); }
+    }
+    
+    .content-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+      margin-bottom: var(--space-8);
+    }
+    
+    .quick-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .quick-action:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    
+    .quick-action-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+    }
+    .quick-action-icon svg { width: 22px; height: 22px; color: var(--sage); }
+    
+    .quick-action-text {
+      text-align: center;
+    }
+    .quick-action-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .quick-action-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Section */
+    .section {
+      margin-bottom: var(--space-8);
+    }
+    .section:last-child { margin-bottom: 0; }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+    
+    /* FAQ Accordion */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    
+    .faq-item {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: var(--space-4) var(--space-5);
+      text-align: left;
+      transition: background-color var(--transition-fast);
+    }
+    .faq-question:hover { background-color: var(--bg-hover); }
+    
+    .faq-question-text {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      padding-right: var(--space-4);
+    }
+    
+    .faq-question-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: transform var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .faq-item.is-open .faq-question-icon { transform: rotate(180deg); }
+    .faq-question-icon svg { width: 18px; height: 18px; }
+    
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.is-open .faq-answer { max-height: 500px; }
+    
+    .faq-answer-content {
+      padding: 0 var(--space-5) var(--space-5);
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+    .faq-answer-content p { margin-bottom: var(--space-3); }
+    .faq-answer-content p:last-child { margin-bottom: 0; }
+    .faq-answer-content a {
+      color: var(--sage);
+      text-decoration: underline;
+    }
+    
+    /* Contact Card */
+    .contact-card {
+      background: linear-gradient(135deg, var(--sage-subtle) 0%, transparent 100%);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      text-align: center;
+    }
+    
+    .contact-card-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .contact-card-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-5);
+    }
+    
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border-radius: var(--radius-md);
+      transition: background-color var(--transition-fast);
+    }
+    .contact-btn:hover { background-color: var(--sage-dark); }
+    .contact-btn svg { width: 18px; height: 18px; }
+    
+    /* Tab Bar (Mobile) */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--tab-bar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background-color: var(--bg-elevated);
+      border-top: 1px solid var(--border-subtle);
+      padding-bottom: var(--safe-area-bottom);
+      z-index: var(--z-sticky);
+    }
+    @media (min-width: 1024px) { .tab-bar { display: none; } }
+    .tab-bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2);
+      color: var(--text-tertiary);
+      min-width: 64px;
+    }
+    .tab-bar-item.is-active { color: var(--sage); }
+    .tab-bar-item svg { width: 24px; height: 24px; }
+    .tab-bar-item span { font-size: var(--text-xs); font-weight: 500; }
+  </style>
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-top">
+      <button class="back-btn" onclick="goBack()" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <h1 class="page-title">Help & FAQ</h1>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Search help articles...">
+      </div>
+    </div>
+  </header>
+  
+  <!-- Content -->
+  <main class="content">
+    <div class="content-inner">
+      
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <a href="#" class="quick-action" onclick="openGettingStarted()">
+          <div class="quick-action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div class="quick-action-text">
+            <div class="quick-action-title">Getting Started</div>
+            <div class="quick-action-desc">Learn the basics</div>
+          </div>
+        </a>
+        
+        <a href="#" class="quick-action" onclick="openContact()">
+          <div class="quick-action-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+          </div>
+          <div class="quick-action-text">
+            <div class="quick-action-title">Contact Support</div>
+            <div class="quick-action-desc">We're here to help</div>
+          </div>
+        </a>
+      </div>
+      
+      <!-- Using Orivya -->
+      <section class="section">
+        <h2 class="section-title">Using Orivya</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">How do I create my first note?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Tap the "Start writing" button on your home screen or the plus button in the tab bar. You can write freely or choose from one of our guided prompts to get started.</p>
+                <p>Your note will automatically save as you type—no need to manually save anything.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">What are threads?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Threads are a way to group related notes together. Think of them as ongoing conversations with yourself about a particular topic, like "career decisions" or "relationship with mom."</p>
+                <p>You can create threads manually or let Orivya suggest connections based on your writing.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">How do goals work?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Goals help you track progress on things you're working through. Unlike tasks, goals in Orivya are about gaining clarity—understanding what you want, making sense of a situation, or working through a decision.</p>
+                <p>Link notes to goals and Orivya will show you observations about your progress over time.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- AI Features -->
+      <section class="section">
+        <h2 class="section-title">AI Features</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">How does Orivya use AI?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Orivya uses AI to help you notice patterns in your writing that you might miss. It can suggest connections between notes, identify recurring themes, and offer gentle observations about what seems important to you.</p>
+                <p>The AI never judges or diagnoses—it simply reflects back what it notices to help you understand yourself better.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">Can I turn off AI features?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Yes! Go to Settings → AI Insights and toggle it off. Orivya will still work beautifully as a simple, private journaling app without any AI analysis.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Privacy & Data -->
+      <section class="section">
+        <h2 class="section-title">Privacy & Data</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">Is my data private?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Absolutely. Your notes are encrypted and only accessible by you. We never read your content, and we never will. Your thoughts are yours alone.</p>
+                <p>Read our full <a href="#">Privacy Policy</a> for details on how we protect your data.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">Can I export my data?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Yes! Your data is always yours. Go to Settings → Data → Export to download all your notes in Markdown, JSON, or PDF format.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span class="faq-question-text">How do I delete my account?</span>
+              <span class="faq-question-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                <p>Go to Settings → Account → Delete Account. This will permanently remove all your data from our servers. Please export your notes first if you want to keep them.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Contact -->
+      <section class="section">
+        <div class="contact-card">
+          <h3 class="contact-card-title">Still have questions?</h3>
+          <p class="contact-card-desc">We're here to help. Reach out and we'll get back to you within 24 hours.</p>
+          <button class="contact-btn" onclick="openContact()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Contact Support
+          </button>
+        </div>
+      </section>
+      
+    </div>
+  </main>
+  
+  <!-- Tab Bar (Mobile) -->
+  <nav class="tab-bar">
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+      <span>Notes</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+      <span>Insights</span>
+    </a>
+    <a href="#" class="tab-bar-item is-active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+  
+  <script>
+    function goBack() { console.log('Going back'); }
+    function openGettingStarted() { console.log('Opening getting started'); }
+    function openContact() { console.log('Opening contact form'); }
+    
+    function toggleFaq(button) {
+      const item = button.closest('.faq-item');
+      const wasOpen = item.classList.contains('is-open');
+      
+      // Close all
+      document.querySelectorAll('.faq-item').forEach(faq => faq.classList.remove('is-open'));
+      
+      // Open clicked if it wasn't open
+      if (!wasOpen) {
+        item.classList.add('is-open');
+      }
+    }
+  </script>
+</body>
+</html>

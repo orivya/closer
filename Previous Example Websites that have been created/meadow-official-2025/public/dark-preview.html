@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meadow Dark Preview — Void Glass Design</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===========================================
+       VOID GLASS DARK DESIGN SYSTEM
+       Premium dark theme with luminous accents
+       =========================================== */
+
+    :root {
+      /* Core Blacks - Rich depth */
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      --bg-active: #252529;
+
+      /* Sage Palette - Luminous accents */
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.4);
+
+      /* Text Hierarchy */
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+
+      /* Borders - Subtle glass edges */
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.12);
+      --border-sage: rgba(125, 155, 138, 0.25);
+
+      /* Shadows & Glows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+      --shadow-glow: 0 0 24px var(--sage-glow);
+      --shadow-glow-lg: 0 0 48px var(--sage-glow);
+
+      /* Typography */
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Spacing */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+
+      /* Border Radius */
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-2xl: 28px;
+      --radius-full: 9999px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ===========================================
+       GLASS CARD STYLES
+       =========================================== */
+
+    .glass-card {
+      background: rgba(20, 20, 23, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-2xl);
+    }
+
+    .glass-card-elevated {
+      background: rgba(26, 26, 30, 0.8);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-md);
+    }
+
+    .glass-card-glow {
+      background: rgba(20, 20, 23, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-sage);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-glow);
+    }
+
+    /* ===========================================
+       LAYOUT
+       =========================================== */
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-6);
+    }
+
+    .main-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-6);
+    }
+
+    /* ===========================================
+       HEADER / SANCTUARY
+       =========================================== */
+
+    .sanctuary-header {
+      text-align: center;
+      margin-bottom: var(--space-12);
+      animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    @media (min-width: 768px) {
+      .sanctuary-header {
+        text-align: left;
+      }
+    }
+
+    .date-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: var(--space-4);
+      opacity: 0.8;
+    }
+
+    .greeting {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+      color: var(--text-primary);
+    }
+
+    @media (min-width: 768px) {
+      .greeting {
+        font-size: 3.5rem;
+      }
+    }
+
+    .greeting-name {
+      color: var(--sage-light);
+      font-style: normal;
+    }
+
+    .subheading {
+      font-size: 1.125rem;
+      font-weight: 300;
+      color: var(--text-tertiary);
+      max-width: 28rem;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 768px) {
+      .subheading {
+        margin: 0;
+      }
+    }
+
+    /* ===========================================
+       STREAK / STAGE WIDGET
+       =========================================== */
+
+    .widget-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+    }
+
+    @media (min-width: 768px) {
+      .widget-row {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+    }
+
+    .stage-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--sage-subtle);
+      border: 1px solid var(--border-sage);
+      border-radius: var(--radius-full);
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--sage-light);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .streak-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    @media (min-width: 768px) {
+      .streak-info {
+        align-items: flex-end;
+      }
+    }
+
+    .streak-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .streak-icon {
+      color: var(--sage);
+    }
+
+    .week-dots {
+      display: flex;
+      gap: var(--space-2);
+    }
+
+    .day-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--bg-hover);
+      transition: all 0.3s ease;
+    }
+
+    .day-dot.filled {
+      background: var(--sage);
+      box-shadow: 0 0 8px var(--sage-glow);
+    }
+
+    .day-dot.today {
+      background: var(--sage-light);
+      transform: scale(1.4);
+      box-shadow: 0 0 12px var(--sage-glow);
+    }
+
+    /* ===========================================
+       ACTION BUTTONS
+       =========================================== */
+
+    .actions-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-top: var(--space-8);
+    }
+
+    @media (min-width: 768px) {
+      .actions-row {
+        flex-direction: row;
+        justify-content: flex-start;
+      }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--sage);
+      color: var(--bg-base);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--sage-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow-lg);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-default);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-sage);
+      color: var(--sage-light);
+    }
+
+    .btn-icon {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+    }
+
+    /* Quick actions */
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+
+    @media (min-width: 768px) {
+      .quick-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    .quick-action {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quick-action:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-sage);
+      color: var(--sage-light);
+    }
+
+    .quick-action svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.7;
+    }
+
+    /* ===========================================
+       DAILY SPARK CARD
+       =========================================== */
+
+    .daily-spark {
+      padding: var(--space-10);
+      text-align: center;
+      margin-bottom: var(--space-6);
+      animation: fadeInUp 0.8s ease-out 0.1s both;
+    }
+
+    .spark-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+    }
+
+    .spark-badge-text {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .spark-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--sage);
+    }
+
+    .ai-badge {
+      padding: 2px 8px;
+      background: var(--sage-subtle);
+      border: 1px solid var(--border-sage);
+      border-radius: var(--radius-sm);
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--sage-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .spark-prompt {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--text-primary);
+      max-width: 32rem;
+      margin: 0 auto var(--space-8);
+    }
+
+    @media (min-width: 768px) {
+      .spark-prompt {
+        font-size: 1.875rem;
+      }
+    }
+
+    .spark-actions {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-3);
+    }
+
+    .btn-spark {
+      padding: var(--space-3) var(--space-5);
+    }
+
+    .btn-shuffle {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-full);
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-shuffle:hover {
+      background: var(--bg-hover);
+      color: var(--sage);
+      border-color: var(--border-sage);
+    }
+
+    /* ===========================================
+       MOOD CHECK-IN
+       =========================================== */
+
+    .mood-checkin {
+      padding: var(--space-5);
+      margin-bottom: var(--space-10);
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .mood-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+      padding: 0 var(--space-1);
+    }
+
+    .mood-title {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .mood-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: var(--space-1);
+      transition: color 0.2s;
+    }
+
+    .mood-close:hover {
+      color: var(--text-secondary);
+    }
+
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-2);
+    }
+
+    .mood-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      color: var(--text-tertiary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mood-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-sage);
+      color: var(--sage-light);
+    }
+
+    .mood-btn:active {
+      transform: scale(0.95);
+    }
+
+    .mood-btn svg {
+      width: 20px;
+      height: 20px;
+      stroke-width: 1.5;
+    }
+
+    .mood-label {
+      font-size: 0.6rem;
+      font-weight: 500;
+    }
+
+    /* ===========================================
+       TWO COLUMN SECTION
+       =========================================== */
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-8);
+      animation: fadeInUp 0.8s ease-out 0.3s both;
+    }
+
+    @media (min-width: 1024px) {
+      .two-column {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+      padding: 0 var(--space-1);
+    }
+
+    @media (min-width: 768px) {
+      .section-header {
+        flex-direction: row;
+        align-items: flex-end;
+      }
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .section-link {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      transition: color 0.2s;
+    }
+
+    .section-link:hover {
+      color: var(--sage-light);
+    }
+
+    /* ===========================================
+       THREAD CARDS
+       =========================================== */
+
+    .thread-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .thread-card {
+      display: block;
+      padding: var(--space-5);
+      text-decoration: none;
+      transition: all 0.25s ease;
+    }
+
+    .thread-card:hover {
+      background: rgba(26, 26, 30, 0.9);
+      border-color: var(--border-sage);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .thread-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+
+    .thread-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--sage);
+      box-shadow: 0 0 8px var(--sage-glow);
+    }
+
+    .thread-name {
+      font-family: var(--font-display);
+      font-size: 1.0625rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .thread-arrow {
+      margin-left: auto;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .thread-card:hover .thread-arrow {
+      color: var(--sage);
+      transform: translateX(4px);
+    }
+
+    .thread-preview {
+      font-size: 0.8125rem;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .thread-meta {
+      display: flex;
+      gap: var(--space-4);
+      margin-top: var(--space-3);
+      font-size: 0.6875rem;
+      color: var(--text-muted);
+    }
+
+    /* ===========================================
+       WEEKLY INSIGHT CARD
+       =========================================== */
+
+    .insight-card {
+      padding: var(--space-10);
+      text-align: center;
+      background: linear-gradient(
+        135deg,
+        rgba(125, 155, 138, 0.08) 0%,
+        rgba(20, 20, 23, 0.7) 50%,
+        rgba(125, 155, 138, 0.04) 100%
+      );
+      border: 1px solid var(--border-sage);
+    }
+
+    .insight-icon-wrap {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto var(--space-5);
+      background: var(--sage-muted);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .insight-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--sage-light);
+    }
+
+    .insight-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+    }
+
+    .insight-text {
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+      max-width: 20rem;
+      margin: 0 auto;
+    }
+
+    .insight-highlight {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .insight-theme {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-6);
+      padding: var(--space-2) var(--space-4);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-full);
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .theme-value {
+      color: var(--sage-light);
+    }
+
+    /* ===========================================
+       EMPTY STATE
+       =========================================== */
+
+    .empty-state {
+      padding: var(--space-10);
+      text-align: center;
+    }
+
+    .empty-icon-wrap {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto var(--space-5);
+      background: var(--sage-subtle);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--sage);
+    }
+
+    .empty-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .empty-text {
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+      max-width: 18rem;
+      margin: 0 auto var(--space-6);
+    }
+
+    /* ===========================================
+       ANIMATIONS
+       =========================================== */
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.6;
+      }
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 20px var(--sage-glow);
+      }
+      50% {
+        box-shadow: 0 0 40px var(--sage-glow);
+      }
+    }
+
+    .animate-glow {
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    /* ===========================================
+       SCROLLBAR
+       =========================================== */
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--sage-muted);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--sage-glow);
+    }
+
+    /* ===========================================
+       COMPARISON BANNER
+       =========================================== */
+
+    .comparison-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-4) var(--space-6);
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--border-default);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-4);
+      z-index: 100;
+    }
+
+    .banner-text {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .banner-link {
+      color: var(--sage-light);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .banner-link:hover {
+      color: var(--sage);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content" style="padding-bottom: 100px;">
+
+    <!-- Sanctuary Header -->
+    <header class="sanctuary-header">
+      <div class="widget-row">
+        <div class="date-label">Monday, December 23</div>
+
+        <div class="streak-info">
+          <div class="stage-badge">
+            <span>&#127793;</span>
+            <span>Seedling</span>
+          </div>
+          <div class="streak-label">
+            <svg class="streak-icon" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            <span>3 Day Streak</span>
+          </div>
+          <div class="week-dots">
+            <div class="day-dot filled"></div>
+            <div class="day-dot filled"></div>
+            <div class="day-dot today"></div>
+            <div class="day-dot"></div>
+            <div class="day-dot"></div>
+            <div class="day-dot"></div>
+            <div class="day-dot"></div>
+          </div>
+        </div>
+      </div>
+
+      <h1 class="greeting">
+        Good morning, <span class="greeting-name">Alex</span>
+      </h1>
+      <p class="subheading">Ready to clear your mind?</p>
+
+      <div class="actions-row">
+        <button class="btn btn-ghost">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
+          </svg>
+          Take a breath
+        </button>
+        <button class="btn btn-primary animate-glow">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+            <path d="M2 2l7.586 7.586"/>
+            <circle cx="11" cy="11" r="2"/>
+          </svg>
+          Write
+        </button>
+      </div>
+
+      <div class="quick-actions">
+        <button class="quick-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          Guided Journey
+        </button>
+        <button class="quick-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+          Intentions
+        </button>
+      </div>
+    </header>
+
+    <!-- Daily Spark -->
+    <div class="daily-spark glass-card-glow">
+      <div class="spark-badge">
+        <svg class="spark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+          <path d="M5 3v4"/>
+          <path d="M19 17v4"/>
+          <path d="M3 5h4"/>
+          <path d="M17 19h4"/>
+        </svg>
+        <span class="spark-badge-text">Daily Spark</span>
+        <span class="ai-badge">AI</span>
+      </div>
+
+      <p class="spark-prompt">"What is a thought you haven't fully explored yet?"</p>
+
+      <div class="spark-actions">
+        <button class="btn btn-ghost btn-spark">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+            <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+            <path d="M2 2l7.586 7.586"/>
+            <circle cx="11" cy="11" r="2"/>
+          </svg>
+          Write this
+        </button>
+        <button class="btn-shuffle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/>
+            <path d="m18 2 4 4-4 4"/>
+            <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/>
+            <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/>
+            <path d="m18 14 4 4-4 4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mood Check-in -->
+    <div class="mood-checkin glass-card">
+      <div class="mood-header">
+        <h4 class="mood-title">How are you today?</h4>
+        <button class="mood-close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"/>
+            <path d="m6 6 12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="mood-grid">
+        <button class="mood-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+            <path d="M16 14v6"/>
+            <path d="M8 14v6"/>
+            <path d="M12 16v6"/>
+          </svg>
+          <span class="mood-label">Low</span>
+        </button>
+        <button class="mood-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/>
+          </svg>
+          <span class="mood-label">Cloudy</span>
+        </button>
+        <button class="mood-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="8" y1="15" x2="16" y2="15"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+          <span class="mood-label">Steady</span>
+        </button>
+        <button class="mood-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+          <span class="mood-label">Content</span>
+        </button>
+        <button class="mood-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <span class="mood-label">Radiant</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Two Column Section -->
+    <div class="two-column">
+
+      <!-- Continue Your Thinking -->
+      <section>
+        <div class="section-header">
+          <h3 class="section-title">Continue your thinking</h3>
+          <a href="#" class="section-link">View journal</a>
+        </div>
+
+        <div class="thread-list">
+          <a href="#" class="thread-card glass-card">
+            <div class="thread-header">
+              <div class="thread-dot" style="background: #7d9b8a;"></div>
+              <span class="thread-name">Career Crossroads</span>
+              <svg class="thread-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+            </div>
+            <p class="thread-preview">I've been thinking about whether this new opportunity aligns with what I actually want, or just what feels safe...</p>
+            <div class="thread-meta">
+              <span>4 entries</span>
+              <span>Last: Dec 22</span>
+            </div>
+          </a>
+
+          <a href="#" class="thread-card glass-card">
+            <div class="thread-header">
+              <div class="thread-dot" style="background: #b4a7d6;"></div>
+              <span class="thread-name">Morning Rituals</span>
+              <svg class="thread-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+            </div>
+            <p class="thread-preview">Trying to be more intentional about how I start my days. The quiet moments before everything starts...</p>
+            <div class="thread-meta">
+              <span>7 entries</span>
+              <span>Last: Dec 20</span>
+            </div>
+          </a>
+
+          <a href="#" class="thread-card glass-card">
+            <div class="thread-header">
+              <div class="thread-dot" style="background: #c47f6a;"></div>
+              <span class="thread-name">Relationship Reflections</span>
+              <svg class="thread-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+              </svg>
+            </div>
+            <p class="thread-preview">Understanding what I need from the people closest to me, and what I can offer in return...</p>
+            <div class="thread-meta">
+              <span>3 entries</span>
+              <span>Last: Dec 18</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Weekly Insight -->
+      <section>
+        <div class="section-header">
+          <h3 class="section-title">Weekly Insight</h3>
+        </div>
+
+        <div class="insight-card glass-card">
+          <div class="insight-icon-wrap">
+            <svg class="insight-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+              <path d="M5 3v4"/>
+              <path d="M19 17v4"/>
+              <path d="M3 5h4"/>
+              <path d="M17 19h4"/>
+            </svg>
+          </div>
+          <h4 class="insight-title">Your week, in a glance</h4>
+          <p class="insight-text">
+            You wrote <span class="insight-highlight">2,847</span> words across <span class="insight-highlight">5</span> entries.
+            Your average entry is <span class="insight-highlight">569</span> words.
+          </p>
+          <div class="insight-theme">
+            Top theme: <span class="theme-value">Self-Discovery</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Comparison Banner -->
+  <div class="comparison-banner">
+    <span class="banner-text">
+      This is a preview of the <strong>Void Glass Dark</strong> design.
+      <a href="/" class="banner-link">View current light theme</a>
+    </span>
+  </div>
+</body>
+</html>

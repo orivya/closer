@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — Clarity Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a; --sage-light: #9bb3a4; --sage-dark: #6a8577;
+            --sage-glow: rgba(125, 155, 138, 0.5); --sage-subtle: rgba(125, 155, 138, 0.08); --sage-muted: rgba(125, 155, 138, 0.15);
+            --bg-base: #08080a; --bg-elevated: #0e0e11; --bg-surface: #141417; --bg-card: #101013; --bg-hover: #1a1a1d;
+            --border-subtle: rgba(255, 255, 255, 0.04); --border-default: rgba(255, 255, 255, 0.07); --border-active: rgba(125, 155, 138, 0.3);
+            --text-primary: #fafafa; --text-secondary: #a1a1aa; --text-tertiary: #71717a; --text-muted: #52525b;
+            --gold: #d4a574; --gold-subtle: rgba(212, 165, 116, 0.12);
+            --constraint: #d4847a; --constraint-subtle: rgba(212, 132, 122, 0.12);
+            --resource: #81c995; --resource-subtle: rgba(129, 201, 149, 0.12);
+            --blindspot: #c4a77d; --blindspot-subtle: rgba(196, 167, 125, 0.12);
+            --shift: #a78bfa; --shift-subtle: rgba(167, 139, 250, 0.12);
+            --icon-sidebar-width: 72px; --icon-sidebar-expanded: 200px; --drawer-width: 280px; --rail-width: 320px; --header-height: 56px;
+            --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 20px; --space-xl: 24px; --space-2xl: 32px;
+            --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+            --transition-fast: 0.15s ease; --transition-smooth: 0.25s ease-out; --transition-panel: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus { outline: none; }
+        :focus-visible { outline: 2px solid rgba(125, 155, 138, 0.65); outline-offset: 3px; border-radius: var(--radius-sm); }
+        ::selection { background: var(--sage); color: white; }
+        html, body { height: 100%; overflow: hidden; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 14px; line-height: 1.5; color: var(--text-primary); background: var(--bg-base); -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); padding: 12px 20px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000; }
+        .toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; }
+        .toast-icon { width: 18px; height: 18px; color: var(--sage); }
+        .toast-icon svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        .app { display: flex; height: 100vh; background: var(--bg-base); }
+
+        /* Icon Sidebar - Simplified without chat history */
+        .icon-sidebar { width: var(--icon-sidebar-width); background: var(--bg-elevated); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; flex-shrink: 0; transition: width var(--transition-panel); overflow: hidden; z-index: 100; }
+        .icon-sidebar.expanded { width: var(--icon-sidebar-expanded); }
+        .sidebar-header { height: var(--header-height); padding: 0 var(--space-md); display: flex; align-items: center; gap: var(--space-sm); border-bottom: 1px solid var(--border-subtle); overflow: hidden; }
+        .sidebar-logo { width: 32px; height: 28px; flex-shrink: 0; position: relative; cursor: pointer; }
+        .sidebar-logo .body { width: 100%; height: 100%; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; position: relative; animation: breathe 5s ease-in-out infinite; }
+        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        .sidebar-logo .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .sidebar-logo .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; }
+        .sidebar-logo .eye.left { width: 4px; height: 4px; }
+        .sidebar-logo .eye.right { width: 3px; height: 3px; opacity: 0.9; }
+        .sidebar-title { font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.3px; white-space: nowrap; opacity: 0; transition: opacity var(--transition-fast); }
+        .icon-sidebar.expanded .sidebar-title { opacity: 1; }
+
+        .sidebar-nav { flex: 1; padding: var(--space-md) var(--space-sm); display: flex; flex-direction: column; gap: 4px; }
+        .sidebar-bottom { padding: var(--space-md) var(--space-sm); border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 4px; }
+        .nav-item { width: 100%; height: 44px; display: flex; align-items: center; gap: var(--space-sm); padding: 0 var(--space-sm); background: transparent; border: none; border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; text-decoration: none; transition: all var(--transition-fast); position: relative; overflow: hidden; }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .nav-item:active { transform: scale(0.97); }
+        .nav-item.active { background: var(--sage-subtle); color: var(--sage); }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 20px; background: var(--sage); border-radius: 0 2px 2px 0; }
+        .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; flex-shrink: 0; }
+        .nav-item-label { font-size: 13px; font-weight: 500; white-space: nowrap; opacity: 0; transition: opacity var(--transition-fast); }
+        .icon-sidebar.expanded .nav-item-label { opacity: 1; }
+
+        .sidebar-toggle { margin-top: auto; padding: var(--space-md) var(--space-sm); }
+        .toggle-btn { width: 100%; height: 36px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); }
+        .toggle-btn:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-default); }
+        .toggle-btn:active { transform: scale(0.96); }
+        .toggle-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; fill: none; transition: transform var(--transition-fast); }
+        .icon-sidebar.expanded .toggle-btn svg { transform: rotate(180deg); }
+
+        /* Sessions Drawer - CEREXI Style */
+        .sessions-drawer { width: var(--drawer-width); background: var(--bg-base); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; flex-shrink: 0; transform: translateX(-100%); margin-left: calc(var(--drawer-width) * -1); transition: all var(--transition-panel); z-index: 50; }
+        .sessions-drawer.open { transform: translateX(0); margin-left: 0; }
+        .drawer-header { padding: var(--space-lg); border-bottom: 1px solid var(--border-subtle); }
+        .drawer-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); margin-bottom: var(--space-md); }
+        .new-session-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: var(--space-xs); padding: var(--space-sm); background: transparent; border: 1px solid var(--sage); border-radius: var(--radius-md); font-family: inherit; font-size: 13px; font-weight: 500; color: var(--sage); cursor: pointer; transition: all var(--transition-fast); }
+        .new-session-btn:hover { background: var(--sage-subtle); }
+        .new-session-btn:active { transform: scale(0.98); }
+        .new-session-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .drawer-search { padding: var(--space-md) var(--space-lg); }
+        .search-wrapper { position: relative; }
+        .search-input { width: 100%; padding: 10px 12px 10px 36px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-family: inherit; font-size: 13px; color: var(--text-primary); outline: none; transition: all var(--transition-fast); }
+        .search-input::placeholder { color: var(--text-muted); }
+        .search-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px var(--sage-subtle); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .search-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .sessions-list { flex: 1; overflow-y: auto; padding: var(--space-sm); }
+        .sessions-group { margin-bottom: var(--space-lg); }
+        .sessions-group-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: var(--space-xs) var(--space-sm); margin-bottom: var(--space-xs); }
+        .session-card { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-smooth); margin-bottom: 2px; }
+        .session-card:hover { background: var(--bg-elevated); transform: translateX(4px); }
+        .session-card:active { transform: translateX(2px); }
+        .session-card.active { background: var(--sage-subtle); }
+        .session-info { flex: 1; min-width: 0; }
+        .session-title { font-size: 13px; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .session-meta { display: flex; align-items: center; gap: var(--space-xs); font-size: 11px; color: var(--text-muted); }
+        .session-insights { display: flex; align-items: center; gap: 4px; color: var(--sage); font-weight: 500; }
+        .session-insights-dot { width: 5px; height: 5px; background: var(--sage); border-radius: 50%; }
+
+        /* Main Chat Area */
+        .main-chat { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        .chat-header { height: var(--header-height); padding: 0 var(--space-xl); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); background: var(--bg-base); }
+        .chat-header-left { display: flex; align-items: center; gap: var(--space-md); }
+        .drawer-toggle { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); }
+        .drawer-toggle:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .drawer-toggle:active { transform: scale(0.95); }
+        .drawer-toggle svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .header-info { display: flex; flex-direction: column; }
+        .header-title { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+        .header-meta { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
+        .header-meta-dot { width: 3px; height: 3px; background: var(--text-muted); border-radius: 50%; }
+        .header-meta-insights { color: var(--sage); font-weight: 500; }
+
+        .chat-header-right { display: flex; align-items: center; gap: var(--space-sm); }
+        .header-btn { padding: 6px 12px; background: transparent; border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all var(--transition-fast); }
+        .header-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .header-btn:active { transform: scale(0.97); }
+        .header-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+        /* Messages Area */
+        .messages-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .messages-container { max-width: 680px; width: 100%; margin: 0 auto; padding: var(--space-xl); display: none; flex-direction: column; gap: var(--space-lg); opacity: 0; transition: opacity 0.4s ease-out 0.1s; }
+        .messages-container.visible { display: flex; opacity: 1; }
+
+        /* Welcome State with Animated Avatar */
+        .welcome-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-2xl); text-align: center; transition: opacity 0.4s ease-out, visibility 0.4s ease-out; }
+        .welcome-state.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .welcome-avatar { width: 100px; height: 88px; position: relative; margin-bottom: var(--space-xl); isolation: isolate; }
+        .welcome-avatar .glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 160px; height: 140px; background: radial-gradient(ellipse, var(--sage-glow) 0%, transparent 70%); filter: blur(30px); animation: pulse-glow 3s ease-in-out infinite; }
+        @keyframes pulse-glow { 0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); } }
+        .welcome-avatar .body { 
+            width: 100%; height: 100%; 
+            background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); 
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; 
+            position: relative; 
+            animation: avatar-float 5s ease-in-out infinite;
+            box-shadow: 0 10px 40px rgba(125, 155, 138, 0.3);
+        }
+        @keyframes avatar-float { 
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); } 
+            33% { transform: translateY(-8px) rotate(-2deg) scale(1.02); } 
+            66% { transform: translateY(-4px) rotate(1deg) scale(1.01); } 
+        }
+        .welcome-avatar .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 14px; }
+        .welcome-avatar .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; animation: eye-blink 5s ease-in-out infinite; box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); }
+        .welcome-avatar .eye.left { width: 8px; height: 8px; }
+        .welcome-avatar .eye.right { width: 7px; height: 7px; opacity: 0.9; }
+        @keyframes eye-blink { 0%, 45%, 55%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
+        .welcome-greeting { font-size: 26px; font-weight: 500; color: var(--text-primary); margin-bottom: var(--space-sm); }
+        .welcome-subtext { font-size: 15px; color: var(--text-secondary); max-width: 420px; line-height: 1.7; margin-bottom: var(--space-2xl); }
+
+        /* Messages */
+        .message { display: flex; gap: var(--space-md); animation: message-in 0.4s ease-out; }
+        @keyframes message-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .message-avatar { width: 32px; height: 28px; flex-shrink: 0; position: relative; isolation: isolate; }
+        .message.assistant .message-avatar .body { 
+            width: 100%; height: 100%; 
+            background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); 
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; 
+            box-shadow: 0 4px 16px rgba(125, 155, 138, 0.25);
+            animation: message-avatar-breathe 5s ease-in-out infinite;
+        }
+        @keyframes message-avatar-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .message.assistant .message-avatar .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .message.assistant .message-avatar .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; }
+        .message.assistant .message-avatar .eye.left { width: 3px; height: 3px; }
+        .message.assistant .message-avatar .eye.right { width: 2.5px; height: 2.5px; opacity: 0.9; }
+        .message.user .message-avatar { width: 32px; height: 32px; background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+        .message.user .message-avatar svg { width: 14px; height: 14px; stroke: var(--text-tertiary); stroke-width: 1.5; fill: none; }
+        .message-body { flex: 1; min-width: 0; }
+        .message-content { font-size: 15px; line-height: 1.7; color: var(--text-primary); }
+        .message-content p { margin-bottom: var(--space-sm); }
+        .message-content p:last-child { margin-bottom: 0; }
+        .message-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); margin-top: var(--space-xs); }
+        .message-actions { display: flex; gap: var(--space-xs); margin-top: var(--space-sm); }
+        .message-action-btn { padding: 4px 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-muted); font-family: inherit; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); }
+        .message-action-btn:hover { border-color: var(--sage-muted); color: var(--sage); background: var(--sage-subtle); }
+        .message-action-btn:active { transform: scale(0.96); }
+
+        /* Thinking Indicator */
+        .thinking-indicator { display: none; align-items: center; gap: var(--space-sm); padding: var(--space-md) 0; max-width: 680px; margin: 0 auto; width: 100%; padding-left: var(--space-xl); padding-right: var(--space-xl); }
+        .thinking-avatar { width: 32px; height: 28px; position: relative; isolation: isolate; }
+        .thinking-avatar .body { width: 100%; height: 100%; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; animation: thinking-sway 2s ease-in-out infinite; }
+        @keyframes thinking-sway { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-4deg); } }
+        .thinking-avatar .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 7px; }
+        .thinking-avatar .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; animation: thinking-eyes 2s ease-in-out infinite; }
+        .thinking-avatar .eye.left { width: 3px; height: 2.5px; }
+        .thinking-avatar .eye.right { width: 2.5px; height: 2px; opacity: 0.9; }
+        @keyframes thinking-eyes { 0%, 100% { transform: scaleY(0.6); } 50% { transform: scaleY(1); } }
+        .thinking-text { font-size: 13px; color: var(--text-muted); }
+        .thinking-dots { display: flex; gap: 4px; margin-left: 2px; }
+        .thinking-dot { width: 5px; height: 5px; background: var(--sage); border-radius: 50%; animation: thinking-bounce 1.2s ease-in-out infinite; }
+        .thinking-dot:nth-child(2) { animation-delay: 0.15s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes thinking-bounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-6px); opacity: 1; } }
+
+        /* Input Area */
+        .input-area { padding: var(--space-md) var(--space-xl) var(--space-lg); border-top: 1px solid var(--border-subtle); background: var(--bg-base); }
+        .input-container { max-width: 680px; margin: 0 auto; }
+
+        /* Session Intent Pills */
+        .intent-pills { display: flex; gap: var(--space-xs); margin-bottom: var(--space-sm); flex-wrap: wrap; justify-content: center; }
+        .intent-pills.hidden { display: none; }
+        .intent-pill { padding: 8px 16px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 100px; color: var(--text-secondary); font-family: inherit; font-size: 13px; cursor: pointer; transition: all var(--transition-fast); }
+        .intent-pill:hover { border-color: var(--border-default); color: var(--text-primary); background: var(--bg-surface); }
+        .intent-pill:active { transform: scale(0.97); }
+        .intent-pill.active { background: var(--sage-subtle); border-color: var(--sage-muted); color: var(--sage); }
+
+        .input-wrapper { display: flex; gap: var(--space-sm); align-items: flex-end; }
+        .input-field-wrapper { flex: 1; position: relative; }
+        .input-field { width: 100%; padding: var(--space-md); padding-right: 48px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-lg); font-family: inherit; font-size: 15px; color: var(--text-primary); resize: none; min-height: 48px; max-height: 140px; transition: all var(--transition-fast); }
+        .input-field::placeholder { color: var(--text-muted); }
+        .input-field:focus { border-color: var(--sage-muted); box-shadow: 0 0 0 3px var(--sage-subtle); }
+        .send-btn { position: absolute; right: 8px; bottom: 8px; width: 32px; height: 32px; background: var(--sage); border: none; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); opacity: 0.4; }
+        .send-btn.active { opacity: 1; }
+        .send-btn:hover { background: var(--sage-light); }
+        .send-btn:active { transform: scale(0.93); }
+        .send-btn svg { width: 16px; height: 16px; stroke: white; stroke-width: 2; fill: none; }
+
+        /* Right Rail */
+        .clarity-rail { width: var(--rail-width); background: var(--bg-elevated); border-left: 1px solid var(--border-subtle); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+        .clarity-header { padding: var(--space-md) var(--space-lg); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); }
+        .clarity-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+        .lens-dropdown { padding: 6px 28px 6px 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-secondary); font-family: inherit; font-size: 12px; cursor: pointer; transition: all var(--transition-fast); appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+        .lens-dropdown:hover { border-color: var(--border-default); color: var(--text-primary); }
+        .lens-dropdown:focus { border-color: var(--sage-muted); box-shadow: 0 0 0 2px var(--sage-subtle); }
+        .lens-dropdown option { background: var(--bg-elevated); color: var(--text-primary); }
+
+        .snapshot-card { margin: var(--space-md) var(--space-lg); padding: var(--space-md); background: linear-gradient(135deg, var(--sage-subtle) 0%, var(--bg-card) 100%); border: 1px solid var(--sage-muted); border-radius: var(--radius-md); }
+        .snapshot-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; color: var(--sage); margin-bottom: var(--space-xs); }
+        .snapshot-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+        .rail-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); padding: 0 var(--space-lg); background: var(--bg-elevated); position: sticky; top: 0; z-index: 10; }
+        .rail-tab { flex: 1; padding: var(--space-sm) 0; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; transition: all var(--transition-fast); }
+        .rail-tab:hover { color: var(--text-secondary); }
+        .rail-tab.active { color: var(--sage); border-bottom-color: var(--sage); }
+
+        .rail-content { flex: 1; overflow-y: auto; }
+        .rail-panel { display: none; padding: var(--space-lg); }
+        .rail-panel.active { display: block; }
+
+        .section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: var(--space-sm); margin-top: var(--space-lg); }
+        .section-label:first-child { margin-top: 0; }
+
+        .insights-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+        .insight-card { padding: var(--space-md); background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); transition: all var(--transition-smooth); }
+        .insight-card:hover { border-color: var(--border-default); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .insight-chip { display: inline-block; padding: 3px 8px; background: var(--sage-subtle); border-radius: 4px; font-size: 10px; font-weight: 600; color: var(--sage); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: var(--space-xs); }
+        .insight-chip.reframe { background: rgba(33, 150, 243, 0.12); color: #64b5f6; }
+        .insight-chip.resource { background: var(--resource-subtle); color: var(--resource); }
+        .insight-chip.next-move { background: var(--gold-subtle); color: var(--gold); }
+        .insight-chip.observation { background: rgba(156, 39, 176, 0.12); color: #ce93d8; }
+        .insight-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; margin-bottom: var(--space-sm); }
+        .resonance-row { display: flex; gap: var(--space-xs); }
+        .resonance-btn { padding: 4px 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-muted); font-family: inherit; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); }
+        .resonance-btn:hover { border-color: var(--border-default); color: var(--text-secondary); }
+        .resonance-btn:active { transform: scale(0.96); }
+        .resonance-btn.active { background: var(--sage-subtle); border-color: var(--sage-muted); color: var(--sage); }
+
+        .empty-state { text-align: center; padding: var(--space-xl); color: var(--text-muted); font-size: 13px; }
+
+        .theme-item { display: flex; align-items: center; justify-content: space-between; padding: var(--space-sm); background: var(--bg-card); border-radius: var(--radius-sm); margin-bottom: var(--space-xs); cursor: pointer; transition: all var(--transition-smooth); }
+        .theme-item:hover { background: var(--bg-surface); transform: translateX(4px); }
+        .theme-name { font-size: 13px; color: var(--text-secondary); }
+        .theme-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+        /* Reflection Items with Indicators */
+        .reflection-item { display: flex; align-items: flex-start; gap: var(--space-sm); padding: var(--space-sm); background: var(--bg-card); border-radius: var(--radius-sm); margin-bottom: var(--space-xs); font-size: 13px; color: var(--text-secondary); cursor: pointer; transition: all var(--transition-smooth); }
+        .reflection-item:hover { background: var(--bg-surface); color: var(--text-primary); transform: translateX(4px); }
+        .reflection-indicator { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+        .reflection-indicator.observation { background: var(--sage); }
+        .reflection-indicator.constraint { background: var(--constraint); }
+        .reflection-indicator.resource { background: var(--resource); }
+        .reflection-indicator.blindspot { background: var(--blindspot); }
+        .reflection-indicator.shift { background: var(--shift); }
+
+        /* Shift Items */
+        .shift-item { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm); background: var(--bg-card); border-radius: var(--radius-sm); margin-bottom: var(--space-xs); cursor: pointer; transition: all var(--transition-smooth); }
+        .shift-item:hover { background: var(--bg-surface); transform: translateX(4px); }
+        .shift-content { display: flex; align-items: center; gap: var(--space-xs); font-size: 13px; flex: 1; }
+        .shift-from { color: var(--text-muted); }
+        .shift-arrow { color: var(--shift); font-weight: 500; }
+        .shift-to { color: var(--text-primary); }
+
+        /* Next Move Card */
+        .next-move-card { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-md); background: linear-gradient(135deg, var(--sage-subtle), transparent); border: 1px solid var(--sage-muted); border-radius: var(--radius-md); }
+        .next-move-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--sage); border-radius: 50%; flex-shrink: 0; }
+        .next-move-icon svg { width: 14px; height: 14px; fill: white; stroke: none; }
+        .next-move-text { flex: 1; font-size: 13px; color: var(--text-primary); line-height: 1.4; }
+        .next-move-action { padding: 6px 12px; background: var(--sage); border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; color: white; cursor: pointer; transition: all var(--transition-fast); }
+        .next-move-action:hover { background: var(--sage-light); }
+        .next-move-action:active { transform: scale(0.96); }
+
+        .clarity-map { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+        .map-node { padding: 6px 12px; background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 100px; color: var(--text-secondary); font-family: inherit; font-size: 12px; cursor: pointer; transition: all var(--transition-fast); }
+        .map-node:hover { border-color: var(--sage-muted); color: var(--sage); background: var(--sage-subtle); }
+        .map-node:active { transform: scale(0.96); }
+
+        .decision-card { padding: var(--space-md); background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); margin-bottom: var(--space-sm); cursor: pointer; transition: all var(--transition-smooth); }
+        .decision-card:hover { border-color: var(--border-default); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .decision-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-xs); }
+        .decision-title { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+        .decision-status { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; padding: 2px 8px; border-radius: 4px; }
+        .decision-status.open { background: var(--gold-subtle); color: var(--gold); }
+        .decision-status.resolved { background: var(--sage-subtle); color: var(--sage); }
+        .decision-meta { font-size: 12px; color: var(--text-muted); margin-bottom: var(--space-sm); }
+        .decision-actions { display: flex; gap: var(--space-xs); }
+        .decision-action { padding: 4px 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-muted); font-family: inherit; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); }
+        .decision-action:hover { border-color: var(--border-default); color: var(--text-secondary); }
+        .decision-action:active { transform: scale(0.96); }
+
+        /* Note Modal */
+        .note-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .note-modal.visible { opacity: 1; visibility: visible; }
+        .note-modal-content { width: 90%; max-width: 480px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; transform: translateY(20px); transition: transform 0.3s ease; }
+        .note-modal.visible .note-modal-content { transform: translateY(0); }
+        .note-modal-header { padding: var(--space-md) var(--space-lg); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+        .note-modal-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+        .note-modal-close { width: 32px; height: 32px; background: transparent; border: none; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: all var(--transition-fast); }
+        .note-modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .note-modal-close svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .note-modal-body { padding: var(--space-lg); }
+        .note-textarea { width: 100%; min-height: 120px; padding: var(--space-md); background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-md); font-family: inherit; font-size: 14px; color: var(--text-primary); resize: vertical; }
+        .note-textarea::placeholder { color: var(--text-muted); }
+        .note-textarea:focus { border-color: var(--sage-muted); box-shadow: 0 0 0 3px var(--sage-subtle); }
+        .note-modal-footer { padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: var(--space-sm); }
+        .note-btn { padding: 8px 16px; background: transparent; border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 13px; cursor: pointer; transition: all var(--transition-fast); }
+        .note-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .note-btn:active { transform: scale(0.97); }
+        .note-btn.primary { background: var(--sage); border-color: var(--sage); color: white; }
+        .note-btn.primary:hover { background: var(--sage-light); }
+        .note-btn.primary:active { transform: scale(0.97); }
+
+        /* Mobile */
+        .rail-toggle-mobile { display: none; position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; background: var(--sage); border: none; border-radius: 50%; cursor: pointer; box-shadow: 0 4px 20px rgba(125, 155, 138, 0.4); z-index: 90; transition: all var(--transition-fast); }
+        .rail-toggle-mobile:hover { background: var(--sage-light); transform: scale(1.05); }
+        .rail-toggle-mobile:active { transform: scale(0.95); }
+        .rail-toggle-mobile svg { width: 20px; height: 20px; stroke: white; stroke-width: 1.5; fill: none; }
+        .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 80; }
+        @media (max-width: 1100px) {
+            .clarity-rail { position: fixed; right: -100%; top: 0; bottom: 0; z-index: 90; width: 320px; transition: right var(--transition-panel); }
+            .clarity-rail.open { right: 0; }
+            .rail-toggle-mobile { display: flex; align-items: center; justify-content: center; }
+            .mobile-overlay.visible { display: block; }
+        }
+        @media (max-width: 900px) {
+            .sessions-drawer { position: fixed; left: var(--icon-sidebar-width); top: 0; bottom: 0; z-index: 150; box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25); }
+        }
+        @media (max-width: 768px) {
+            .icon-sidebar { position: fixed; left: -100%; top: 0; bottom: 0; z-index: 100; width: var(--icon-sidebar-expanded); transition: left var(--transition-panel); }
+            .icon-sidebar.open { left: 0; }
+            .sessions-drawer { left: 0; }
+        }
+        @media (max-width: 480px) {
+            .icon-sidebar { left: 0; top: auto; bottom: 0; width: 100%; height: 64px; flex-direction: row; border-right: none; border-top: 1px solid var(--border-subtle); }
+            .icon-sidebar.open { left: 0; }
+            .sidebar-header { display: none; }
+            .sidebar-nav { flex-direction: row; justify-content: space-around; padding: 0; width: auto; height: 100%; align-items: center; gap: 0; flex: 1; }
+            .sidebar-bottom { flex-direction: row; padding: 0; border-top: none; height: 100%; align-items: center; }
+            .nav-item { width: 48px; height: 56px; flex-direction: column; gap: 4px; }
+            .nav-item-label { display: block; opacity: 1; font-size: 9px; }
+            .nav-item.active::before { display: none; }
+            .sidebar-toggle { display: none; }
+            .main-chat { padding-bottom: 64px; }
+            .sessions-drawer { display: none; }
+            .drawer-toggle { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="icon-sidebar" id="iconSidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="window.location.href='orivya-iconic-v6.html'"><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></div>
+                <span class="sidebar-title">ORIVYA</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="orivya-app-v10.html" class="nav-item active"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span class="nav-item-label">Chat</span></a>
+                <a href="orivya-explore-v5.html" class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg><span class="nav-item-label">Explore</span></a>
+                <a href="orivya-library-v7.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="nav-item-label">Library</span></a>
+            </nav>
+            <div class="sidebar-bottom">
+                <a href="orivya-profile-v1.html" class="nav-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="nav-item-label">Profile</span></a>
+                <a href="orivya-settings-v1.html" class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span class="nav-item-label">Settings</span></a>
+            </div>
+            <div class="sidebar-toggle"><button class="toggle-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button></div>
+        </aside>
+
+        <!-- Sessions Drawer -->
+        <aside class="sessions-drawer" id="sessionsDrawer">
+            <div class="drawer-header">
+                <div class="drawer-title">Sessions</div>
+                <button class="new-session-btn" onclick="newSession(); toggleDrawer();">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    New Session
+                </button>
+            </div>
+            <div class="drawer-search">
+                <div class="search-wrapper">
+                    <div class="search-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+                    <input type="text" class="search-input" placeholder="Search sessions...">
+                </div>
+            </div>
+            <div class="sessions-list">
+                <div class="sessions-group">
+                    <div class="sessions-group-label">Today</div>
+                    <div class="session-card active" onclick="loadSession('current')">
+                        <div class="session-info">
+                            <div class="session-title">What's on your mind?</div>
+                            <div class="session-meta"><span>Now</span></div>
+                        </div>
+                    </div>
+                    <div class="session-card" onclick="loadSession('career')">
+                        <div class="session-info">
+                            <div class="session-title">Should I take the new role?</div>
+                            <div class="session-meta">
+                                <span>2:34 PM</span>
+                                <span class="session-insights"><span class="session-insights-dot"></span>3 insights</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sessions-group">
+                    <div class="sessions-group-label">Yesterday</div>
+                    <div class="session-card" onclick="loadSession('stuck')">
+                        <div class="session-info">
+                            <div class="session-title">Feeling stuck on the project</div>
+                            <div class="session-meta">
+                                <span>6:30 PM</span>
+                                <span class="session-insights"><span class="session-insights-dot"></span>2 insights</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sessions-group">
+                    <div class="sessions-group-label">This Week</div>
+                    <div class="session-card" onclick="loadSession('relationship')">
+                        <div class="session-info">
+                            <div class="session-title">Navigating the conversation with Alex</div>
+                            <div class="session-meta">
+                                <span>Monday</span>
+                                <span class="session-insights"><span class="session-insights-dot"></span>4 insights</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="session-card" onclick="loadSession('values')">
+                        <div class="session-info">
+                            <div class="session-title">What do I actually value?</div>
+                            <div class="session-meta">
+                                <span>Sunday</span>
+                                <span class="session-insights"><span class="session-insights-dot"></span>5 insights</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-chat">
+            <header class="chat-header">
+                <div class="chat-header-left">
+                    <button class="drawer-toggle" onclick="toggleDrawer()">
+                        <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div class="header-info">
+                        <h1 class="header-title" id="headerTitle">What's on your mind?</h1>
+                        <div class="header-meta">
+                            <span id="headerTime">Started now</span>
+                            <span class="header-meta-dot"></span>
+                            <span class="header-meta-insights" id="headerInsights">0 insights</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-header-right">
+                    <button class="header-btn" onclick="openNoteModal()"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Note</button>
+                    <button class="header-btn" onclick="newSession()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New</button>
+                </div>
+            </header>
+
+            <div class="messages-area" id="messagesArea">
+                <div class="welcome-state" id="welcomeState">
+                    <div class="welcome-avatar"><div class="glow"></div><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></div>
+                    <h2 class="welcome-greeting">What's on your mind?</h2>
+                    <p class="welcome-subtext">I'm here to help you think through decisions, explore what matters, or gain perspective on what's next.</p>
+                </div>
+                <div class="messages-container" id="messagesContainer"></div>
+                <div class="thinking-indicator" id="thinkingIndicator">
+                    <div class="thinking-avatar"><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></div>
+                    <span class="thinking-text">Thinking</span>
+                    <div class="thinking-dots"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="intent-pills" id="intentPills">
+                        <button class="intent-pill" onclick="selectIntent(this, 'Untangle')">Untangle</button>
+                        <button class="intent-pill" onclick="selectIntent(this, 'Decide')">Decide</button>
+                        <button class="intent-pill" onclick="selectIntent(this, 'Reflect')">Reflect</button>
+                        <button class="intent-pill" onclick="selectIntent(this, 'Plan')">Plan</button>
+                    </div>
+                    <div class="input-wrapper">
+                        <div class="input-field-wrapper">
+                            <textarea class="input-field" id="messageInput" placeholder="Share what you're thinking about..." rows="1" oninput="autoResize(this); toggleSendButton()"></textarea>
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="clarity-rail" id="clarityRail">
+            <div class="clarity-header">
+                <span class="clarity-title">Clarity</span>
+                <select class="lens-dropdown"><option value="all">All</option><option value="self">Self</option><option value="relationships">Relationships</option><option value="work">Work</option><option value="health">Health</option></select>
+            </div>
+            <div class="snapshot-card">
+                <div class="snapshot-label">Session</div>
+                <div class="snapshot-text" id="snapshotText">Start a conversation to see insights emerge here.</div>
+            </div>
+            <div class="rail-tabs">
+                <button class="rail-tab active" onclick="switchTab('now')">Now</button>
+                <button class="rail-tab" onclick="switchTab('reflections')">Reflections</button>
+                <button class="rail-tab" onclick="switchTab('decisions')">Decisions</button>
+            </div>
+            <div class="rail-content">
+                <div class="rail-panel active" id="panel-now">
+                    <div class="insights-list" id="insightsList"><div class="empty-state">Insights will appear here as we talk.</div></div>
+                </div>
+                <div class="rail-panel" id="panel-reflections">
+                    <div class="section-label">Emerging Themes</div>
+                    <div class="theme-item" onclick="exploreTheme('clarity')"><span class="theme-name">Seeking clarity in uncertainty</span><span class="theme-count">4×</span></div>
+                    <div class="theme-item" onclick="exploreTheme('trust')"><span class="theme-name">Building self-trust</span><span class="theme-count">3×</span></div>
+                    <div class="theme-item" onclick="exploreTheme('overthink')"><span class="theme-name">Tendency to overthink</span><span class="theme-count">2×</span></div>
+                    
+                    <div class="section-label">Self-Observations</div>
+                    <div class="reflection-item" onclick="saveToLibrary('observation')">
+                        <div class="reflection-indicator observation"></div>
+                        <span>"I often wait for certainty before acting"</span>
+                    </div>
+                    <div class="reflection-item" onclick="saveToLibrary('observation')">
+                        <div class="reflection-indicator observation"></div>
+                        <span>"I care deeply about getting things right"</span>
+                    </div>
+                    
+                    <div class="section-label">Constraints</div>
+                    <div class="reflection-item" onclick="saveToLibrary('constraint')">
+                        <div class="reflection-indicator constraint"></div>
+                        <span>Time consumed by primary work</span>
+                    </div>
+                    <div class="reflection-item" onclick="saveToLibrary('constraint')">
+                        <div class="reflection-indicator constraint"></div>
+                        <span>Energy depleted by evening</span>
+                    </div>
+                    
+                    <div class="section-label">Resources</div>
+                    <div class="reflection-item" onclick="saveToLibrary('resource')">
+                        <div class="reflection-indicator resource"></div>
+                        <span>Strong analytical skills</span>
+                    </div>
+                    <div class="reflection-item" onclick="saveToLibrary('resource')">
+                        <div class="reflection-indicator resource"></div>
+                        <span>Supportive partner</span>
+                    </div>
+                    
+                    <div class="section-label">Blind Spots</div>
+                    <div class="reflection-item" onclick="saveToLibrary('blindspot')">
+                        <div class="reflection-indicator blindspot"></div>
+                        <span>How others perceive your hesitation</span>
+                    </div>
+                    
+                    <div class="section-label">Shifts</div>
+                    <div class="shift-item" onclick="saveToLibrary('shift')">
+                        <div class="reflection-indicator shift"></div>
+                        <div class="shift-content">
+                            <span class="shift-from">Waiting for permission</span>
+                            <span class="shift-arrow">→</span>
+                            <span class="shift-to">Acting on instinct</span>
+                        </div>
+                    </div>
+                    
+                    <div class="section-label">Next Move</div>
+                    <div class="next-move-card">
+                        <div class="next-move-icon"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+                        <div class="next-move-text">Have the conversation with your manager about flexibility</div>
+                        <button class="next-move-action" onclick="startNextMove()">Start</button>
+                    </div>
+                    
+                    <div class="section-label">Clarity Map</div>
+                    <div class="clarity-map">
+                        <button class="map-node" onclick="exploreNode('career')">Career</button>
+                        <button class="map-node" onclick="exploreNode('identity')">Identity</button>
+                        <button class="map-node" onclick="exploreNode('relationships')">Relationships</button>
+                        <button class="map-node" onclick="exploreNode('growth')">Growth</button>
+                    </div>
+                </div>
+                <div class="rail-panel" id="panel-decisions">
+                    <div class="section-label">Open Decisions</div>
+                    <div class="decision-card" onclick="openDecision('role')">
+                        <div class="decision-header"><span class="decision-title">Should I take the new role?</span><span class="decision-status open">Open</span></div>
+                        <div class="decision-meta">Started 2 days ago</div>
+                        <div class="decision-actions"><button class="decision-action" onclick="event.stopPropagation(); viewBrief('role')">View Brief</button><button class="decision-action" onclick="event.stopPropagation(); continueDecision('role')">Continue</button></div>
+                    </div>
+                    <div class="section-label">Resolved</div>
+                    <div class="decision-card" onclick="openDecision('relocate')">
+                        <div class="decision-header"><span class="decision-title">Whether to relocate</span><span class="decision-status resolved">Resolved</span></div>
+                        <div class="decision-meta">Decided: Stay for now · Nov 28</div>
+                        <div class="decision-actions"><button class="decision-action" onclick="event.stopPropagation(); viewBrief('relocate')">View Brief</button></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <button class="rail-toggle-mobile" onclick="toggleRail()"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></button>
+        <div class="mobile-overlay" id="mobileOverlay" onclick="closeOverlays()"></div>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="note-modal" id="noteModal">
+        <div class="note-modal-content">
+            <div class="note-modal-header">
+                <span class="note-modal-title">Add a Note</span>
+                <button class="note-modal-close" onclick="closeNoteModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="note-modal-body">
+                <textarea class="note-textarea" id="noteTextarea" placeholder="Write a personal reflection, reminder, or observation..."></textarea>
+            </div>
+            <div class="note-modal-footer">
+                <button class="note-btn" onclick="closeNoteModal()">Cancel</button>
+                <button class="note-btn primary" onclick="saveNote()">Save to Library</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <div class="toast-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span id="toastMessage">Saved</span>
+    </div>
+
+    <script>
+        let conversationStarted = false;
+        let sessionInsights = [];
+        let responseIndex = 0;
+        const demoResponses = [
+            { text: "It sounds like you're weighing something important. Let me understand — what feels like the core tension here?", insight: { type: "Observation", text: "There may be a deeper question underneath this one about what you truly want." } },
+            { text: "I notice you're considering multiple perspectives, which shows care. Sometimes that thoroughness can also become a way to delay a decision. Does that resonate?", insight: { type: "Reframe", text: "Thoroughness can be both a strength and a form of hesitation." } },
+            { text: "What would it look like to trust your instinct here, even without complete certainty?", insight: { type: "Next Move", text: "Consider: What would your more confident self decide?" } }
+        ];
+
+        function switchTab(tab) { document.querySelectorAll('.rail-tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.rail-panel').forEach(p => p.classList.remove('active')); event.target.classList.add('active'); document.getElementById('panel-' + tab).classList.add('active'); }
+        function toggleSidebar() { document.getElementById('iconSidebar').classList.toggle('expanded'); }
+        function toggleDrawer() { document.getElementById('sessionsDrawer').classList.toggle('open'); }
+        function toggleRail() { document.getElementById('clarityRail').classList.toggle('open'); document.getElementById('mobileOverlay').classList.toggle('visible'); }
+        function closeOverlays() { document.getElementById('clarityRail').classList.remove('open'); document.getElementById('iconSidebar').classList.remove('open'); document.getElementById('sessionsDrawer').classList.remove('open'); document.getElementById('mobileOverlay').classList.remove('visible'); }
+        function selectIntent(el, intent) { document.querySelectorAll('.intent-pill').forEach(p => p.classList.remove('active')); el.classList.add('active'); const placeholders = { 'Untangle': 'What feels tangled or unclear right now?', 'Decide': 'What decision are you weighing?', 'Reflect': 'What would you like to reflect on?', 'Plan': 'What are you trying to figure out?' }; document.getElementById('messageInput').placeholder = placeholders[intent] || 'Share what you are thinking about...'; }
+        function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 140) + 'px'; }
+        function toggleSendButton() { const input = document.getElementById('messageInput'); const btn = document.getElementById('sendBtn'); btn.classList.toggle('active', input.value.trim().length > 0); }
+        function startConversation() { if (conversationStarted) return; conversationStarted = true; document.getElementById('welcomeState').classList.add('hidden'); document.getElementById('messagesContainer').classList.add('visible'); document.getElementById('intentPills').classList.add('hidden'); }
+        function addMessage(role, content) { const container = document.getElementById('messagesContainer'); const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); let avatarHtml = role === 'assistant' ? '<div class="message-avatar"><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></div>' : '<div class="message-avatar"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>'; 
+            let actionsHtml = role === 'assistant' ? '<div class="message-actions"><button class="message-action-btn" onclick="markResonates(this)">Resonates</button><button class="message-action-btn" onclick="saveToLibrary(\'insight\')">Save</button><button class="message-action-btn" onclick="openNoteModal()">Add Note</button></div>' : '';
+            container.insertAdjacentHTML('beforeend', '<div class="message ' + role + '">' + avatarHtml + '<div class="message-body"><div class="message-content"><p>' + content + '</p></div>' + actionsHtml + '<div class="message-time">' + time + '</div></div></div>'); container.scrollTop = container.scrollHeight; }
+        function addInsight(type, text) { const list = document.getElementById('insightsList'); const emptyState = list.querySelector('.empty-state'); if (emptyState) emptyState.remove(); const id = 'insight-' + Date.now(); sessionInsights.push({ id, type, text, verified: null }); list.insertAdjacentHTML('beforeend', '<div class="insight-card" id="' + id + '"><span class="insight-chip ' + type.toLowerCase().replace(' ', '-') + '">' + type + '</span><div class="insight-text">' + text + '</div><div class="resonance-row"><button class="resonance-btn" onclick="markResonance(\'' + id + '\', true)">Resonates</button><button class="resonance-btn" onclick="markResonance(\'' + id + '\', false)">Not quite</button><button class="resonance-btn" onclick="saveInsightToLibrary(\'' + id + '\')">Save</button></div></div>'); document.getElementById('snapshotText').textContent = 'Exploring ' + (sessionInsights.length === 1 ? 'a new thread' : sessionInsights.length + ' threads') + ' of clarity...'; }
+        function markResonance(id, resonates) { const card = document.getElementById(id); const btns = card.querySelectorAll('.resonance-btn'); btns[0].classList.toggle('active', resonates); btns[1].classList.toggle('active', !resonates); showToast(resonates ? 'Marked as resonating' : 'Noted - refining understanding'); }
+        function markResonates(btn) { btn.classList.add('active'); btn.textContent = '✓ Resonates'; showToast('Marked as resonating'); }
+        function saveInsightToLibrary(id) { showToast('Saved to Library'); }
+        function saveToLibrary(type) { showToast('Saved to Library'); }
+        function sendMessage() { const input = document.getElementById('messageInput'); const message = input.value.trim(); if (!message) return; startConversation(); addMessage('user', message); input.value = ''; input.style.height = 'auto'; toggleSendButton(); const thinking = document.getElementById('thinkingIndicator'); thinking.style.display = 'flex'; setTimeout(() => { thinking.style.display = 'none'; const response = demoResponses[responseIndex % demoResponses.length]; addMessage('assistant', response.text); if (response.insight) setTimeout(() => addInsight(response.insight.type, response.insight.text), 500); responseIndex++; }, 1500); }
+        function newSession() { conversationStarted = false; sessionInsights = []; responseIndex = 0; document.getElementById('welcomeState').classList.remove('hidden'); document.getElementById('messagesContainer').classList.remove('visible'); document.getElementById('messagesContainer').innerHTML = ''; document.getElementById('intentPills').classList.remove('hidden'); document.getElementById('insightsList').innerHTML = '<div class="empty-state">Insights will appear here as we talk.</div>'; document.getElementById('snapshotText').textContent = 'Start a conversation to see insights emerge here.'; document.querySelectorAll('.intent-pill').forEach(p => p.classList.remove('active')); document.getElementById('headerTitle').textContent = "What's on your mind?"; document.getElementById('headerTime').textContent = 'Started now'; document.getElementById('headerInsights').textContent = '0 insights'; document.querySelectorAll('.session-card').forEach(c => c.classList.remove('active')); document.querySelector('.session-card').classList.add('active'); }
+        function openNoteModal() { document.getElementById('noteModal').classList.add('visible'); document.getElementById('noteTextarea').focus(); }
+        function closeNoteModal() { document.getElementById('noteModal').classList.remove('visible'); document.getElementById('noteTextarea').value = ''; }
+        function saveNote() { const note = document.getElementById('noteTextarea').value.trim(); if (!note) return; closeNoteModal(); showToast('Note saved to Library'); }
+        function exploreTheme(theme) { showToast('Opening theme: ' + theme); }
+        function exploreNode(node) { showToast('Exploring: ' + node); }
+        function openDecision(id) { window.location.href = 'orivya-library-v7.html#decision-' + id; }
+        function viewBrief(id) { showToast('Opening decision brief'); }
+        function continueDecision(id) { showToast('Continuing decision...'); }
+        function startNextMove() { showToast('Starting next move...'); }
+        
+        const sessionData = {
+            'current': { title: "What's on your mind?", time: 'Started now', insights: 0 },
+            'career': { title: 'Should I take the new role?', time: 'Today, 2:34 PM', insights: 3 },
+            'stuck': { title: 'Feeling stuck on the project', time: 'Yesterday, 6:30 PM', insights: 2 },
+            'relationship': { title: 'Navigating the conversation with Alex', time: 'Monday', insights: 4 },
+            'values': { title: 'What do I actually value?', time: 'Sunday', insights: 5 }
+        };
+        
+        function loadSession(sessionId) {
+            const session = sessionData[sessionId];
+            if (!session) return;
+            
+            document.getElementById('headerTitle').textContent = session.title;
+            document.getElementById('headerTime').textContent = session.time;
+            document.getElementById('headerInsights').textContent = session.insights + ' insights';
+            
+            document.querySelectorAll('.session-card').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            if (sessionId === 'current') {
+                newSession();
+            } else {
+                const chatData = {
+                    'career': { 
+                        title: 'Should I take the new role?', 
+                        messages: [
+                            { role: 'user', content: "I've been offered a senior position at a new company. More money, more responsibility, but I'd have to leave my team." },
+                            { role: 'assistant', content: "That's a significant decision with real trade-offs. What feels like the hardest part of leaving your current team?" },
+                            { role: 'user', content: "I helped build it. It feels like abandoning something I care about." },
+                            { role: 'assistant', content: "There's a tension here between loyalty to what you've built and your own growth. Have you considered that staying might also be a form of playing it safe?" }
+                        ],
+                        insights: [
+                            { type: 'Observation', text: 'Loyalty and personal growth feel like competing values here.' },
+                            { type: 'Reframe', text: 'Staying can be as much about fear as it is about commitment.' }
+                        ]
+                    },
+                    'stuck': {
+                        title: 'Feeling stuck on the project',
+                        messages: [
+                            { role: 'user', content: "I've been working on this project for months and I keep hitting the same wall." },
+                            { role: 'assistant', content: "Tell me about the wall. What happens when you reach it?" },
+                            { role: 'user', content: "I start second-guessing every decision. Nothing feels good enough." },
+                            { role: 'assistant', content: "It sounds like perfectionism might be masquerading as quality control. What would 'good enough' actually look like?" }
+                        ],
+                        insights: [{ type: 'Observation', text: 'Perfectionism may be creating the feeling of being stuck.' }]
+                    },
+                    'relationship': {
+                        title: 'Navigating the conversation with Alex',
+                        messages: [
+                            { role: 'user', content: "I need to have a difficult conversation with my friend Alex about boundaries." },
+                            { role: 'assistant', content: "What makes this conversation feel difficult?" },
+                            { role: 'user', content: "I'm afraid they'll think I'm being selfish or that I don't care about them." },
+                            { role: 'assistant', content: "Setting boundaries is actually an act of caring—for yourself and the relationship. What do you need Alex to understand?" }
+                        ],
+                        insights: [{ type: 'Reframe', text: 'Boundaries protect relationships rather than damage them.' }]
+                    },
+                    'values': {
+                        title: 'What do I actually value?',
+                        messages: [
+                            { role: 'user', content: "I keep making decisions that don't feel aligned with who I am." },
+                            { role: 'assistant', content: "That's an important observation. When was the last time a decision felt truly aligned?" },
+                            { role: 'user', content: "When I turned down a promotion to spend more time with family." },
+                            { role: 'assistant', content: "So presence and family connection matter deeply to you. How do your current decisions honor or conflict with that?" }
+                        ],
+                        insights: [
+                            { type: 'Observation', text: 'Presence and family connection are core values.' },
+                            { type: 'Resource', text: 'Past aligned decisions reveal what you truly value.' }
+                        ]
+                    }
+                };
+                
+                const chat = chatData[sessionId];
+                if (chat) {
+                    conversationStarted = true;
+                    document.getElementById('welcomeState').classList.add('hidden');
+                    document.getElementById('messagesContainer').classList.add('visible');
+                    document.getElementById('intentPills').classList.add('hidden');
+                    document.getElementById('messagesContainer').innerHTML = '';
+                    document.getElementById('insightsList').innerHTML = '';
+                    sessionInsights = [];
+                    
+                    chat.messages.forEach(msg => addMessage(msg.role, msg.content));
+                    if (chat.insights) chat.insights.forEach(insight => addInsight(insight.type, insight.text));
+                    
+                    document.getElementById('snapshotText').textContent = 'Reviewing: ' + chat.title;
+                }
+            }
+            
+            toggleDrawer();
+            showToast('Loaded: ' + session.title);
+        }
+        
+        function showToast(message) { const toast = document.getElementById('toast'); document.getElementById('toastMessage').textContent = message; toast.classList.add('visible'); setTimeout(() => toast.classList.remove('visible'), 2500); }
+        document.getElementById('messageInput').addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeOverlays(); closeNoteModal(); } });
+        document.getElementById('noteModal').addEventListener('click', function(e) { if (e.target === this) closeNoteModal(); });
+    </script>
+</body>
+</html>

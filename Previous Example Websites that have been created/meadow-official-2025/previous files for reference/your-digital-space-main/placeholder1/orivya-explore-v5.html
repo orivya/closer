@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — Explore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a; --sage-light: #9bb3a4; --sage-dark: #6a8577;
+            --sage-subtle: rgba(125, 155, 138, 0.1); --sage-muted: rgba(125, 155, 138, 0.15);
+            --constraint: #d4847a; --constraint-subtle: rgba(212, 132, 122, 0.12);
+            --resource: #81c995; --resource-subtle: rgba(129, 201, 149, 0.12);
+            --unknown: #c4a77d; --unknown-subtle: rgba(196, 167, 125, 0.12);
+            --bg-base: #08080a; --bg-elevated: #0e0e11; --bg-surface: #141417; --bg-hover: #1a1a1d;
+            --border-subtle: rgba(255, 255, 255, 0.04); --border-default: rgba(255, 255, 255, 0.07);
+            --text-primary: #fafafa; --text-secondary: #a1a1aa; --text-tertiary: #71717a; --text-muted: #52525b;
+            --nav-width: 72px;
+            --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 20px; --space-xl: 24px; --space-2xl: 32px;
+            --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+            --transition-fast: 0.15s ease; --transition-smooth: 0.25s ease-out;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus { outline: none; }
+        :focus-visible { outline: 2px solid rgba(125, 155, 138, 0.65); outline-offset: 3px; border-radius: var(--radius-sm); }
+        ::selection { background: var(--sage); color: white; }
+        html, body { height: 100%; }
+        body { font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; line-height: 1.5; color: var(--text-primary); background: var(--bg-base); -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); padding: 12px 20px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000; }
+        .toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; }
+        .toast-icon { width: 18px; height: 18px; color: var(--sage); }
+        .toast-icon svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        .app { display: flex; height: 100vh; }
+
+        .nav-rail { width: var(--nav-width); background: var(--bg-elevated); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; padding: var(--space-lg) 0; flex-shrink: 0; }
+        .nav-logo { width: 40px; height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-xl); cursor: pointer; text-decoration: none; }
+        .nav-logo .body { width: 32px; height: 28px; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; position: relative; animation: breathe 5s ease-in-out infinite; }
+        .nav-logo .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .nav-logo .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; }
+        .nav-logo .eye.left { width: 4px; height: 4px; }
+        .nav-logo .eye.right { width: 3px; height: 3px; opacity: 0.9; }
+        .nav-items { display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); }
+        .nav-item { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--radius-md); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); position: relative; text-decoration: none; }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { background: var(--sage-subtle); color: var(--sage); }
+        .nav-item.active::before { content: ''; position: absolute; left: -14px; top: 10px; bottom: 10px; width: 3px; background: var(--sage); border-radius: 0 2px 2px 0; }
+        .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .nav-item::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%); padding: 6px 10px; background: var(--bg-hover); border: 1px solid var(--border-default); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; color: var(--text-primary); white-space: nowrap; opacity: 0; visibility: hidden; transition: all var(--transition-fast); pointer-events: none; }
+        .nav-item:hover::after { opacity: 1; visibility: visible; }
+        .nav-bottom { margin-top: auto; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+        .page-header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-lg) var(--space-2xl); border-bottom: 1px solid var(--border-subtle); background: var(--bg-elevated); flex-shrink: 0; }
+        .page-title { font-size: 20px; font-weight: 600; color: var(--text-primary); }
+        .page-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+        .explore-scroll { flex: 1; overflow-y: auto; padding: var(--space-2xl); }
+        .explore-container { max-width: 900px; margin: 0 auto; }
+
+        .section { margin-bottom: var(--space-2xl); animation: fadeInUp 0.4s ease-out both; }
+        .section:nth-child(1) { animation-delay: 0.05s; }
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.15s; }
+        .section:nth-child(4) { animation-delay: 0.2s; }
+        .section:nth-child(5) { animation-delay: 0.25s; }
+
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md); }
+        .section-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-tertiary); }
+        .section-description { font-size: 13px; color: var(--text-tertiary); margin-bottom: var(--space-md); }
+
+        /* Insights Card */
+        .insights-card { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: var(--space-xl); }
+        .insight-item { display: flex; gap: var(--space-md); padding: var(--space-md) 0; border-bottom: 1px solid var(--border-subtle); }
+        .insight-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .insight-item:first-child { padding-top: 0; }
+        .insight-icon { width: 32px; height: 32px; background: var(--unknown-subtle); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--unknown); }
+        .insight-icon svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .insight-content { flex: 1; }
+        .insight-text { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+        .insight-highlight { color: var(--sage); font-weight: 600; }
+        .insight-actions { display: flex; align-items: center; gap: var(--space-sm); margin-top: var(--space-sm); flex-wrap: wrap; }
+        .insight-btn { padding: 6px 14px; background: var(--sage-subtle); border: 1px solid var(--sage-muted); border-radius: var(--radius-sm); font-family: inherit; font-size: 12px; font-weight: 500; color: var(--sage); cursor: pointer; transition: all var(--transition-fast); }
+        .insight-btn:hover { background: var(--sage); border-color: var(--sage); color: white; }
+        .insight-btn:active { transform: scale(0.96); }
+        .resonate-group { display: flex; align-items: center; gap: var(--space-xs); margin-left: auto; }
+        .resonate-label { font-size: 12px; color: var(--text-muted); margin-right: 4px; }
+        .resonate-btn { padding: 4px 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); font-family: inherit; font-size: 11px; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); }
+        .resonate-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .resonate-btn:active { transform: scale(0.96); }
+        .resonate-btn.yes:hover, .resonate-btn.yes.active { background: var(--resource-subtle); border-color: var(--resource); color: var(--resource); }
+        .resonate-btn.no:hover, .resonate-btn.no.active { background: var(--constraint-subtle); border-color: var(--constraint); color: var(--constraint); }
+
+        /* Threads Grid */
+        .threads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
+        @media (max-width: 850px) { .threads-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 550px) { .threads-grid { grid-template-columns: 1fr; } }
+        .thread-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: var(--space-lg); display: flex; flex-direction: column; min-height: 160px; transition: all var(--transition-smooth); cursor: pointer; }
+        .thread-card:hover { border-color: var(--sage-muted); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); }
+        .thread-card:active { transform: translateY(0); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .thread-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: var(--space-sm); }
+        .thread-icon { width: 28px; height: 28px; background: var(--sage-subtle); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--sage); }
+        .thread-icon svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .thread-bookmark { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); }
+        .thread-bookmark:hover { color: var(--sage); transform: scale(1.1); }
+        .thread-bookmark:active { transform: scale(0.9); }
+        .thread-bookmark.active { color: var(--sage); }
+        .thread-bookmark.active svg { fill: var(--sage); }
+        .thread-bookmark svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .thread-text { font-size: 14px; font-weight: 500; color: var(--text-primary); line-height: 1.5; flex: 1; }
+        .thread-action { display: flex; align-items: center; gap: 4px; margin-top: var(--space-md); font-size: 12px; font-weight: 500; color: var(--sage); }
+
+        /* Connections */
+        .connections-card { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: var(--space-xl); }
+        .connection-visual { display: flex; align-items: center; justify-content: center; gap: var(--space-sm); padding: var(--space-lg) 0; margin-bottom: var(--space-lg); flex-wrap: wrap; }
+        .connection-node { padding: var(--space-sm) var(--space-md); background: var(--bg-base); border: 1px solid var(--border-default); border-radius: var(--radius-md); font-size: 12px; font-weight: 500; color: var(--text-secondary); text-align: center; max-width: 120px; }
+        .connection-line { width: 40px; height: 2px; background: var(--sage-muted); position: relative; }
+        .connection-line::after { content: ''; position: absolute; right: 0; top: -3px; width: 8px; height: 8px; background: var(--sage); border-radius: 50%; }
+        .connection-insight { background: var(--bg-base); border-radius: var(--radius-md); padding: var(--space-md); margin-bottom: var(--space-md); }
+        .connection-insight-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-tertiary); margin-bottom: var(--space-xs); }
+        .connection-insight-text { font-size: 14px; color: var(--text-primary); line-height: 1.6; }
+        .connection-action { display: flex; justify-content: center; gap: var(--space-sm); }
+        .connection-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; background: var(--sage-subtle); border: 1px solid var(--sage-muted); border-radius: var(--radius-md); font-family: inherit; font-size: 13px; font-weight: 500; color: var(--sage); cursor: pointer; transition: all var(--transition-fast); }
+        .connection-btn:hover { background: var(--sage); border-color: var(--sage); color: white; }
+        .connection-btn:active { transform: scale(0.97); }
+        .connection-btn.secondary { background: transparent; border-color: var(--border-default); color: var(--text-secondary); }
+        .connection-btn.secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .connection-btn.secondary:active { transform: scale(0.97); }
+
+        /* Unexplored */
+        .unexplored-card { background: var(--bg-elevated); border-radius: var(--radius-lg); padding: var(--space-xl); }
+        .unexplored-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+        .unexplored-item { display: flex; align-items: center; justify-content: space-between; padding: var(--space-md); background: var(--bg-base); border-radius: var(--radius-md); transition: all var(--transition-fast); }
+        .unexplored-item:hover { background: var(--bg-hover); }
+        .unexplored-content { display: flex; align-items: center; gap: var(--space-sm); flex: 1; }
+        .unexplored-dot { width: 8px; height: 8px; background: var(--unknown); border-radius: 50%; flex-shrink: 0; }
+        .unexplored-text { font-size: 14px; color: var(--text-primary); }
+        .unexplored-actions { display: flex; align-items: center; gap: var(--space-xs); }
+        .unexplored-btn { padding: 6px 14px; background: var(--sage-subtle); border: 1px solid var(--sage-muted); border-radius: var(--radius-sm); font-family: inherit; font-size: 12px; font-weight: 500; color: var(--sage); cursor: pointer; transition: all var(--transition-fast); }
+        .unexplored-btn:hover { background: var(--sage); border-color: var(--sage); color: white; }
+        .unexplored-btn:active { transform: scale(0.96); }
+        .priority-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: transparent; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); }
+        .priority-btn:hover { background: var(--unknown-subtle); border-color: var(--unknown); color: var(--unknown); transform: scale(1.05); }
+        .priority-btn:active { transform: scale(0.95); }
+        .priority-btn.active { background: var(--unknown-subtle); border-color: var(--unknown); color: var(--unknown); }
+        .priority-btn.active svg { fill: var(--unknown); }
+        .priority-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+        /* Patterns */
+        .patterns-card { background: var(--bg-elevated); border-radius: var(--radius-lg); overflow: hidden; }
+        .patterns-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); }
+        .patterns-tab { flex: 1; padding: var(--space-md); background: transparent; border: none; font-family: inherit; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); position: relative; }
+        .patterns-tab:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .patterns-tab:active { background: var(--bg-surface); }
+        .patterns-tab.active { color: var(--sage); }
+        .patterns-tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: var(--sage); }
+        .patterns-tab-count { display: inline-block; padding: 2px 6px; background: var(--bg-hover); border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-left: 6px; }
+        .patterns-tab.active .patterns-tab-count { background: var(--sage-subtle); color: var(--sage); }
+        .patterns-content { padding: var(--space-lg); }
+        .pattern-item { display: flex; gap: var(--space-sm); padding: var(--space-md); background: var(--bg-base); border-radius: var(--radius-md); margin-bottom: var(--space-sm); cursor: pointer; transition: all var(--transition-fast); }
+        .pattern-item:last-child { margin-bottom: 0; }
+        .pattern-item:hover { background: var(--bg-hover); }
+        .pattern-indicator { width: 4px; border-radius: 2px; flex-shrink: 0; align-self: stretch; }
+        .pattern-indicator.constraint { background: var(--constraint); }
+        .pattern-indicator.resource { background: var(--resource); }
+        .pattern-indicator.blindspot { background: var(--unknown); }
+        .pattern-indicator.shift { background: var(--sage); }
+        .pattern-body { flex: 1; min-width: 0; }
+        .pattern-title { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+        .pattern-meta { font-size: 12px; color: var(--text-tertiary); }
+        .pattern-type { display: inline-block; padding: 2px 8px; background: var(--bg-hover); border-radius: 100px; font-size: 11px; color: var(--text-muted); margin-right: 8px; }
+        .pattern-arrow { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; align-self: center; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+        @media (max-width: 768px) {
+            .nav-rail { width: 56px; }
+            .nav-item::after { display: none; }
+            .page-header { padding: var(--space-md) var(--space-lg); flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
+            .explore-scroll { padding: var(--space-lg); }
+            .explore-container { max-width: 100%; }
+            .insight-actions { flex-wrap: wrap; }
+            .resonate-group { margin-left: 0; margin-top: var(--space-xs); width: 100%; }
+            .threads-grid { flex-direction: column; }
+            .thread-card { min-width: 100%; }
+            .connections-grid { grid-template-columns: 1fr; }
+            .insights-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .nav-rail { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 64px; flex-direction: row; justify-content: space-around; padding: 0; border-right: none; border-top: 1px solid var(--border-subtle); }
+            .nav-logo { display: none; }
+            .nav-items { flex-direction: row; width: 100%; justify-content: space-around; }
+            .nav-bottom { margin-top: 0; }
+            .main-content { padding-bottom: 64px; }
+            .explore-scroll { padding: var(--space-md); }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"><div class="toast-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span id="toastMessage">Saved</span></div>
+
+    <div class="app">
+        <nav class="nav-rail">
+            <a href="orivya-app-v10.html" class="nav-logo"><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></a>
+            <div class="nav-items">
+                <a href="orivya-app-v10.html" class="nav-item" data-tooltip="Chat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></a>
+                <a href="orivya-explore-v5.html" class="nav-item active" data-tooltip="Explore"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></a>
+                <a href="orivya-library-v7.html" class="nav-item" data-tooltip="Library"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></a>
+            </div>
+            <div class="nav-bottom">
+                <a href="orivya-profile-v1.html" class="nav-item" data-tooltip="Profile"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+                <a href="orivya-settings-v1.html" class="nav-item" data-tooltip="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1 class="page-title">Explore</h1>
+                    <p class="page-subtitle">Review what's surfacing and prioritize what matters</p>
+                </div>
+            </header>
+
+            <div class="explore-scroll">
+                <div class="explore-container">
+                    <!-- This Week's Insights -->
+                    <section class="section">
+                        <div class="section-header"><span class="section-label">This Week's Insights</span></div>
+                        <div class="insights-card">
+                            <div class="insight-item">
+                                <div class="insight-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                                <div class="insight-content">
+                                    <div class="insight-text">You've mentioned <span class="insight-highlight">time constraints 8 times</span> but haven't explored what's actually consuming your time or whether it's negotiable.</div>
+                                    <div class="insight-actions">
+                                        <button class="insight-btn" onclick="exploreInChat('time constraints')">Explore this →</button>
+                                        <button class="insight-btn" style="background:transparent;border-color:var(--border-default);color:var(--text-secondary);" onclick="saveToLibrary('insight')">Save</button>
+                                        <div class="resonate-group"><span class="resonate-label">Resonates?</span><button class="resonate-btn yes" onclick="markResonate(this, true)">Yes</button><button class="resonate-btn no" onclick="markResonate(this, false)">Not quite</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="insight-item">
+                                <div class="insight-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                                <div class="insight-content">
+                                    <div class="insight-text">A pattern is emerging: you <span class="insight-highlight">defer to others before acting on your own instincts</span>. This has appeared in 4 sessions.</div>
+                                    <div class="insight-actions">
+                                        <button class="insight-btn" onclick="exploreInChat('deferring to others')">Explore this →</button>
+                                        <button class="insight-btn" style="background:transparent;border-color:var(--border-default);color:var(--text-secondary);" onclick="saveToLibrary('insight')">Save</button>
+                                        <div class="resonate-group"><span class="resonate-label">Resonates?</span><button class="resonate-btn yes" onclick="markResonate(this, true)">Yes</button><button class="resonate-btn no" onclick="markResonate(this, false)">Not quite</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="insight-item">
+                                <div class="insight-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+                                <div class="insight-content">
+                                    <div class="insight-text">You talk about <span class="insight-highlight">freedom</span> frequently but haven't defined what that actually means to you in concrete terms.</div>
+                                    <div class="insight-actions">
+                                        <button class="insight-btn" onclick="exploreInChat('defining freedom')">Explore this →</button>
+                                        <button class="insight-btn" style="background:transparent;border-color:var(--border-default);color:var(--text-secondary);" onclick="saveToLibrary('insight')">Save</button>
+                                        <div class="resonate-group"><span class="resonate-label">Resonates?</span><button class="resonate-btn yes" onclick="markResonate(this, true)">Yes</button><button class="resonate-btn no" onclick="markResonate(this, false)">Not quite</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Threads to Explore -->
+                    <section class="section">
+                        <div class="section-header"><span class="section-label">Threads to Explore</span></div>
+                        <p class="section-description">Conversation starters based on your patterns</p>
+                        <div class="threads-grid">
+                            <div class="thread-card" onclick="startThread('What would change if you had half the responsibilities?')">
+                                <div class="thread-header"><div class="thread-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><button class="thread-bookmark" onclick="event.stopPropagation(); toggleBookmark(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>
+                                <div class="thread-text">"What would change if you had half the responsibilities you currently have?"</div>
+                                <div class="thread-action">Start conversation →</div>
+                            </div>
+                            <div class="thread-card" onclick="startThread('What does enough actually look like to you?')">
+                                <div class="thread-header"><div class="thread-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><button class="thread-bookmark" onclick="event.stopPropagation(); toggleBookmark(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>
+                                <div class="thread-text">"What does 'enough' actually look like to you? When would you know you've arrived?"</div>
+                                <div class="thread-action">Start conversation →</div>
+                            </div>
+                            <div class="thread-card" onclick="startThread('What are you afraid would happen if you tried?')">
+                                <div class="thread-header"><div class="thread-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><button class="thread-bookmark" onclick="event.stopPropagation(); toggleBookmark(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>
+                                <div class="thread-text">"What are you afraid would happen if you actually tried? What's the realistic worst case?"</div>
+                                <div class="thread-action">Start conversation →</div>
+                            </div>
+                            <div class="thread-card" onclick="startThread('If your manager said yes tomorrow, what would you do first?')">
+                                <div class="thread-header"><div class="thread-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><button class="thread-bookmark" onclick="event.stopPropagation(); toggleBookmark(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>
+                                <div class="thread-text">"If your manager said yes to flexibility tomorrow, what would you do first?"</div>
+                                <div class="thread-action">Start conversation →</div>
+                            </div>
+                            <div class="thread-card" onclick="startThread('Who has made a transition like yours?')">
+                                <div class="thread-header"><div class="thread-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><button class="thread-bookmark" onclick="event.stopPropagation(); toggleBookmark(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>
+                                <div class="thread-text">"Who has made a transition like the one you want? What can you learn from them?"</div>
+                                <div class="thread-action">Start conversation →</div>
+                            </div>
+                            <div class="thread-card" onclick="startThread('What influences your choices from childhood?')">
+                                <div class="thread-header"><div class="thread-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><button class="thread-bookmark" onclick="event.stopPropagation(); toggleBookmark(this)"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button></div>
+                                <div class="thread-text">"You mentioned your parents' career paths. How does that influence your own choices?"</div>
+                                <div class="thread-action">Start conversation →</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Connections -->
+                    <section class="section">
+                        <div class="section-header"><span class="section-label">Connections</span></div>
+                        <p class="section-description">Patterns that might be related</p>
+                        <div class="connections-card">
+                            <div class="connection-visual">
+                                <div class="connection-node">Time consumed by work</div>
+                                <div class="connection-line"></div>
+                                <div class="connection-node">Waiting for certainty</div>
+                                <div class="connection-line"></div>
+                                <div class="connection-node">Deferring to others</div>
+                            </div>
+                            <div class="connection-insight">
+                                <div class="connection-insight-label">Observation</div>
+                                <div class="connection-insight-text">These patterns share a common thread: you may be treating negotiable constraints as fixed. The time issue, the certainty seeking, and the deferring pattern all suggest decisions are being delayed until external conditions change — but those conditions might already be more flexible than assumed.</div>
+                            </div>
+                            <div class="connection-action">
+                                <button class="connection-btn" onclick="exploreInChat('connection between patterns')">Explore in chat →</button>
+                                <button class="connection-btn secondary" onclick="saveToLibrary('connection')">Save to Library</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Unexplored -->
+                    <section class="section">
+                        <div class="section-header"><span class="section-label">Unexplored</span></div>
+                        <p class="section-description">Areas you haven't touched yet</p>
+                        <div class="unexplored-card">
+                            <div class="unexplored-list">
+                                <div class="unexplored-item">
+                                    <div class="unexplored-content"><div class="unexplored-dot"></div><div class="unexplored-text">Your relationship with risk — you mention avoiding it but haven't explored why</div></div>
+                                    <div class="unexplored-actions"><button class="priority-btn" onclick="togglePriority(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button class="unexplored-btn" onclick="startThread('Your relationship with risk')">Explore →</button></div>
+                                </div>
+                                <div class="unexplored-item">
+                                    <div class="unexplored-content"><div class="unexplored-dot"></div><div class="unexplored-text">What success actually represents to you beyond external markers</div></div>
+                                    <div class="unexplored-actions"><button class="priority-btn" onclick="togglePriority(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button class="unexplored-btn" onclick="startThread('What success means to you')">Explore →</button></div>
+                                </div>
+                                <div class="unexplored-item">
+                                    <div class="unexplored-content"><div class="unexplored-dot"></div><div class="unexplored-text">What you'd do if everything worked out — you've never discussed the upside</div></div>
+                                    <div class="unexplored-actions"><button class="priority-btn" onclick="togglePriority(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button><button class="unexplored-btn" onclick="startThread('If everything worked out')">Explore →</button></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- All Patterns -->
+                    <section class="section">
+                        <div class="section-header"><span class="section-label">All Patterns</span></div>
+                        <div class="patterns-card">
+                            <div class="patterns-tabs">
+                                <button class="patterns-tab active" onclick="switchTab(this, 'active')">Active<span class="patterns-tab-count">5</span></button>
+                                <button class="patterns-tab" onclick="switchTab(this, 'explored')">Explored<span class="patterns-tab-count">3</span></button>
+                                <button class="patterns-tab" onclick="switchTab(this, 'closed')">Closed<span class="patterns-tab-count">2</span></button>
+                            </div>
+                            <div class="patterns-content" id="patternsContent">
+                                <div id="activePatterns">
+                                    <div class="pattern-item" onclick="openPatternInLibrary('time-constraint')"><div class="pattern-indicator constraint"></div><div class="pattern-body"><div class="pattern-title">Time consumed by primary work</div><div class="pattern-meta"><span class="pattern-type">Constraint</span>8 sessions · First seen Feb 12</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                    <div class="pattern-item" onclick="openPatternInLibrary('certainty')"><div class="pattern-indicator blindspot"></div><div class="pattern-body"><div class="pattern-title">Seeking certainty before acting</div><div class="pattern-meta"><span class="pattern-type">Observation</span>6 sessions · First seen Feb 15</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                    <div class="pattern-item" onclick="openPatternInLibrary('deferring')"><div class="pattern-indicator blindspot"></div><div class="pattern-body"><div class="pattern-title">Deferring to others before acting</div><div class="pattern-meta"><span class="pattern-type">Observation</span>4 sessions · Surfaced Feb 25</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                    <div class="pattern-item" onclick="openPatternInLibrary('skills')"><div class="pattern-indicator resource"></div><div class="pattern-body"><div class="pattern-title">Strong analytical and problem-solving skills</div><div class="pattern-meta"><span class="pattern-type">Resource</span>5 sessions · First seen Feb 20</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                    <div class="pattern-item" onclick="openPatternInLibrary('self-trust')"><div class="pattern-indicator shift"></div><div class="pattern-body"><div class="pattern-title">Building self-trust → Acting on instincts</div><div class="pattern-meta"><span class="pattern-type">Shift</span>3 sessions · Currently active</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                </div>
+                                <div id="exploredPatterns" style="display: none;">
+                                    <div class="pattern-item" onclick="openPatternInLibrary('network')"><div class="pattern-indicator resource"></div><div class="pattern-body"><div class="pattern-title">Network of supportive people</div><div class="pattern-meta"><span class="pattern-type">Resource</span>Explored Mar 10</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                    <div class="pattern-item" onclick="openPatternInLibrary('energy')"><div class="pattern-indicator constraint"></div><div class="pattern-body"><div class="pattern-title">Energy depleted by evening</div><div class="pattern-meta"><span class="pattern-type">Constraint</span>Explored Mar 8</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                </div>
+                                <div id="closedPatterns" style="display: none;">
+                                    <div class="pattern-item" onclick="openPatternInLibrary('team')"><div class="pattern-indicator blindspot"></div><div class="pattern-body"><div class="pattern-title">Whether team would support changes</div><div class="pattern-meta"><span class="pattern-type">Observation</span>Closed Mar 10 — "Team was supportive"</div></div><svg class="pattern-arrow" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showToast(message) { const toast = document.getElementById('toast'); document.getElementById('toastMessage').textContent = message; toast.classList.add('visible'); setTimeout(() => toast.classList.remove('visible'), 2500); }
+        
+        // Resonance feedback
+        function markResonate(btn, resonates) { const group = btn.parentElement; group.querySelectorAll('.resonate-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); showToast(resonates ? 'Thanks for the feedback!' : "Noted — we'll refine this"); }
+        
+        // Bookmark threads
+        function toggleBookmark(btn) { btn.classList.toggle('active'); showToast(btn.classList.contains('active') ? 'Saved to Library' : 'Removed from Library'); }
+        
+        // Priority markers
+        function togglePriority(btn) { btn.classList.toggle('active'); showToast(btn.classList.contains('active') ? 'Marked as priority' : 'Priority removed'); }
+        
+        // Tab switching
+        function switchTab(tab, tabName) { document.querySelectorAll('.patterns-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.getElementById('activePatterns').style.display = tabName === 'active' ? 'block' : 'none'; document.getElementById('exploredPatterns').style.display = tabName === 'explored' ? 'block' : 'none'; document.getElementById('closedPatterns').style.display = tabName === 'closed' ? 'block' : 'none'; }
+        
+        // Navigation to Chat
+        function startThread(topic) { showToast('Starting conversation...'); setTimeout(() => { window.location.href = 'orivya-app-v10.html?thread=' + encodeURIComponent(topic); }, 500); }
+        
+        function exploreInChat(topic) { showToast('Opening in chat...'); setTimeout(() => { window.location.href = 'orivya-app-v10.html?explore=' + encodeURIComponent(topic); }, 500); }
+        
+        // Save to Library
+        function saveToLibrary(type) { showToast('Saved to Library'); }
+        
+        // Open pattern in Library
+        function openPatternInLibrary(id) { showToast('Opening in Library...'); setTimeout(() => { window.location.href = 'orivya-library-v7.html#pattern-' + id; }, 500); }
+    </script>
+</body>
+</html>

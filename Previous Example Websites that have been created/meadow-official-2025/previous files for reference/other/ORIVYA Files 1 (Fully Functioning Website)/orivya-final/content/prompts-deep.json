@@ -1,0 +1,463 @@
+{
+  "version": "1.0.0",
+  "description": "Deep reflection prompts for meaningful self-exploration",
+  "total_prompts": 78,
+  "usage": "Show in prompt library, daily prompt rotation, guided reflection flow",
+  "categories": [
+    {
+      "id": "work-career",
+      "name": "Work & Career",
+      "icon": "briefcase",
+      "description": "Your relationship with work",
+      "prompts": [
+        {
+          "id": "work-01",
+          "text": "What would you do differently at work if you knew no one was watching?",
+          "depth": "medium"
+        },
+        {
+          "id": "work-02",
+          "text": "What's the gap between how you present yourself professionally and who you actually are?",
+          "depth": "deep"
+        },
+        {
+          "id": "work-03",
+          "text": "What would you need to believe about yourself to ask for what you deserve?",
+          "depth": "deep"
+        },
+        {
+          "id": "work-04",
+          "text": "What's a professional risk you've been avoiding — and what's really holding you back?",
+          "depth": "medium"
+        },
+        {
+          "id": "work-05",
+          "text": "If your career is a story, what chapter are you in right now?",
+          "depth": "medium"
+        },
+        {
+          "id": "work-06",
+          "text": "What parts of your work feel like you? What parts feel like performance?",
+          "depth": "deep"
+        },
+        {
+          "id": "work-07",
+          "text": "What would 'enough' look like in your career?",
+          "depth": "deep"
+        },
+        {
+          "id": "work-08",
+          "text": "What are you pretending is fine about your job that isn't?",
+          "depth": "medium"
+        },
+        {
+          "id": "work-09",
+          "text": "If money weren't a factor, how would your relationship with work change?",
+          "depth": "medium"
+        },
+        {
+          "id": "work-10",
+          "text": "What's a boundary you've been meaning to set at work?",
+          "depth": "light"
+        },
+        {
+          "id": "work-11",
+          "text": "Where in your work are you performing someone else's version of success?",
+          "depth": "deep"
+        },
+        {
+          "id": "work-12",
+          "text": "What would your younger self think of your career choices?",
+          "depth": "medium"
+        },
+        {
+          "id": "work-13",
+          "text": "What's the hardest part about your job that you don't talk about?",
+          "depth": "medium"
+        }
+      ]
+    },
+    {
+      "id": "relationships",
+      "name": "Relationships",
+      "icon": "heart",
+      "description": "Connection with others",
+      "prompts": [
+        {
+          "id": "rel-01",
+          "text": "What do you need from the people in your life that you're afraid to ask for?",
+          "depth": "deep"
+        },
+        {
+          "id": "rel-02",
+          "text": "Who do you become around certain people, and why?",
+          "depth": "deep"
+        },
+        {
+          "id": "rel-03",
+          "text": "What conversation have you been avoiding, and what makes it hard to have?",
+          "depth": "medium"
+        },
+        {
+          "id": "rel-04",
+          "text": "What's the difference between how you want to be loved and how you are loved?",
+          "depth": "deep"
+        },
+        {
+          "id": "rel-05",
+          "text": "What's a relationship pattern you keep repeating?",
+          "depth": "deep"
+        },
+        {
+          "id": "rel-06",
+          "text": "What would change if you stopped trying to be understood and focused on understanding?",
+          "depth": "medium"
+        },
+        {
+          "id": "rel-07",
+          "text": "What do you give in relationships that you wish you'd receive?",
+          "depth": "medium"
+        },
+        {
+          "id": "rel-08",
+          "text": "What's something you've never told someone close to you?",
+          "depth": "deep"
+        },
+        {
+          "id": "rel-09",
+          "text": "Who do you miss, and what do you miss about them?",
+          "depth": "medium"
+        },
+        {
+          "id": "rel-10",
+          "text": "What relationship needs more attention right now?",
+          "depth": "light"
+        },
+        {
+          "id": "rel-11",
+          "text": "What's a boundary you need to set with someone you love?",
+          "depth": "medium"
+        },
+        {
+          "id": "rel-12",
+          "text": "When do you feel most seen by the people in your life?",
+          "depth": "medium"
+        },
+        {
+          "id": "rel-13",
+          "text": "What's something you wish you could say to someone who's no longer in your life?",
+          "depth": "deep"
+        }
+      ]
+    },
+    {
+      "id": "identity-self",
+      "name": "Identity & Self",
+      "icon": "user",
+      "description": "Who you are and who you're becoming",
+      "prompts": [
+        {
+          "id": "self-01",
+          "text": "What part of yourself are you still trying to prove?",
+          "depth": "deep"
+        },
+        {
+          "id": "self-02",
+          "text": "What would you do if you stopped comparing yourself to others?",
+          "depth": "medium"
+        },
+        {
+          "id": "self-03",
+          "text": "What's a belief about yourself that's no longer serving you?",
+          "depth": "deep"
+        },
+        {
+          "id": "self-04",
+          "text": "What's something you know to be true about yourself that others might not see?",
+          "depth": "medium"
+        },
+        {
+          "id": "self-05",
+          "text": "What permission do you keep almost giving yourself?",
+          "depth": "deep"
+        },
+        {
+          "id": "self-06",
+          "text": "What are you outgrowing?",
+          "depth": "medium"
+        },
+        {
+          "id": "self-07",
+          "text": "What would change if you treated yourself the way you treat people you love?",
+          "depth": "deep"
+        },
+        {
+          "id": "self-08",
+          "text": "What's a part of yourself you've hidden for too long?",
+          "depth": "deep"
+        },
+        {
+          "id": "self-09",
+          "text": "What would you do if you knew you couldn't fail — and what does that tell you?",
+          "depth": "medium"
+        },
+        {
+          "id": "self-10",
+          "text": "What's the story you've been telling yourself that might not be true?",
+          "depth": "deep"
+        },
+        {
+          "id": "self-11",
+          "text": "What are you most proud of that no one else knows about?",
+          "depth": "medium"
+        },
+        {
+          "id": "self-12",
+          "text": "What would feel different if you fully accepted yourself as you are today?",
+          "depth": "deep"
+        },
+        {
+          "id": "self-13",
+          "text": "What's a version of yourself you're afraid to let go of?",
+          "depth": "deep"
+        }
+      ]
+    },
+    {
+      "id": "values-meaning",
+      "name": "Values & Meaning",
+      "icon": "compass",
+      "description": "What matters to you",
+      "prompts": [
+        {
+          "id": "values-01",
+          "text": "What does 'enough' mean to you?",
+          "depth": "deep"
+        },
+        {
+          "id": "values-02",
+          "text": "What's something you value that you don't make time for?",
+          "depth": "medium"
+        },
+        {
+          "id": "values-03",
+          "text": "What would your life look like if you lived by your values more consistently?",
+          "depth": "deep"
+        },
+        {
+          "id": "values-04",
+          "text": "What's worth sacrificing for?",
+          "depth": "deep"
+        },
+        {
+          "id": "values-05",
+          "text": "What would you want your life to mean?",
+          "depth": "deep"
+        },
+        {
+          "id": "values-06",
+          "text": "What's something you believe that goes against what others expect of you?",
+          "depth": "medium"
+        },
+        {
+          "id": "values-07",
+          "text": "What does a good day look like — really?",
+          "depth": "light"
+        },
+        {
+          "id": "values-08",
+          "text": "What have you learned about yourself in the past year?",
+          "depth": "medium"
+        },
+        {
+          "id": "values-09",
+          "text": "What would you regret not doing?",
+          "depth": "medium"
+        },
+        {
+          "id": "values-10",
+          "text": "What's a value you compromise on more than you'd like to?",
+          "depth": "medium"
+        },
+        {
+          "id": "values-11",
+          "text": "What do you want to be remembered for?",
+          "depth": "deep"
+        },
+        {
+          "id": "values-12",
+          "text": "What's worth being uncomfortable for?",
+          "depth": "medium"
+        },
+        {
+          "id": "values-13",
+          "text": "What brings you peace?",
+          "depth": "light"
+        }
+      ]
+    },
+    {
+      "id": "fear-vulnerability",
+      "name": "Fear & Vulnerability",
+      "icon": "shield",
+      "description": "What scares you and what it means",
+      "prompts": [
+        {
+          "id": "fear-01",
+          "text": "What's a fear that's running your life more than you'd like to admit?",
+          "depth": "deep"
+        },
+        {
+          "id": "fear-02",
+          "text": "What would you do if fear weren't a factor?",
+          "depth": "medium"
+        },
+        {
+          "id": "fear-03",
+          "text": "What are you protecting yourself from — and is it working?",
+          "depth": "deep"
+        },
+        {
+          "id": "fear-04",
+          "text": "What's the worst thing that could happen if you were fully honest?",
+          "depth": "deep"
+        },
+        {
+          "id": "fear-05",
+          "text": "What's a vulnerability you've turned into strength?",
+          "depth": "medium"
+        },
+        {
+          "id": "fear-06",
+          "text": "What would you attempt if you knew you could recover from failure?",
+          "depth": "medium"
+        },
+        {
+          "id": "fear-07",
+          "text": "What's the fear beneath your fear?",
+          "depth": "deep"
+        },
+        {
+          "id": "fear-08",
+          "text": "What are you afraid to want?",
+          "depth": "deep"
+        },
+        {
+          "id": "fear-09",
+          "text": "What would feel different if you stopped protecting yourself?",
+          "depth": "deep"
+        },
+        {
+          "id": "fear-10",
+          "text": "What's a risk you're glad you took?",
+          "depth": "light"
+        },
+        {
+          "id": "fear-11",
+          "text": "What's keeping you from asking for help?",
+          "depth": "medium"
+        },
+        {
+          "id": "fear-12",
+          "text": "What would you do if you weren't afraid of judgment?",
+          "depth": "medium"
+        },
+        {
+          "id": "fear-13",
+          "text": "What's a fear you've been carrying since childhood?",
+          "depth": "deep"
+        }
+      ]
+    },
+    {
+      "id": "change-growth",
+      "name": "Change & Growth",
+      "icon": "trending-up",
+      "description": "How you're evolving",
+      "prompts": [
+        {
+          "id": "growth-01",
+          "text": "What change are you resisting?",
+          "depth": "medium"
+        },
+        {
+          "id": "growth-02",
+          "text": "What needs to end so something else can begin?",
+          "depth": "deep"
+        },
+        {
+          "id": "growth-03",
+          "text": "What's a pattern you want to break?",
+          "depth": "medium"
+        },
+        {
+          "id": "growth-04",
+          "text": "What would your future self thank you for doing today?",
+          "depth": "medium"
+        },
+        {
+          "id": "growth-05",
+          "text": "What's something you've been putting off that would change your life?",
+          "depth": "medium"
+        },
+        {
+          "id": "growth-06",
+          "text": "What's a difficult lesson you're currently learning?",
+          "depth": "medium"
+        },
+        {
+          "id": "growth-07",
+          "text": "What are you becoming?",
+          "depth": "deep"
+        },
+        {
+          "id": "growth-08",
+          "text": "What would you need to let go of to move forward?",
+          "depth": "deep"
+        },
+        {
+          "id": "growth-09",
+          "text": "What's the next version of yourself asking you to do?",
+          "depth": "deep"
+        },
+        {
+          "id": "growth-10",
+          "text": "What's a small change that could have a big impact?",
+          "depth": "light"
+        },
+        {
+          "id": "growth-11",
+          "text": "What would it look like to outgrow this chapter?",
+          "depth": "deep"
+        },
+        {
+          "id": "growth-12",
+          "text": "What habit is no longer serving you?",
+          "depth": "light"
+        },
+        {
+          "id": "growth-13",
+          "text": "What's a belief you need to update?",
+          "depth": "medium"
+        }
+      ]
+    }
+  ],
+  "depthLevels": {
+    "light": {
+      "name": "Light",
+      "description": "Quick reflection, surface exploration",
+      "estimatedTime": "2-5 minutes"
+    },
+    "medium": {
+      "name": "Medium",
+      "description": "Thoughtful exploration, some depth",
+      "estimatedTime": "5-10 minutes"
+    },
+    "deep": {
+      "name": "Deep",
+      "description": "Profound self-inquiry, requires time",
+      "estimatedTime": "10-20 minutes"
+    }
+  }
+}

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Account</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --error: #f87171;
+      --error-subtle: rgba(248, 113, 113, 0.1);
+      --success: #4ade80;
+      --success-subtle: rgba(74, 222, 128, 0.1);
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      
+      --z-sticky: 100;
+      
+      --header-height: 56px;
+      --tab-bar-height: 64px;
+      --content-max-width: 600px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    input { font-family: inherit; background: none; border: none; color: inherit; }
+    input:focus { outline: none; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    /* Header */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .page-header { padding: 0 var(--space-6); }
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .back-btn:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .back-btn svg { width: 22px; height: 22px; }
+    
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+    }
+    
+    /* Content */
+    .content {
+      padding: var(--space-6) var(--space-4);
+      padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom) + var(--space-8));
+    }
+    
+    @media (min-width: 768px) {
+      .content { padding: var(--space-8) var(--space-6); }
+    }
+    
+    .content-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    /* Profile Header */
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: var(--space-6) 0;
+      margin-bottom: var(--space-6);
+    }
+    
+    .avatar-wrapper {
+      position: relative;
+      margin-bottom: var(--space-4);
+    }
+    
+    .avatar {
+      width: 96px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+      border-radius: var(--radius-full);
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: white;
+    }
+    
+    .avatar-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface);
+      border: 2px solid var(--bg-base);
+      border-radius: var(--radius-full);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .avatar-edit:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .avatar-edit svg { width: 14px; height: 14px; }
+    
+    .profile-name {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .profile-email {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-4);
+    }
+    
+    .profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-full);
+    }
+    .profile-badge svg { width: 14px; height: 14px; }
+    
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-8);
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Section */
+    .section {
+      margin-bottom: var(--space-8);
+    }
+    .section:last-child { margin-bottom: 0; }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+      padding: 0 var(--space-1);
+    }
+    
+    .section-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    
+    /* Form Row */
+    .form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .form-row:last-child { border-bottom: none; }
+    
+    .form-row-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .form-row-value {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+    }
+    
+    .form-row-action {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      transition: color var(--transition-fast);
+    }
+    .form-row-action:hover { color: var(--sage-light); }
+    .form-row-action svg { width: 16px; height: 16px; }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 2px 8px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      border-radius: var(--radius-full);
+    }
+    .status-badge--verified {
+      color: var(--success);
+      background-color: var(--success-subtle);
+    }
+    .status-badge--pending {
+      color: #fbbf24;
+      background-color: rgba(251, 191, 36, 0.1);
+    }
+    .status-badge svg { width: 12px; height: 12px; }
+    
+    /* Subscription Card */
+    .subscription-card {
+      padding: var(--space-5);
+    }
+    
+    .subscription-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    
+    .subscription-plan {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .plan-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--sage-subtle) 0%, transparent 100%);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-md);
+    }
+    .plan-icon svg { width: 22px; height: 22px; color: var(--sage); }
+    
+    .plan-name {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .plan-status {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .subscription-upgrade {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .subscription-upgrade:hover { background-color: var(--sage-muted); }
+    .subscription-upgrade svg { width: 16px; height: 16px; }
+    
+    .subscription-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    
+    .feature-tag {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+    }
+    .feature-tag svg { width: 12px; height: 12px; color: var(--sage); }
+    
+    /* Connected Accounts */
+    .connected-account {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .connected-account:last-child { border-bottom: none; }
+    
+    .account-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+    }
+    .account-icon svg { width: 20px; height: 20px; }
+    .account-icon--google svg { color: #4285f4; }
+    .account-icon--apple svg { color: var(--text-primary); }
+    
+    .account-info { flex: 1; }
+    .account-name {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .account-status {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .account-action {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      transition: color var(--transition-fast);
+    }
+    .account-action:hover { color: var(--text-secondary); }
+    .account-action--connect { color: var(--sage); }
+    .account-action--connect:hover { color: var(--sage-light); }
+    
+    /* Danger Zone */
+    .danger-section {
+      padding: var(--space-5);
+    }
+    
+    .danger-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) 0;
+    }
+    .danger-item:first-child { padding-top: 0; }
+    .danger-item:last-child { padding-bottom: 0; }
+    
+    .danger-info h4 {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    .danger-info p {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .danger-btn {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .danger-btn--logout {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface-2);
+    }
+    .danger-btn--logout:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .danger-btn--delete {
+      color: var(--error);
+      background-color: var(--error-subtle);
+    }
+    .danger-btn--delete:hover { background-color: rgba(248, 113, 113, 0.15); }
+    
+    /* Tab Bar (Mobile) */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--tab-bar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background-color: var(--bg-elevated);
+      border-top: 1px solid var(--border-subtle);
+      padding-bottom: var(--safe-area-bottom);
+      z-index: var(--z-sticky);
+    }
+    @media (min-width: 1024px) { .tab-bar { display: none; } }
+    .tab-bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2);
+      color: var(--text-tertiary);
+      min-width: 64px;
+    }
+    .tab-bar-item.is-active { color: var(--sage); }
+    .tab-bar-item svg { width: 24px; height: 24px; }
+    .tab-bar-item span { font-size: var(--text-xs); font-weight: 500; }
+  </style>
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="back-btn" onclick="goBack()" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <h1 class="page-title">Account</h1>
+    </div>
+  </header>
+  
+  <!-- Content -->
+  <main class="content">
+    <div class="content-inner">
+      
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="avatar-wrapper">
+          <div class="avatar">JD</div>
+          <button class="avatar-edit" onclick="editAvatar()" aria-label="Edit photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </button>
+        </div>
+        <h2 class="profile-name">Jordan Davis</h2>
+        <p class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="670d081503060927021f060a170b024904080a">[email&#160;protected]</a></p>
+        <span class="profile-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+          </svg>
+          Pro Member
+        </span>
+      </div>
+      
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-value">47</div>
+          <div class="stat-label">Notes</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">8</div>
+          <div class="stat-label">Threads</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">23</div>
+          <div class="stat-label">Day streak</div>
+        </div>
+      </div>
+      
+      <!-- Personal Info -->
+      <section class="section">
+        <h3 class="section-title">Personal Information</h3>
+        <div class="section-card">
+          <div class="form-row">
+            <span class="form-row-label">Display name</span>
+            <div class="form-row-value">
+              <span>Jordan Davis</span>
+              <button class="form-row-action" onclick="editField('name')">Edit</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-row-label">Email</span>
+            <div class="form-row-value">
+              <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cfa5a0bdabaea18faab7aea2bfa3aae1aca0a2">[email&#160;protected]</a></span>
+              <span class="status-badge status-badge--verified">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Verified
+              </span>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-row-label">Password</span>
+            <div class="form-row-value">
+              <span>••••••••••••</span>
+              <button class="form-row-action" onclick="changePassword()">Change</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-row-label">Timezone</span>
+            <div class="form-row-value">
+              <span>America/New_York (EST)</span>
+              <button class="form-row-action" onclick="editField('timezone')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Subscription -->
+      <section class="section">
+        <h3 class="section-title">Subscription</h3>
+        <div class="section-card">
+          <div class="subscription-card">
+            <div class="subscription-header">
+              <div class="subscription-plan">
+                <div class="plan-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="plan-name">Orivya Pro</div>
+                  <div class="plan-status">Renews Dec 15, 2025</div>
+                </div>
+              </div>
+              <button class="subscription-upgrade" onclick="managePlan()">
+                Manage
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
+            </div>
+            <div class="subscription-features">
+              <span class="feature-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Unlimited notes
+              </span>
+              <span class="feature-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                AI insights
+              </span>
+              <span class="feature-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Data export
+              </span>
+              <span class="feature-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                Priority support
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Connected Accounts -->
+      <section class="section">
+        <h3 class="section-title">Connected Accounts</h3>
+        <div class="section-card">
+          <div class="connected-account">
+            <div class="account-icon account-icon--google">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+            </div>
+            <div class="account-info">
+              <div class="account-name">Google</div>
+              <div class="account-status"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="deb4b1acbabfb09eb9b3bfb7b2f0bdb1b3">[email&#160;protected]</a></div>
+            </div>
+            <button class="account-action" onclick="disconnectAccount('google')">Disconnect</button>
+          </div>
+          
+          <div class="connected-account">
+            <div class="account-icon account-icon--apple">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
+            </div>
+            <div class="account-info">
+              <div class="account-name">Apple</div>
+              <div class="account-status">Not connected</div>
+            </div>
+            <button class="account-action account-action--connect" onclick="connectAccount('apple')">Connect</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Danger Zone -->
+      <section class="section">
+        <h3 class="section-title">Account Actions</h3>
+        <div class="section-card">
+          <div class="danger-section">
+            <div class="danger-item">
+              <div class="danger-info">
+                <h4>Sign out</h4>
+                <p>Sign out of your account on this device</p>
+              </div>
+              <button class="danger-btn danger-btn--logout" onclick="logout()">Sign out</button>
+            </div>
+            <div class="danger-item">
+              <div class="danger-info">
+                <h4>Delete account</h4>
+                <p>Permanently delete your account and all data</p>
+              </div>
+              <button class="danger-btn danger-btn--delete" onclick="deleteAccount()">Delete</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+    </div>
+  </main>
+  
+  <!-- Tab Bar (Mobile) -->
+  <nav class="tab-bar">
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+      <span>Notes</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+      <span>Insights</span>
+    </a>
+    <a href="#" class="tab-bar-item is-active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+  
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    function goBack() { console.log('Going back'); }
+    function editAvatar() { console.log('Edit avatar'); }
+    function editField(field) { console.log('Edit:', field); }
+    function changePassword() { console.log('Change password'); }
+    fun

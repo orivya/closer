@@ -1,0 +1,269 @@
+/* ===========================================
+   ORIVYA DESIGN TOKENS
+   Version: 1.0.0
+   
+   This is the single source of truth for all 
+   design values in the ORIVYA application.
+   =========================================== */
+
+:root {
+  /* ===========================================
+     COLORS - Sage Palette
+     =========================================== */
+  --sage-50: #f4f7f5;
+  --sage-100: #e4ebe7;
+  --sage-200: #c9d7cf;
+  --sage-300: #a3bba9;
+  --sage-400: #7d9b8a;
+  --sage-500: #5f8170;
+  --sage-600: #4a6858;
+  --sage-700: #3d5448;
+  --sage-800: #33453c;
+  --sage-900: #2c3a33;
+  
+  /* Primary Sage - For actions and emphasis */
+  --sage: #7d9b8a;
+  --sage-light: #9bb3a7;
+  --sage-dark: #5f8170;
+  --sage-subtle: rgba(125, 155, 138, 0.08);
+  --sage-muted: rgba(125, 155, 138, 0.15);
+  --sage-glow: rgba(125, 155, 138, 0.3);
+  
+  /* ===========================================
+     BACKGROUNDS - Layered Depth System
+     From darkest (base) to lightest (active)
+     =========================================== */
+  --bg-base: #08080a;
+  --bg-elevated: #0e0e11;
+  --bg-surface: #141417;
+  --bg-surface-2: #1a1a1e;
+  --bg-hover: #1e1e23;
+  --bg-active: #252529;
+  
+  /* ===========================================
+     TEXT - Hierarchy System
+     Primary for headings, Secondary for body,
+     Tertiary for metadata, Muted for hints
+     =========================================== */
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #71717a;
+  --text-muted: #52525b;
+  --text-disabled: #3f3f46;
+  
+  /* ===========================================
+     BORDERS
+     =========================================== */
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --border-focus: var(--sage);
+  
+  /* ===========================================
+     SEMANTIC COLORS
+     =========================================== */
+  --success: #81c995;
+  --success-subtle: rgba(129, 201, 149, 0.15);
+  --error: #f87171;
+  --error-subtle: rgba(248, 113, 113, 0.15);
+  --warning: #fbbf24;
+  --warning-subtle: rgba(251, 191, 36, 0.15);
+  --info: #60a5fa;
+  --info-subtle: rgba(96, 165, 250, 0.15);
+  
+  /* ===========================================
+     TIME-OF-DAY THEMING
+     Subtle background temperature shifts
+     =========================================== */
+  --time-morning-tint: rgba(251, 191, 36, 0.02);
+  --time-afternoon-tint: rgba(255, 255, 255, 0);
+  --time-evening-tint: rgba(125, 155, 138, 0.02);
+  --time-night-tint: rgba(96, 165, 250, 0.01);
+  
+  /* Applied as overlay or background modifier */
+  --time-current-tint: var(--time-afternoon-tint);
+  
+  /* ===========================================
+     TYPOGRAPHY
+     =========================================== */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* Type Scale */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.8125rem;    /* 13px */
+  --text-base: 0.875rem;   /* 14px */
+  --text-md: 1rem;         /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.5rem;      /* 24px */
+  --text-3xl: 2rem;        /* 32px */
+  --text-4xl: 2.5rem;      /* 40px */
+  
+  /* Line Heights */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  
+  /* Letter Spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.05em;
+  
+  /* ===========================================
+     SPACING SCALE
+     Based on 4px grid
+     =========================================== */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  
+  /* ===========================================
+     BORDER RADIUS
+     =========================================== */
+  --radius-none: 0;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+  
+  /* ===========================================
+     SHADOWS
+     =========================================== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 20px var(--sage-glow);
+  --shadow-glow-lg: 0 0 40px var(--sage-glow);
+  
+  /* ===========================================
+     TRANSITIONS
+     =========================================== */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease-out;
+  --transition-slower: 400ms ease-out;
+  --transition-page: 300ms ease;
+  --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* ===========================================
+     LAYOUT DIMENSIONS
+     =========================================== */
+  --sidebar-collapsed: 72px;
+  --sidebar-expanded: 240px;
+  --header-height: 56px;
+  --header-height-desktop: 0px;
+  --tab-bar-height: 64px;
+  --list-panel-width: 360px;
+  --content-max-width: 720px;
+  --content-max-width-wide: 800px;
+  --modal-max-width: 760px;
+  --modal-max-width-sm: 420px;
+  --editor-max-width: 680px;
+  --aside-width: 340px;
+  
+  /* Safe Areas */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  
+  /* ===========================================
+     Z-INDEX SCALE
+     =========================================== */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-drawer: 300;
+  --z-modal: 400;
+  --z-modal-picker: 450;
+  --z-toast: 500;
+  --z-tooltip: 600;
+  
+  /* ===========================================
+     EDITOR-SPECIFIC TOKENS
+     For the "sanctuary" experience
+     =========================================== */
+  --editor-padding-mobile: var(--space-5);
+  --editor-padding-desktop: var(--space-10);
+  --editor-line-height: 1.75;
+  --editor-font-size: var(--text-md);
+  --editor-font-size-lg: var(--text-lg);
+  
+  /* Focus Mode */
+  --editor-focus-bg: var(--bg-base);
+  --editor-focus-vignette: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  
+  /* ===========================================
+     INSIGHT REVEAL TOKENS
+     For the "magical moment"
+     =========================================== */
+  --insight-bg: var(--bg-base);
+  --insight-text: var(--text-primary);
+  --insight-max-width: 560px;
+  --insight-padding: var(--space-10);
+}
+
+/* ===========================================
+   DARK MODE (Default - only mode for V1)
+   =========================================== */
+[data-theme="dark"],
+:root {
+  color-scheme: dark;
+}
+
+/* ===========================================
+   TIME-OF-DAY CLASSES
+   Apply to body or main container
+   =========================================== */
+.time-morning {
+  --time-current-tint: var(--time-morning-tint);
+}
+
+.time-afternoon {
+  --time-current-tint: var(--time-afternoon-tint);
+}
+
+.time-evening {
+  --time-current-tint: var(--time-evening-tint);
+}
+
+.time-night {
+  --time-current-tint: var(--time-night-tint);
+}
+
+/* ===========================================
+   RESPONSIVE BREAKPOINTS (Reference)
+   
+   Mobile:  < 768px
+   Tablet:  768px - 1023px
+   Desktop: >= 1024px
+   Wide:    >= 1440px
+   =========================================== */

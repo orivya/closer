@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Set the Space</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.3);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      --text-4xl: 2.25rem;
+      
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      --transition-slow: 400ms ease;
+      
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    
+    /* Ambient Background — Subtle glow for visual warmth */
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+    
+    .ambient.visible { opacity: 1; }
+    
+    .ambient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+    
+    .ambient-orb-1 {
+      width: 600px;
+      height: 600px;
+      background: var(--sage);
+      top: -200px;
+      left: -200px;
+      opacity: 0.06;
+      animation: drift-1 25s ease-in-out infinite;
+    }
+    
+    .ambient-orb-2 {
+      width: 400px;
+      height: 400px;
+      background: var(--sage-dark);
+      bottom: -100px;
+      right: -100px;
+      opacity: 0.05;
+      animation: drift-2 30s ease-in-out infinite;
+    }
+    
+    @keyframes drift-1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(60px, 40px); }
+    }
+    
+    @keyframes drift-2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-40px, -50px); }
+    }
+    
+    /* Main Container */
+    .arrival {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      min-height: 100dvh;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Steps Container */
+    .steps-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 420px;
+      width: 100%;
+    }
+    
+    .step.is-active {
+      display: flex;
+      animation: stepFadeIn 800ms ease forwards;
+    }
+    
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Step 1: Stillness Welcome */
+    .stillness-symbol {
+      width: 64px;
+      height: 64px;
+      margin-bottom: var(--space-10);
+      opacity: 0;
+      animation: symbolFadeIn 1200ms ease 400ms forwards;
+    }
+    
+    @keyframes symbolFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .stillness-symbol svg {
+      width: 100%;
+      height: 100%;
+      color: var(--sage);
+    }
+    
+    .arrival-title {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+      opacity: 0;
+      animation: textFadeIn 800ms ease 800ms forwards;
+    }
+    
+    @media (min-width: 768px) {
+      .arrival-title { font-size: var(--text-4xl); }
+    }
+    
+    .arrival-subtitle {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      opacity: 0;
+      animation: textFadeIn 800ms ease 1000ms forwards;
+    }
+    
+    @keyframes textFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Step 3: The Space */
+    .space-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      width: 100%;
+      text-align: left;
+    }
+    
+    .space-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+    
+    .space-desc {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--space-6);
+    }
+    
+    .space-features {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    
+    .space-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+    }
+    
+    .space-feature-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: var(--sage);
+      margin-top: 2px;
+    }
+    
+    .space-feature-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    /* Step 4: Begin */
+    .begin-greeting {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 400;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+    
+    @media (min-width: 768px) {
+      .begin-greeting { font-size: var(--text-3xl); }
+    }
+    
+    .begin-message {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: var(--space-8);
+    }
+    
+    .begin-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-8);
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+    
+    .begin-btn:hover {
+      background-color: var(--sage-dark);
+      transform: translateY(-1px);
+    }
+    
+    .begin-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    /* Name Step (Step 2) */
+    .name-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .name-subtitle {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-8);
+    }
+    
+    .name-input-wrapper {
+      width: 100%;
+      max-width: 280px;
+    }
+    
+    .name-input {
+      width: 100%;
+      padding: var(--space-4);
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
+      color: var(--text-primary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+    
+    .name-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .name-input:focus {
+      outline: none;
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px var(--sage-subtle);
+    }
+
+    /* Account Form (Step 4) */
+    .account-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .account-subtitle {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-8);
+    }
+    
+    .account-form {
+      width: 100%;
+      max-width: 320px;
+    }
+    
+    .form-group {
+      margin-bottom: var(--space-5);
+    }
+    
+    .form-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px var(--sage-subtle);
+    }
+    
+    .form-hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+
+    /* Footer */
+    .arrival-footer {
+      padding: var(--space-6) var(--space-8);
+      padding-bottom: calc(var(--space-6) + var(--safe-area-bottom));
+      display: flex;
+      justify-content: center;
+      gap: var(--space-4);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .footer-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+    
+    .footer-btn--secondary {
+      color: var(--text-secondary);
+      background-color: transparent;
+    }
+    
+    .footer-btn--secondary:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-surface);
+    }
+    
+    .footer-btn--primary {
+      color: white;
+      background-color: var(--sage);
+    }
+    
+    .footer-btn--primary:hover {
+      background-color: var(--sage-dark);
+    }
+    
+    .footer-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    /* Progress Dots */
+    .progress-dots {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      position: absolute;
+      top: var(--space-8);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    
+    .progress-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--bg-surface-2);
+      transition: all var(--transition-fast);
+    }
+    
+    .progress-dot.is-active {
+      width: 20px;
+      background-color: var(--sage);
+    }
+    
+    /* Utilities */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <!-- Ambient Background -->
+  <div class="ambient" id="ambient">
+    <div class="ambient-orb ambient-orb-1"></div>
+    <div class="ambient-orb ambient-orb-2"></div>
+  </div>
+  
+  <div class="arrival">
+    
+    <!-- Progress Dots -->
+    <div class="progress-dots">
+      <div class="progress-dot is-active" data-step="1"></div>
+      <div class="progress-dot" data-step="2"></div>
+      <div class="progress-dot" data-step="3"></div>
+      <div class="progress-dot" data-step="4"></div>
+      <div class="progress-dot" data-step="5"></div>
+    </div>
+    
+    <div class="steps-container">
+      
+      <!-- Step 1: Stillness Welcome -->
+      <div class="step is-active" data-step="1">
+        <div class="stillness-symbol">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="4"/>
+          </svg>
+        </div>
+        <h1 class="arrival-title">This is your quiet space.</h1>
+        <p class="arrival-subtitle">A place to think clearly, write freely, and notice what matters.</p>
+      </div>
+      
+      <!-- Step 2: Your Name (early - makes flow more personal) -->
+      <div class="step" data-step="2">
+        <h2 class="name-title">What should we call you?</h2>
+        <p class="name-subtitle">Just a first name is fine. It helps us personalize your space.</p>
+        <div class="name-input-wrapper">
+          <input 
+            type="text" 
+            class="name-input" 
+            id="userName" 
+            placeholder="Your first name"
+            autocomplete="given-name"
+            autofocus
+          >
+        </div>
+      </div>
+      
+      <!-- Step 3: The Space -->
+      <div class="step" data-step="3">
+        <div class="space-card">
+          <h2 class="space-title">Here's how this space works</h2>
+          <p class="space-desc">Orivya is simple. Write what's on your mind, and over time, it helps you see patterns you might not notice yourself.</p>
+          
+          <div class="space-features">
+            <div class="space-feature">
+              <svg class="space-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              <span class="space-feature-text"><strong>Write freely</strong> — Start with a prompt or a blank page. No judgment, no rules.</span>
+            </div>
+            <div class="space-feature">
+              <svg class="space-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="18" r="3"/>
+                <circle cx="6" cy="6" r="3"/>
+                <path d="M6 21V9a9 9 0 009 9"/>
+              </svg>
+              <span class="space-feature-text"><strong>Follow threads</strong> — Connected thoughts become threads you can return to.</span>
+            </div>
+            <div class="space-feature">
+              <svg class="space-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+              </svg>
+              <span class="space-feature-text"><strong>Discover insights</strong> — Orivya surfaces patterns and themes as you write.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step 4: Create Account (email & password only - name already asked) -->
+      <div class="step" data-step="4">
+        <h2 class="account-title">Almost there</h2>
+        <p class="account-subtitle">Create your account to save your notes securely.</p>
+        
+        <form class="account-form" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" for="userEmail">Your email</label>
+            <input 
+              type="email" 
+              id="userEmail" 
+              class="form-input" 
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="userPassword">Create a password</label>
+            <input 
+              type="password" 
+              id="userPassword" 
+              class="form-input" 
+              placeholder="At least 8 characters"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            >
+            <p class="form-hint">At least 8 characters.</p>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Step 5: Begin (personalized with name) -->
+      <div class="step" data-step="5">
+        <h2 class="begin-greeting" id="beginGreeting">Your space is ready.</h2>
+        <p class="begin-message">There's no right way to start. Just begin wherever you are.</p>
+        <button class="begin-btn" onclick="enterApp()">
+          Enter your space
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+      
+    </div>
+    
+    <!-- Footer Navigation -->
+    <div class="arrival-footer">
+      <button class="footer-btn footer-btn--secondary hidden" id="backBtn" onclick="prevStep()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Back
+      </button>
+      <button class="footer-btn footer-btn--primary" id="nextBtn" onclick="nextStep()">
+        Continue
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+    
+  </div>
+  
+  <script>
+    let currentStep = 1;
+    const totalSteps = 5;
+    let userName = '';
+    
+    function updateStep() {
+      // Hide all steps
+      document.querySelectorAll('.step').forEach(step => {
+        step.classList.remove('is-active');
+      });
+      
+      // Show current step
+      document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('is-active');
+      
+      // Update progress dots
+      document.querySelectorAll('.progress-dot').forEach(dot => {
+        const dotStep = parseInt(dot.dataset.step);
+        dot.classList.toggle('is-active', dotStep === currentStep);
+      });
+      
+      // Update buttons
+      const backBtn = document.getElementById('backBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      backBtn.classList.toggle('hidden', currentStep === 1);
+      
+      if (currentStep === totalSteps) {
+        nextBtn.classList.add('hidden');
+        // Personalize the greeting with name
+        const greeting = document.getElementById('beginGreeting');
+        if (userName) {
+          greeting.textContent = `Your space is ready, ${userName}.`;
+        }
+      } else {
+        nextBtn.classList.remove('hidden');
+        if (currentStep === 4) {
+          nextBtn.innerHTML = 'Create account <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+        } else {
+          nextBtn.innerHTML = 'Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+        }
+      }
+      
+      // Focus input on step 2
+      if (currentStep === 2) {
+        setTimeout(() => {
+          document.getElementById('userName').focus();
+        }, 100);
+      }
+    }
+    
+    function nextStep() {
+      // Validate name on step 2
+      if (currentStep === 2) {
+        const nameInput = document.getElementById('userName');
+        userName = nameInput.value.trim();
+        // Name is optional, but store it if provided
+      }
+      
+      // Validate account form on step 4
+      if (currentStep === 4) {
+        const email = document.getElementById('userEmail').value.trim();
+        const password = document.getElementById('userPassword').value;
+        
+        if (!email || password.length < 8) {
+          if (!email) document.getElementById('userEmail').focus();
+          else document.getElementById('userPassword').focus();
+          return;
+        }
+        
+        // Store user info (in production, this would be an API call)
+        console.log('Creating account for:', userName, email);
+      }
+      
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateStep();
+      }
+    }
+    
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStep();
+      }
+    }
+    
+    function enterApp() {
+      console.log('Entering app for user:', userName);
+      // Navigate to home dashboard
+      window.location.href = 'orivya-home-dashboard-v7.html';
+    }
+    
+    // Initialize
+    updateStep();
+    
+    // Show ambient background after brief delay
+    setTimeout(() => {
+      document.getElementById('ambient').classList.add('visible');
+    }, 300);
+  </script>
+</body>
+</html>

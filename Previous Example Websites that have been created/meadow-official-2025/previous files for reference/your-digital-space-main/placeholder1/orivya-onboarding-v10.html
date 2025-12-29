@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — Begin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a;
+            --sage-light: #9bb3a4;
+            --sage-dark: #6a8577;
+            --sage-glow: rgba(125, 155, 138, 0.5);
+            --sage-subtle: rgba(125, 155, 138, 0.08);
+            --bg-base: #08080a;
+            --bg-elevated: #0e0e11;
+            --bg-surface: #141417;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            --text-muted: #52525b;
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --border-default: rgba(255, 255, 255, 0.07);
+            --transition-fast: 0.15s ease;
+            --transition-smooth: 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *:focus { outline: none; }
+        :focus-visible { outline: 2px solid rgba(125, 155, 138, 0.65); outline-offset: 3px; border-radius: 10px; }
+        ::selection { background: var(--sage); color: white; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+        
+        html, body { height: 100%; overflow: hidden; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-base); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+        /* Ambient Background */
+        .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 2s ease; }
+        .ambient.visible { opacity: 1; }
+        .ambient-orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.08; }
+        .ambient-orb-1 { width: 800px; height: 800px; background: var(--sage); top: -300px; left: -300px; animation: drift-1 30s ease-in-out infinite; }
+        .ambient-orb-2 { width: 500px; height: 500px; background: var(--sage-dark); bottom: -150px; right: -150px; animation: drift-2 35s ease-in-out infinite; }
+        @keyframes drift-1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(80px, 50px); } }
+        @keyframes drift-2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-50px, -60px); } }
+
+        /* Steps Container */
+        .onboarding { position: relative; z-index: 1; height: 100vh; }
+        .step { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; opacity: 0; pointer-events: none; transition: opacity 0.6s ease, transform 0.6s ease; transform: translateY(20px); }
+        .step.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .step.exiting { opacity: 0; transform: translateY(-20px); }
+        .step-content { max-width: 520px; width: 100%; text-align: center; }
+
+        /* Seed Avatar */
+        .seed-container { position: relative; width: 140px; height: 125px; margin: 0 auto 48px; }
+        .seed-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 130px; background: var(--sage); border-radius: 50%; filter: blur(50px); opacity: 0; transition: opacity 1.5s ease; }
+        .seed-glow.visible { opacity: 0.4; }
+        .seed-glow.pulse { animation: glow-pulse 3s ease-in-out infinite; }
+        @keyframes glow-pulse { 0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); } }
+        
+        .seed-body { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 120px; height: 105px; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; box-shadow: 0 20px 60px rgba(125, 155, 138, 0.3), inset 0 -8px 20px rgba(0,0,0,0.1), inset 0 8px 20px rgba(255,255,255,0.1); transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .seed-body.visible { transform: translate(-50%, -50%) scale(1); }
+        .seed-body.breathing { animation: seed-breathe 5s ease-in-out infinite; }
+        @keyframes seed-breathe { 0%, 100% { transform: translate(-50%, -50%) scale(1) translateY(0) rotate(0deg); } 33% { transform: translate(-50%, -50%) scale(1.02) translateY(-8px) rotate(-2deg); } 66% { transform: translate(-50%, -50%) scale(1.01) translateY(-4px) rotate(1deg); } }
+        
+        .seed-eyes { position: absolute; top: 40%; left: 42%; transform: translateX(-50%); display: flex; gap: 24px; opacity: 0; transition: opacity 0.8s ease; }
+        .seed-eyes.visible { opacity: 1; }
+        .seed-eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; transform: scaleY(0); transition: transform 0.5s ease; box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
+        .seed-eye.open { transform: scaleY(1); }
+        .seed-eye.left { width: 9px; height: 9px; }
+        .seed-eye.right { width: 7px; height: 7px; opacity: 0.9; }
+        .seed-eye.blinking { animation: blink 5s ease-in-out infinite; }
+        @keyframes blink { 0%, 42%, 58%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
+
+        /* Typography */
+        .greeting { font-size: 48px; font-weight: 300; letter-spacing: -0.02em; color: var(--text-primary); opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .greeting.visible { opacity: 1; transform: translateY(0); }
+        
+        .name-display { font-size: 48px; font-weight: 500; letter-spacing: -0.02em; color: var(--sage-light); opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .name-display.visible { opacity: 1; transform: translateY(0); }
+        
+        .message { font-size: 26px; font-weight: 400; line-height: 1.6; color: var(--text-secondary); opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .message.visible { opacity: 1; transform: translateY(0); }
+        .message.large { font-size: 30px; color: var(--text-primary); }
+        .message em { color: var(--sage-light); font-style: normal; }
+
+        .question { font-size: 28px; font-weight: 400; line-height: 1.5; color: var(--text-primary); margin-bottom: 40px; opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .question.visible { opacity: 1; transform: translateY(0); }
+
+        /* Name Input */
+        .name-input-container { max-width: 320px; margin: 0 auto; opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .name-input-container.visible { opacity: 1; transform: translateY(0); }
+        .name-input { width: 100%; padding: 18px 24px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: 14px; font-family: inherit; font-size: 18px; font-weight: 500; color: var(--text-primary); text-align: center; outline: none; transition: all var(--transition-fast); }
+        .name-input::placeholder { color: var(--text-muted); font-weight: 400; }
+        .name-input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px var(--sage-subtle); }
+
+        /* Personalities Grid */
+        .personalities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 480px; margin: 0 auto; }
+        .personality { padding: 20px 16px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 14px; cursor: pointer; text-align: center; transition: all var(--transition-smooth); opacity: 0; transform: translateY(20px); }
+        .personality.visible { opacity: 1; transform: translateY(0); }
+        .personality:hover { border-color: var(--border-default); background: var(--bg-surface); transform: translateY(-2px); }
+        .personality:active { transform: translateY(0); }
+        .personality.selected { border-color: var(--sage); background: var(--sage-subtle); }
+        .personality-icon { width: 36px; height: 36px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; background: var(--bg-surface); border-radius: 10px; transition: all var(--transition-fast); }
+        .personality-icon svg { width: 20px; height: 20px; stroke: var(--text-muted); stroke-width: 1.5; fill: none; transition: stroke var(--transition-fast); }
+        .personality.selected .personality-icon { background: var(--sage); }
+        .personality.selected .personality-icon svg { stroke: white; }
+        .personality-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .personality-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .personality.selected .personality-name { color: var(--sage); }
+
+        /* Continuity Cards */
+        .continuity-section { max-width: 480px; margin: 0 auto; }
+        .continuity-title { font-size: 20px; color: var(--text-secondary); margin-bottom: 32px; opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .continuity-title.visible { opacity: 1; transform: translateY(0); }
+        .continuity-cards { display: flex; flex-direction: column; gap: 16px; }
+        .continuity-card { display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: 14px; text-align: left; opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .continuity-card.visible { opacity: 1; transform: translateY(0); }
+        .continuity-icon { width: 40px; height: 40px; background: var(--sage-subtle); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .continuity-icon svg { width: 20px; height: 20px; stroke: var(--sage); stroke-width: 1.5; fill: none; }
+        .continuity-content h4 { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .continuity-content p { font-size: 14px; color: var(--text-tertiary); line-height: 1.5; }
+
+        /* Text Input */
+        .input-container { max-width: 480px; margin: 0 auto; width: 100%; }
+        .input-label { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; text-align: left; opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .input-label.visible { opacity: 1; transform: translateY(0); }
+        .text-input { width: 100%; padding: 20px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: 14px; font-family: inherit; font-size: 16px; color: var(--text-primary); resize: none; min-height: 120px; opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .text-input.visible { opacity: 1; transform: translateY(0); }
+        .text-input::placeholder { color: var(--text-muted); }
+        .text-input:focus { border-color: rgba(125, 155, 138, 0.4); box-shadow: 0 0 0 3px rgba(125, 155, 138, 0.1); }
+
+        /* Account Form */
+        .form-row { display: flex; flex-direction: column; gap: 12px; max-width: 360px; margin: 0 auto 24px; }
+        .form-input { width: 100%; padding: 16px 20px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: 12px; font-family: inherit; font-size: 15px; color: var(--text-primary); opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .form-input.visible { opacity: 1; transform: translateY(0); }
+        .form-input::placeholder { color: var(--text-muted); }
+        .form-input:focus { border-color: rgba(125, 155, 138, 0.4); box-shadow: 0 0 0 3px rgba(125, 155, 138, 0.1); }
+
+        /* Continue Button */
+        .continue-btn { display: inline-flex; align-items: center; gap: 10px; padding: 16px 40px; background: var(--sage); border: none; border-radius: 50px; color: white; font-family: inherit; font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; opacity: 0; transform: translateY(20px); margin-top: 32px; }
+        .continue-btn.visible { opacity: 1; transform: translateY(0); }
+        .continue-btn:hover:not(:disabled) { background: var(--sage-light); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(125, 155, 138, 0.35); }
+        .continue-btn:active:not(:disabled) { transform: translateY(0); box-shadow: 0 4px 16px rgba(125, 155, 138, 0.25); }
+        .continue-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .continue-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; transition: transform 0.3s ease; }
+        .continue-btn:hover:not(:disabled) svg { transform: translateX(4px); }
+
+        /* Preview Seed */
+        .seed-preview { max-width: 420px; margin: 0 auto; padding: 24px; background: linear-gradient(135deg, var(--sage-subtle) 0%, var(--bg-elevated) 100%); border: 1px solid rgba(125, 155, 138, 0.2); border-radius: 16px; text-align: left; opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
+        .seed-preview.visible { opacity: 1; transform: translateY(0); }
+        .seed-preview-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--sage); margin-bottom: 12px; }
+        .seed-preview-text { font-size: 16px; color: var(--text-primary); line-height: 1.6; font-style: italic; margin-bottom: 16px; }
+        .seed-preview-meta { font-size: 13px; color: var(--text-muted); }
+
+        /* Terms */
+        .terms { font-size: 13px; color: var(--text-muted); margin-top: 16px; opacity: 0; transition: opacity 0.6s ease; }
+        .terms.visible { opacity: 1; }
+        .terms a { color: var(--sage); text-decoration: none; }
+        .terms a:hover { text-decoration: underline; }
+
+        /* Progress Dots */
+        .progress { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; opacity: 0; transition: opacity 0.8s ease; }
+        .progress.visible { opacity: 0.6; }
+        .progress-dot { width: 4px; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; transition: all 0.4s ease; }
+        .progress-dot.active { background: var(--sage); width: 20px; border-radius: 2px; }
+        .progress-dot.completed { background: rgba(125, 155, 138, 0.4); }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .greeting, .name-display { font-size: 36px; }
+            .message { font-size: 22px; }
+            .message.large { font-size: 26px; }
+            .question { font-size: 24px; }
+            .seed-container { width: 120px; height: 105px; margin-bottom: 36px; }
+            .seed-body { width: 100px; height: 88px; }
+            .personalities { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
+        @media (max-width: 480px) {
+            .greeting, .name-display { font-size: 30px; }
+            .message { font-size: 18px; }
+            .message.large { font-size: 22px; }
+            .question { font-size: 20px; margin-bottom: 28px; }
+            .step-content { padding: 0 8px; }
+            .continue-btn { padding: 14px 32px; font-size: 15px; }
+            .progress { bottom: 20px; }
+            .personality { padding: 16px 12px; }
+            .personality-icon { width: 32px; height: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient" id="ambient">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+    </div>
+
+    <div class="onboarding">
+        <!-- Step 1: Hello -->
+        <div class="step active" id="step-1">
+            <div class="step-content">
+                <div class="seed-container">
+                    <div class="seed-glow" id="glow-1"></div>
+                    <div class="seed-body" id="body-1">
+                        <div class="seed-eyes" id="eyes-1">
+                            <div class="seed-eye left" id="eye-l-1"></div>
+                            <div class="seed-eye right" id="eye-r-1"></div>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="greeting" id="greeting-1">Hello.</h1>
+            </div>
+        </div>
+
+        <!-- Step 2: I'm Orivya -->
+        <div class="step" id="step-2">
+            <div class="step-content">
+                <div class="seed-container">
+                    <div class="seed-glow visible pulse"></div>
+                    <div class="seed-body visible breathing">
+                        <div class="seed-eyes visible">
+                            <div class="seed-eye left open blinking"></div>
+                            <div class="seed-eye right open blinking"></div>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="name-display" id="name-2">I'm Orivya.</h1>
+            </div>
+        </div>
+
+        <!-- Step 3: Philosophy -->
+        <div class="step" id="step-3">
+            <div class="step-content">
+                <div class="seed-container">
+                    <div class="seed-glow visible pulse"></div>
+                    <div class="seed-body visible breathing">
+                        <div class="seed-eyes visible">
+                            <div class="seed-eye left open blinking"></div>
+                            <div class="seed-eye right open blinking"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="message large" id="msg-3a">I'm not here to give you answers.</p>
+                <p class="message" id="msg-3b" style="margin-top: 16px;">I'm here to help you find <em>your own</em>.</p>
+            </div>
+        </div>
+
+        <!-- Step 4: What's your name? -->
+        <div class="step" id="step-4">
+            <div class="step-content">
+                <div class="seed-container">
+                    <div class="seed-glow visible pulse"></div>
+                    <div class="seed-body visible breathing">
+                        <div class="seed-eyes visible">
+                            <div class="seed-eye left open blinking"></div>
+                            <div class="seed-eye right open blinking"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="question" id="q-4">What should I call you?</p>
+                <div class="name-input-container" id="name-input-container">
+                    <input type="text" class="name-input" id="name-input" placeholder="Your first name" autocomplete="given-name" maxlength="30">
+                </div>
+                <button class="continue-btn" id="continue-4" disabled>Continue<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+        </div>
+
+        <!-- Step 5: Personality Selection -->
+        <div class="step" id="step-5">
+            <div class="step-content">
+                <div class="seed-container">
+                    <div class="seed-glow visible pulse"></div>
+                    <div class="seed-body visible breathing">
+                        <div class="seed-eyes visible">
+                            <div class="seed-eye left open blinking"></div>
+                            <div class="seed-eye right open blinking"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="question" id="q-5">How should I speak with you?</p>
+                <div class="personalities" id="personalities">
+                    <button class="personality" data-personality="gentle">
+                        <div class="personality-icon"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+                        <div class="personality-name">Gentle</div>
+                        <div class="personality-desc">Soft, patient, never pushy</div>
+                    </button>
+                    <button class="personality selected" data-personality="balanced">
+                        <div class="personality-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg></div>
+                        <div class="personality-name">Balanced</div>
+                        <div class="personality-desc">Warmth meets clarity</div>
+                    </button>
+                    <button class="personality" data-personality="direct">
+                        <div class="personality-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                        <div class="personality-name">Direct</div>
+                        <div class="personality-desc">Clear, efficient, focused</div>
+                    </button>
+                    <button class="personality" data-personality="warm">
+                        <div class="personality-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
+                        <div class="personality-name">Warm</div>
+                        <div class="personality-desc">Friendly, supportive</div>
+                    </button>
+                    <button class="personality" data-personality="curious">
+                        <div class="personality-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                        <div class="personality-name">Curious</div>
+                        <div class="personality-desc">Exploratory, wondering</div>
+                    </button>
+                    <button class="personality" data-personality="analytical">
+                        <div class="personality-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                        <div class="personality-name">Analytical</div>
+                        <div class="personality-desc">Pattern-focused, systematic</div>
+                    </button>
+                </div>
+                <button class="continue-btn" id="continue-5">Continue<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+        </div>
+
+        <!-- Step 6: How I Remember -->
+        <div class="step" id="step-6">
+            <div class="step-content">
+                <div class="continuity-section">
+                    <p class="continuity-title" id="cont-title">Here's how I'll remember as we talk...</p>
+                    <div class="continuity-cards">
+                        <div class="continuity-card" id="card-1">
+                            <div class="continuity-icon"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+                            <div class="continuity-content">
+                                <h4>What you save</h4>
+                                <p>Insights that resonate, decisions you're tracking, patterns you notice</p>
+                            </div>
+                        </div>
+                        <div class="continuity-card" id="card-2">
+                            <div class="continuity-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
+                            <div class="continuity-content">
+                                <h4>What emerges</h4>
+                                <p>Themes and patterns that surface naturally from our conversations</p>
+                            </div>
+                        </div>
+                        <div class="continuity-card" id="card-3">
+                            <div class="continuity-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                            <div class="continuity-content">
+                                <h4>What you confirm</h4>
+                                <p>When you say "resonates" or "not quite," I learn what's true for you</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="continue-btn" id="continue-6">I understand<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 7: First Question -->
+        <div class="step" id="step-7">
+            <div class="step-content">
+                <div class="seed-container">
+                    <div class="seed-glow visible pulse"></div>
+                    <div class="seed-body visible breathing">
+                        <div class="seed-eyes visible">
+                            <div class="seed-eye left open blinking"></div>
+                            <div class="seed-eye right open blinking"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="question" id="q-7">What's one thing you wish you understood better about your life right now?</p>
+                <div class="input-container">
+                    <textarea class="text-input" id="first-question" placeholder="Take your time..."></textarea>
+                    <button class="continue-btn" id="continue-7" disabled>See my reflection<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 8: Preview -->
+        <div class="step" id="step-8">
+            <div class="step-content">
+                <div class="seed-preview" id="preview-8">
+                    <div class="seed-preview-label">Your First Memory Seed</div>
+                    <div class="seed-preview-text" id="preview-text">"..."</div>
+                    <div class="seed-preview-meta" id="preview-meta">Personality: Balanced</div>
+                </div>
+                <button class="continue-btn" id="continue-8">Save & Continue<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+            </div>
+        </div>
+
+        <!-- Step 9: Account -->
+        <div class="step" id="step-9">
+            <div class="step-content">
+                <div class="seed-container" style="margin-bottom: 32px;">
+                    <div class="seed-glow visible pulse"></div>
+                    <div class="seed-body visible breathing">
+                        <div class="seed-eyes visible">
+                            <div class="seed-eye left open blinking"></div>
+                            <div class="seed-eye right open blinking"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="message" id="msg-9" style="margin-bottom: 32px;">Let's save your progress, <span id="user-name-display"></span>.</p>
+                <div class="form-row">
+                    <input type="email" class="form-input" id="email-input" placeholder="Email" autocomplete="email">
+                    <input type="password" class="form-input" id="password-input" placeholder="Password (min 6 characters)" autocomplete="new-password">
+                </div>
+                <button class="continue-btn" id="continue-9" disabled>Create account<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+                <p class="terms" id="terms-9">By continuing, you agree to our <a href="orivya-terms-v1.html">Terms</a> and <a href="orivya-privacy-v1.html">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress" id="progress">
+        <div class="progress-dot active" data-step="1"></div>
+        <div class="progress-dot" data-step="2"></div>
+        <div class="progress-dot" data-step="3"></div>
+        <div class="progress-dot" data-step="4"></div>
+        <div class="progress-dot" data-step="5"></div>
+        <div class="progress-dot" data-step="6"></div>
+        <div class="progress-dot" data-step="7"></div>
+        <div class="progress-dot" data-step="8"></div>
+        <div class="progress-dot" data-step="9"></div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let userData = { name: '', personality: 'balanced', question: '', email: '' };
+
+        const personalityLabels = {
+            gentle: 'Gentle',
+            balanced: 'Balanced',
+            direct: 'Direct',
+            warm: 'Warm',
+            curious: 'Curious',
+            analytical: 'Analytical'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('ambient').classList.add('visible');
+                document.getElementById('progress').classList.add('visible');
+            }, 300);
+            
+            setTimeout(() => animateStep1(), 800);
+            
+            // Set up input listeners
+            setupInputListeners();
+        });
+
+        function setupInputListeners() {
+            // Name input
+            const nameInput = document.getElementById('name-input');
+            const continueBtn4 = document.getElementById('continue-4');
+            nameInput.addEventListener('input', () => {
+                userData.name = nameInput.value.trim();
+                continueBtn4.disabled = userData.name.length < 1;
+                if (!continueBtn4.classList.contains('visible')) {
+                    continueBtn4.classList.add('visible');
+                }
+            });
+            nameInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && userData.name.length >= 1) {
+                    goToStep(5);
+                }
+            });
+            continueBtn4.addEventListener('click', () => goToStep(5));
+
+            // Personality selection
+            document.querySelectorAll('.personality').forEach(p => {
+                p.addEventListener('click', function() {
+                    document.querySelectorAll('.personality').forEach(pp => pp.classList.remove('selected'));
+                    this.classList.add('selected');
+                    userData.personality = this.dataset.personality;
+                });
+            });
+            document.getElementById('continue-5').addEventListener('click', () => goToStep(6));
+
+            // Continue buttons
+            document.getElementById('continue-6').addEventListener('click', () => goToStep(7));
+
+            // First question
+            const questionInput = document.getElementById('first-question');
+            const continueBtn7 = document.getElementById('continue-7');
+            questionInput.addEventListener('input', () => {
+                userData.question = questionInput.value.trim();
+                continueBtn7.disabled = userData.question.length < 10;
+            });
+            continueBtn7.addEventListener('click', () => {
+                document.getElementById('preview-text').textContent = '"' + userData.question + '"';
+                document.getElementById('preview-meta').textContent = 'Personality: ' + personalityLabels[userData.personality];
+                goToStep(8);
+            });
+
+            // Preview continue
+            document.getElementById('continue-8').addEventListener('click', () => goToStep(9));
+
+            // Account form
+            const emailInput = document.getElementById('email-input');
+            const passwordInput = document.getElementById('password-input');
+            const continueBtn9 = document.getElementById('continue-9');
+            
+            function validateAccount() {
+                const emailValid = emailInput.value.includes('@') && emailInput.value.includes('.');
+                const passwordValid = passwordInput.value.length >= 6;
+                continueBtn9.disabled = !(emailValid && passwordValid);
+            }
+            
+            emailInput.addEventListener('input', validateAccount);
+            passwordInput.addEventListener('input', validateAccount);
+            continueBtn9.addEventListener('click', completeOnboarding);
+        }
+
+        function animateStep1() {
+            const glow = document.getElementById('glow-1');
+            const body = document.getElementById('body-1');
+            const eyes = document.getElementById('eyes-1');
+            const eyeL = document.getElementById('eye-l-1');
+            const eyeR = document.getElementById('eye-r-1');
+            const greeting = document.getElementById('greeting-1');
+
+            setTimeout(() => glow.classList.add('visible'), 300);
+            setTimeout(() => body.classList.add('visible'), 600);
+            setTimeout(() => eyes.classList.add('visible'), 1200);
+            setTimeout(() => { eyeL.classList.add('open'); eyeR.classList.add('open'); }, 1400);
+            setTimeout(() => greeting.classList.add('visible'), 1800);
+            setTimeout(() => goToStep(2), 3500);
+        }
+
+        function goToStep(step) {
+            // Add exiting class for smooth transition
+            const currentStepEl = document.getElementById('step-' + currentStep);
+            currentStepEl.classList.add('exiting');
+            
+            setTimeout(() => {
+                currentStepEl.classList.remove('active', 'exiting');
+                
+                // Update progress
+                document.querySelectorAll('.progress-dot').forEach((dot, i) => {
+                    dot.classList.remove('active', 'completed');
+                    if (i + 1 < step) dot.classList.add('completed');
+                    if (i + 1 === step) dot.classList.add('active');
+                });
+
+                // Show new step
+                currentStep = step;
+                const newStep = document.getElementById('step-' + step);
+                newStep.classList.add('active');
+
+                // Animate elements in new step
+                animateStepElements(step);
+            }, 300);
+        }
+
+        function animateStepElements(step) {
+            const stepEl = document.getElementById('step-' + step);
+            
+            if (step === 2) {
+                setTimeout(() => document.getElementById('name-2').classList.add('visible'), 200);
+                setTimeout(() => goToStep(3), 2500);
+            }
+            
+            if (step === 3) {
+                setTimeout(() => document.getElementById('msg-3a').classList.add('visible'), 200);
+                setTimeout(() => document.getElementById('msg-3b').classList.add('visible'), 800);
+                setTimeout(() => goToStep(4), 4000);
+            }
+            
+            if (step === 4) {
+                setTimeout(() => document.getElementById('q-4').classList.add('visible'), 200);
+                setTimeout(() => {
+                    document.getElementById('name-input-container').classList.add('visible');
+                    document.getElementById('name-input').focus();
+                }, 500);
+                setTimeout(() => document.getElementById('continue-4').classList.add('visible'), 700);
+            }
+            
+            if (step === 5) {
+                setTimeout(() => document.getElementById('q-5').classList.add('visible'), 200);
+                const personalities = document.querySelectorAll('.personality');
+                personalities.forEach((p, i) => {
+                    setTimeout(() => p.classList.add('visible'), 400 + (i * 80));
+                });
+                setTimeout(() => document.getElementById('continue-5').classList.add('visible'), 900);
+            }
+            
+            if (step === 6) {
+                setTimeout(() => document.getElementById('cont-title').classList.add('visible'), 200);
+                setTimeout(() => document.getElementById('card-1').classList.add('visible'), 400);
+                setTimeout(() => document.getElementById('card-2').classList.add('visible'), 550);
+                setTimeout(() => document.getElementById('card-3').classList.add('visible'), 700);
+                setTimeout(() => document.getElementById('continue-6').classList.add('visible'), 900);
+            }
+            
+            if (step === 7) {
+                setTimeout(() => document.getElementById('q-7').classList.add('visible'), 200);
+                setTimeout(() => {
+                    document.getElementById('first-question').classList.add('visible');
+                    document.getElementById('first-question').focus();
+                }, 500);
+                setTimeout(() => document.getElementById('continue-7').classList.add('visible'), 700);
+            }
+            
+            if (step === 8) {
+                setTimeout(() => document.getElementById('preview-8').classList.add('visible'), 200);
+                setTimeout(() => document.getElementById('continue-8').classList.add('visible'), 600);
+            }
+            
+            if (step === 9) {
+                document.getElementById('user-name-display').textContent = userData.name;
+                setTimeout(() => document.getElementById('msg-9').classList.add('visible'), 200);
+                const inputs = document.querySelectorAll('#step-9 .form-input');
+                inputs.forEach((input, i) => {
+                    setTimeout(() => input.classList.add('visible'), 400 + (i * 150));
+                });
+                setTimeout(() => document.getElementById('continue-9').classList.add('visible'), 700);
+                setTimeout(() => document.getElementById('terms-9').classList.add('visible'), 850);
+                setTimeout(() => document.getElementById('email-input').focus(), 600);
+            }
+        }
+
+        function completeOnboarding() {
+            userData.email = document.getElementById('email-input').value;
+            // Navigate to app
+            window.location.href = 'orivya-app-v10.html?welcome=true&name=' + encodeURIComponent(userData.name) + '&personality=' + encodeURIComponent(userData.personality);
+        }
+    </script>
+</body>
+</html>

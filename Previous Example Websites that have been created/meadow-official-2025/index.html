@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#faf9f7" />
+    <title>Meadow — See Yourself Clearly</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              cream: '#faf9f7',
+              /* ===== WARM CREAM THEME ===== */
+              /* Light, warm backgrounds with depth */
+              dark: {
+                base: '#faf9f7',
+                DEFAULT: '#F5F3EF',
+                surface: 'rgba(255, 255, 255, 0.85)',
+                card: 'rgba(255, 255, 255, 0.9)',
+                elevated: '#FFFFFF',
+                hover: 'rgba(0, 0, 0, 0.03)',
+                border: 'rgba(0, 0, 0, 0.08)',
+                'border-subtle': 'rgba(0, 0, 0, 0.05)',
+                'border-strong': 'rgba(0, 0, 0, 0.12)',
+              },
+              /* Surface colors for glass cards */
+              surface: {
+                DEFAULT: 'rgba(255, 255, 255, 0.75)',
+                hover: 'rgba(255, 255, 255, 0.9)',
+                active: '#ffffff',
+              },
+              /* Sage accent - Full scale for precise control (Meadow 23) */
+              sage: {
+                50: '#f4f7f5',
+                100: '#e3ebe6',
+                200: '#c5d8cf',
+                300: '#9ebcae',
+                400: '#7fa08d',
+                500: '#6B8F7A',
+                600: '#5a7a68',
+                700: '#4a6355',
+                800: '#3e5146',
+                900: '#34433b',
+                DEFAULT: '#6B8F7A',
+                light: '#7FA08D',
+                dark: '#5A7A68',
+                subtle: 'rgba(107, 143, 122, 0.1)',
+                muted: 'rgba(107, 143, 122, 0.15)',
+                glow: 'rgba(107, 143, 122, 0.25)',
+                'glow-strong': 'rgba(107, 143, 122, 0.4)',
+                border: 'rgba(107, 143, 122, 0.25)',
+              },
+              clay: {
+                DEFAULT: '#c47f6a',
+                light: '#e8927c',
+                subtle: 'rgba(196, 127, 106, 0.1)',
+                glow: 'rgba(196, 127, 106, 0.2)',
+              },
+              lavender: {
+                DEFAULT: '#9b8dc2',
+                subtle: 'rgba(155, 141, 194, 0.12)',
+                glow: 'rgba(155, 141, 194, 0.2)',
+              },
+              border: {
+                light: 'rgba(0, 0, 0, 0.08)',
+              },
+              stone: {
+                50: '#faf9f7',
+                100: '#f5f3f0',
+                200: '#e8e6e3',
+                300: '#d6d3d0',
+                400: '#a8a29e',
+                500: '#78716c',
+                600: '#57534e',
+                700: '#44403c',
+                800: '#292524',
+                900: '#1c1917',
+              },
+              /* Cream theme text hierarchy */
+              text: {
+                primary: '#1a1a1a',
+                secondary: '#4a4a4a',
+                tertiary: '#737373',
+                muted: '#9ca3af',
+              },
+            },
+            boxShadow: {
+              soft: '0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.04)',
+              elevated: '0 4px 16px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04)',
+              card: '0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.03)',
+              'card-hover': '0 8px 24px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.06)',
+              'glow': '0 0 20px rgba(107, 143, 122, 0.15)',
+              'glow-lg': '0 0 40px rgba(107, 143, 122, 0.2)',
+              'glow-clay': '0 0 20px rgba(196, 127, 106, 0.15)',
+              'glow-lavender': '0 0 20px rgba(155, 141, 194, 0.15)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Fraunces', 'serif'],
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+              'noise': "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noiseFilter\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.8\" numOctaves=\"3\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noiseFilter)\" opacity=\"0.5\"/%3E%3C/svg%3E')",
+            },
+            animation: {
+              /* Snappier motion (less “laggy”, more premium) */
+              'fade-up': 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'fade-in': 'fadeIn 0.7s ease-out forwards',
+              'scale-in': 'scaleIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'pulse-slow': 'pulseSlow 8s ease-in-out infinite',
+              'float': 'float 10s ease-in-out infinite',
+              'ripple': 'ripple 4s cubic-bezier(0, 0, 0.2, 1) infinite',
+              'grain': 'grain 8s steps(10) infinite',
+              'draw-stroke': 'drawStroke 2.5s ease-out forwards',
+              'slide-in-right': 'slideInRight 0.3s ease-out forwards',
+              'slide-out-right': 'slideOutRight 0.3s ease-out forwards',
+              'bounce-in': 'bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards',
+              'shake': 'shake 0.5s ease-in-out',
+              'spin': 'spin 1s linear infinite',
+              'confetti': 'confetti 0.8s ease-out forwards',
+            },
+            keyframes: {
+              fadeUp: {
+                '0%': { opacity: '0', transform: 'translateY(16px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              scaleIn: {
+                '0%': { transform: 'scale(0.95)', opacity: '0' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+              },
+              pulseSlow: {
+                '0%, 100%': { opacity: '0.3', transform: 'scale(1)' },
+                '50%': { opacity: '0.6', transform: 'scale(1.1)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              },
+              ripple: {
+                 '0%': { transform: 'scale(0.8)', opacity: '0.5', borderWidth: '1px' },
+                 '100%': { transform: 'scale(2.5)', opacity: '0', borderWidth: '0px' },
+              },
+              drawStroke: {
+                '0%': { strokeDashoffset: '500' },
+                '100%': { strokeDashoffset: '0' },
+              },
+              grain: {
+                '0%, 100%': { transform: 'translate(0, 0)' },
+                '10%': { transform: 'translate(-5%, -10%)' },
+                '20%': { transform: 'translate(-15%, 5%)' },
+                '30%': { transform: 'translate(7%, -25%)' },
+                '40%': { transform: 'translate(-5%, 25%)' },
+                '50%': { transform: 'translate(-15%, 10%)' },
+                '60%': { transform: 'translate(15%, 0%)' },
+                '70%': { transform: 'translate(0%, 15%)' },
+                '80%': { transform: 'translate(3%, 35%)' },
+                '90%': { transform: 'translate(-10%, 10%)' },
+              },
+              slideInRight: {
+                '0%': { transform: 'translateX(100%)', opacity: '0' },
+                '100%': { transform: 'translateX(0)', opacity: '1' },
+              },
+              slideOutRight: {
+                '0%': { transform: 'translateX(0)', opacity: '1' },
+                '100%': { transform: 'translateX(100%)', opacity: '0' },
+              },
+              bounceIn: {
+                '0%': { transform: 'scale(0.3)', opacity: '0' },
+                '50%': { transform: 'scale(1.05)' },
+                '70%': { transform: 'scale(0.9)' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+              },
+              shake: {
+                '0%, 100%': { transform: 'translateX(0)' },
+                '10%, 30%, 50%, 70%, 90%': { transform: 'translateX(-4px)' },
+                '20%, 40%, 60%, 80%': { transform: 'translateX(4px)' },
+              },
+              spin: {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' },
+              },
+              confetti: {
+                '0%': { transform: 'translateY(0) rotate(0deg)', opacity: '1' },
+                '100%': { transform: 'translateY(-100px) rotate(720deg)', opacity: '0' },
+              },
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* ===== WARM CREAM THEME BASE ===== */
+      body {
+        background-color: #faf9f7;
+        color: #1a1a1a;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+      }
+
+      /* Glass card variants for cream theme (Meadow 23 refined) */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+        border-radius: 1.75rem;
+        transition: all 0.3s ease-out;
+      }
+
+      .glass-card:hover {
+        border-color: rgba(158, 188, 174, 0.5);
+        box-shadow: 0 8px 30px -4px rgba(107, 143, 122, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .glass-card-elevated {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.08);
+        border-radius: 1.75rem;
+        transition: all 0.3s ease-out;
+      }
+
+      .glass-card-elevated:hover {
+        border-color: rgba(158, 188, 174, 0.5);
+        box-shadow: 0 8px 30px -4px rgba(107, 143, 122, 0.18);
+        transform: translateY(-2px);
+      }
+
+      .glass-card-glow {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(107, 143, 122, 0.25);
+        box-shadow: 0 0 24px rgba(107, 143, 122, 0.1), 0 4px 16px rgba(0, 0, 0, 0.04);
+        border-radius: 1.75rem;
+        transition: all 0.3s ease-out;
+      }
+
+      .glass-card-glow:hover {
+        border-color: rgba(107, 143, 122, 0.4);
+        box-shadow: 0 0 32px rgba(107, 143, 122, 0.15), 0 8px 24px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+      }
+
+      /* Static glass card (no hover effects) */
+      .glass-card-static {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+        border-radius: 1.75rem;
+      }
+
+      .glass-nav {
+        background: rgba(250, 249, 247, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .glass-sidebar {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      /* Smooth fade for gradients */
+      .fade-mask {
+        mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+      }
+
+      /* Skeleton shimmer effect - cream version */
+      .skeleton-shimmer {
+        background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0.04) 50%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+
+      /* Glow pulse animation */
+      @keyframes glow-pulse {
+        0%, 100% { box-shadow: 0 0 20px rgba(107, 143, 122, 0.15); }
+        50% { box-shadow: 0 0 40px rgba(107, 143, 122, 0.25); }
+      }
+
+      .animate-glow-pulse {
+        animation: glow-pulse 3s ease-in-out infinite;
+      }
+
+      /* Custom scrollbar - cream theme */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(107, 143, 122, 0.2);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(107, 143, 122, 0.35);
+      }
+
+      /* Focus visible for accessibility */
+      *:focus-visible {
+        outline: 2px solid #6B8F7A;
+        outline-offset: 2px;
+      }
+
+      /* Selection color */
+      ::selection {
+        background: rgba(107, 143, 122, 0.2);
+        color: #1a1a1a;
+      }
+
+      /* Reduce motion */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* iOS keyboard handling */
+      @supports (-webkit-touch-callout: none) {
+        /* iOS only */
+        input:focus, textarea:focus {
+          scroll-margin-bottom: 200px;
+        }
+      }
+
+      /* Safe area padding for iOS */
+      .safe-bottom {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
+<!-- Trigger redeploy -->

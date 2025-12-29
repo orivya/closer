@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Tooltips & Coach Marks</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --success: #4ade80;
+      --info: #60a5fa;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      padding: var(--space-8);
+    }
+    button { font-family: inherit; cursor: pointer; }
+    
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .subtitle {
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-10);
+    }
+    
+    .section {
+      margin-bottom: var(--space-10);
+    }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-4);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: var(--space-6);
+    }
+    
+    .demo-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    
+    .demo-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    .demo-content {
+      padding: var(--space-6);
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* ==========================================
+       BASIC TOOLTIP
+    ========================================== */
+    
+    .tooltip-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip {
+      position: absolute;
+      z-index: 100;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-primary);
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      animation: tooltip-in 150ms ease;
+    }
+    
+    @keyframes tooltip-in {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Tooltip arrows */
+    .tooltip::after {
+      content: '';
+      position: absolute;
+      border: 6px solid transparent;
+    }
+    
+    .tooltip--top {
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .tooltip--top::after {
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-top-color: var(--bg-elevated);
+    }
+    
+    .tooltip--bottom {
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .tooltip--bottom::after {
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-color: var(--bg-elevated);
+    }
+    
+    .tooltip--left {
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .tooltip--left::after {
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-left-color: var(--bg-elevated);
+    }
+    
+    .tooltip--right {
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .tooltip--right::after {
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-right-color: var(--bg-elevated);
+    }
+    
+    /* Demo trigger button */
+    .demo-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background-color: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+    }
+    .demo-trigger svg { width: 20px; height: 20px; }
+    
+    /* ==========================================
+       COACH MARK (Onboarding Spotlight)
+    ========================================== */
+    
+    .coach-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+    }
+    
+    .coach-spotlight {
+      position: absolute;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+    
+    .coach-tooltip {
+      position: absolute;
+      width: 280px;
+      padding: var(--space-5);
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      z-index: 1001;
+      animation: coach-pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    @keyframes coach-pop {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .coach-tooltip::before {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-right: none;
+      border-bottom: none;
+      transform: rotate(45deg);
+    }
+    
+    .coach-tooltip--bottom::before {
+      top: -7px;
+      left: 24px;
+    }
+    
+    .coach-tooltip--top::before {
+      bottom: -7px;
+      left: 24px;
+      transform: rotate(225deg);
+    }
+    
+    .coach-step {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--sage);
+      margin-bottom: var(--space-3);
+    }
+    
+    .coach-step-dots {
+      display: flex;
+      gap: var(--space-1);
+    }
+    
+    .coach-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--bg-surface-2);
+    }
+    .coach-dot--active { background-color: var(--sage); }
+    .coach-dot--complete { background-color: var(--sage-dark); }
+    
+    .coach-title {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .coach-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-4);
+      line-height: 1.5;
+    }
+    
+    .coach-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .coach-skip {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .coach-skip:hover { color: var(--text-secondary); }
+    
+    .coach-next {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border: none;
+      border-radius: var(--radius-md);
+      transition: background-color 150ms ease;
+    }
+    .coach-next:hover { background-color: var(--sage-dark); }
+    .coach-next svg { width: 16px; height: 16px; }
+    
+    /* ==========================================
+       FEATURE HIGHLIGHT
+    ========================================== */
+    
+    .feature-highlight {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .highlight-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 12px;
+      height: 12px;
+      background-color: var(--sage);
+      border: 2px solid var(--bg-base);
+      border-radius: var(--radius-full);
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-badge {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+    
+    .feature-callout {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      padding: var(--space-4);
+      background-color: var(--sage);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      animation: callout-bounce 300ms ease;
+    }
+    
+    @keyframes callout-bounce {
+      0% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+      100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    
+    .feature-callout::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-bottom-color: var(--sage);
+    }
+    
+    .callout-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--sage-dark);
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-2);
+    }
+    .callout-badge svg { width: 10px; height: 10px; }
+    
+    .callout-text {
+      font-size: var(--text-sm);
+      color: white;
+      margin-bottom: var(--space-3);
+    }
+    
+    .callout-dismiss {
+      font-size: var(--text-xs);
+      color: rgba(255, 255, 255, 0.7);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .callout-dismiss:hover { color: white; }
+    
+    /* ==========================================
+       INLINE HINT
+    ========================================== */
+    
+    .inline-hint {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background-color: var(--sage-subtle);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-md);
+    }
+    
+    .hint-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-muted);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .hint-icon svg { width: 16px; height: 16px; color: var(--sage); }
+    
+    .hint-content { flex: 1; }
+    
+    .hint-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .hint-message {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    
+    .hint-dismiss {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+    .hint-dismiss:hover { background-color: var(--sage-muted); color: var(--text-secondary); }
+    .hint-dismiss svg { width: 14px; height: 14px; }
+    
+    /* ==========================================
+       PROGRESS CHECKLIST
+    ========================================== */
+    
+    .checklist-card {
+      width: 300px;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    
+    .checklist-header {
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    .checklist-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-3);
+    }
+    
+    .checklist-progress-text {
+      font-size: var(--text-xs);
+      color: var(--sage);
+    }
+    
+    .checklist-bar {
+      height: 4px;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .checklist-fill {
+      height: 100%;
+      background-color: var(--sage);
+      border-radius: var(--radius-full);
+      transition: width 300ms ease;
+    }
+    
+    .checklist-items {
+      padding: var(--space-3);
+    }
+    
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+    .checklist-item:hover { background-color: var(--bg-surface); }
+    
+    .checklist-check {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    .checklist-check svg { width: 12px; height: 12px; color: white; opacity: 0; }
+    
+    .checklist-item--complete .checklist-check {
+      background-color: var(--success);
+      border-color: var(--success);
+    }
+    .checklist-item--complete .checklist-check svg { opacity: 1; }
+    
+    .checklist-item--complete .checklist-label {
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+    
+    .checklist-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .checklist-footer {
+      padding: var(--space-3) var(--space-4);
+      border-top: 1px solid var(--border-subtle);
+    }
+    
+    .checklist-dismiss {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .checklist-dismiss:hover { color: var(--text-secondary); }
+    
+    /* ==========================================
+       CONTEXTUAL HELP
+    ========================================== */
+    
+    .help-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background-color: var(--bg-surface-2);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-full);
+      color: var(--text-muted);
+      cursor: help;
+      transition: all 150ms ease;
+    }
+    .help-trigger:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-secondary);
+    }
+    .help-trigger svg { width: 12px; height: 12px; }
+    
+    .help-popover {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      padding: var(--space-4);
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+    }
+    
+    .help-popover::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-bottom-color: var(--bg-elevated);
+    }
+    
+    .help-popover-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .help-popover-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      margin-bottom: var(--space-3);
+    }
+    
+    .help-popover-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: var(--text-xs);
+      color: var(--sage);
+      text-decoration: none;
+    }
+    .help-popover-link:hover { text-decoration: underline; }
+    .help-popover-link svg { width: 12px; height: 12px; }
+    
+    /* ==========================================
+       FIRST-TIME BANNER
+    ========================================== */
+    
+    .first-time-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      background: linear-gradient(135deg, var(--sage-subtle) 0%, rgba(125, 155, 138, 0.02) 100%);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-lg);
+    }
+    
+    .banner-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .banner-icon svg { width: 24px; height: 24px; color: white; }
+    
+    .banner-content { flex: 1; }
+    
+    .banner-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      margin-bottom: var(--space-1);
+    }
+    
+    .banner-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .banner-action {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-md);
+      white-space: nowrap;
+      transition: all 150ms ease;
+    }
+    .banner-action:hover { background-color: var(--sage-muted); }
+    .banner-action svg { width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+  
+  <h1>Tooltips & Coach Marks</h1>
+  <p class="subtitle">Contextual guidance and onboarding elements</p>
+  
+  <!-- Basic Tooltips -->
+  <section class="section">
+    <h2 class="section-title">Basic Tooltips</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Tooltip Positions</div>
+        <div class="demo-content" style="gap: var(--space-10); flex-wrap: wrap;">
+          
+          <div class="tooltip-wrap">
+            <div class="demo-trigger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+            </div>
+            <div class="tooltip tooltip--top">New note</div>
+          </div>
+          
+          <div class="tooltip-wrap">
+            <div class="demo-trigger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div class="tooltip tooltip--bottom">Search (⌘K)</div>
+          </div>
+          
+          <div class="tooltip-wrap">
+            <div class="demo-trigger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </div>
+            <div class="tooltip tooltip--right">Settings</div>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Coach Marks -->
+  <section class="section">
+    <h2 class="section-title">Coach Marks (Onboarding Spotlight)</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Step 1 of 4 - Welcome</div>
+        <div class="demo-content" style="position: relative;">
+          <div class="coach-tooltip coach-tooltip--bottom" style="position: relative;">
+            <div class="coach-step">
+              <span>Step 1 of 4</span>
+              <div class="coach-step-dots">
+                <span class="coach-dot coach-dot--active"></span>
+                <span class="coach-dot"></span>
+                <span class="coach-dot"></span>
+                <span class="coach-dot"></span>
+              </div>
+            </div>
+            <h4 class="coach-title">This is your dashboard</h4>
+            <p class="coach-message">Here you'll see your recent notes, active threads, and AI-powered insights about your reflections.</p>
+            <div class="coach-actions">
+              <button class="coach-skip">Skip tour</button>
+              <button class="coach-next">
+                Next
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Step 4 of 4 - Final</div>
+        <div class="demo-content" style="position: relative;">
+          <div class="coach-tooltip coach-tooltip--bottom" style="position: relative;">
+            <div class="coach-step">
+              <span>Step 4 of 4</span>
+              <div class="coach-step-dots">
+                <span class="coach-dot coach-dot--complete"></span>
+                <span class="coach-dot coach-dot--complete"></span>
+                <span class="coach-dot coach-dot--complete"></span>
+                <span class="coach-dot coach-dot--active"></span>
+              </div>
+            </div>
+            <h4 class="coach-title">You're all set!</h4>
+            <p class="coach-message">Start by writing your first note. Just tap the + button whenever inspiration strikes.</p>
+            <div class="coach-actions">
+              <button class="coach-skip">Dismiss</button>
+              <button class="coach-next" style="background-color: var(--success);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Feature Highlights -->
+  <section class="section">
+    <h2 class="section-title">Feature Highlights</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">New Feature Callout</div>
+        <div class="demo-content" style="flex-direction: column; padding-top: var(--space-10);">
+          <div class="feature-highlight">
+            <div class="demo-trigger" style="position: relative; z-index: 2;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+            </div>
+            <span class="highlight-badge"></span>
+            <div class="feature-callout">
+              <span class="callout-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                NEW
+              </span>
+              <p class="callout-text">AI Insights are here! Get personalized patterns discovered from your notes.</p>
+              <button class="callout-dismiss">Dismiss</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Getting Started Checklist</div>
+        <div class="demo-content">
+          <div class="checklist-card">
+            <div class="checklist-header">
+              <div class="checklist-title">
+                <span>Getting started</span>
+                <span class="checklist-progress-text">2 of 4</span>
+              </div>
+              <div class="checklist-bar">
+                <div class="checklist-fill" style="width: 50%;"></div>
+              </div>
+            </div>
+            <div class="checklist-items">
+              <div class="checklist-item checklist-item--complete">
+                <span class="checklist-check">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                <span class="checklist-label">Create your account</span>
+              </div>
+              <div class="checklist-item checklist-item--complete">
+                <span class="checklist-check">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                <span class="checklist-label">Write your first note</span>
+              </div>
+              <div class="checklist-item">
+                <span class="checklist-check">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                <span class="checklist-label">Create a thread</span>
+              </div>
+              <div class="checklist-item">
+                <span class="checklist-check">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                <span class="checklist-label">Set a goal</span>
+              </div>
+            </div>
+            <div class="checklist-footer">
+              <button class="checklist-dismiss">Dismiss checklist</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Inline Hints -->
+  <section class="section">
+    <h2 class="section-title">Inline Hints & Banners</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Contextual Tip</div>
+        <div style="padding: var(--space-5);">
+          <div class="inline-hint">
+            <div class="hint-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            </div>
+            <div class="hint-content">
+              <div class="hint-title">Pro tip: Use threads</div>
+              <p class="hint-message">Group related notes into threads to track how your thinking evolves over time.</p>
+            </div>
+            <button class="hint-dismiss">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">First-time Feature Banner</div>
+        <div style="padding: var(--space-5);">
+          <div class="first-time-banner">
+            <div class="banner-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+            </div>
+            <div class="banner-content">
+              <div class="banner-title">Your first insight is ready!</div>
+              <p class="banner-message">AI found a pattern in your recent notes.</p>
+            </div>
+            <button class="banner-action">
+              View insight
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Help Popovers -->
+  <section class="section">
+    <h2 class="section-title">Contextual Help</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Help Popover</div>
+        <div class="demo-content">
+          <div class="tooltip-wrap" style="margin-top: 100px;">
+            <div class="help-trigger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="help-popover">
+              <h4 class="help-popover-title">What are threads?</h4>
+              <p class="help-popover-message">Threads are collections of related notes. They help you track how your thinking evolves on a topic over time.</p>
+              <a href="#" class="help-popover-link">
+                Learn more
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+</body>
+</html>

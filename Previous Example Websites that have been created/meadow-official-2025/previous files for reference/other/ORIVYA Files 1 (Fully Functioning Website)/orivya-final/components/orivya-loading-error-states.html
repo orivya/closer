@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Loading & Error States</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --error: #f87171;
+      --error-subtle: rgba(248, 113, 113, 0.1);
+      --warning: #fbbf24;
+      --warning-subtle: rgba(251, 191, 36, 0.1);
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      padding: var(--space-8);
+    }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    
+    /* Page Layout */
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+      text-align: center;
+    }
+    
+    .page-desc {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    
+    .states-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-6);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .state-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .state-label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-4);
+    }
+    
+    .state-label--error { color: var(--error); }
+    .state-label--warning { color: var(--warning); }
+    
+    /* Loading State Component */
+    .loading-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-6);
+    }
+    
+    /* Spinner */
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--bg-surface-2);
+      border-top-color: var(--sage);
+      border-radius: var(--radius-full);
+      animation: spin 1s linear infinite;
+      margin-bottom: var(--space-4);
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .spinner--small {
+      width: 24px;
+      height: 24px;
+      border-width: 2px;
+    }
+    
+    .loading-text {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    
+    /* Pulse Loader */
+    .pulse-loader {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background-color: var(--sage);
+      border-radius: var(--radius-full);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .pulse-dot:nth-child(2) { animation-delay: 0.2s; }
+    .pulse-dot:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes pulse {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    
+    /* Logo Loader */
+    .logo-loader {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      margin-bottom: var(--space-5);
+    }
+    
+    .logo-loader svg {
+      width: 100%;
+      height: 100%;
+      color: var(--sage);
+      animation: logoBreath 2s ease-in-out infinite;
+    }
+    
+    @keyframes logoBreath {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.05); opacity: 1; }
+    }
+    
+    .logo-ring {
+      position: absolute;
+      inset: -8px;
+      border: 2px solid var(--sage-muted);
+      border-top-color: var(--sage);
+      border-radius: var(--radius-full);
+      animation: spin 1.5s linear infinite;
+    }
+    
+    /* Skeleton Loading */
+    .skeleton-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .skeleton-card {
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+    }
+    
+    .skeleton-line {
+      height: 12px;
+      background: linear-gradient(90deg, var(--bg-hover) 25%, var(--bg-surface-2) 50%, var(--bg-hover) 75%);
+      background-size: 200% 100%;
+      border-radius: var(--radius-sm);
+      animation: shimmer 1.5s infinite;
+    }
+    
+    .skeleton-line--short { width: 60%; }
+    .skeleton-line--medium { width: 80%; }
+    .skeleton-line--full { width: 100%; }
+    
+    .skeleton-line + .skeleton-line { margin-top: var(--space-2); }
+    
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    .skeleton-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(90deg, var(--bg-hover) 25%, var(--bg-surface-2) 50%, var(--bg-hover) 75%);
+      background-size: 200% 100%;
+      border-radius: var(--radius-full);
+      animation: shimmer 1.5s infinite;
+    }
+    
+    .skeleton-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    
+    /* Error State Component */
+    .error-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-6);
+    }
+    
+    .error-icon {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--error-subtle);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-4);
+    }
+    .error-icon svg { width: 28px; height: 28px; color: var(--error); }
+    
+    .warning-icon {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--warning-subtle);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-4);
+    }
+    .warning-icon svg { width: 28px; height: 28px; color: var(--warning); }
+    
+    .error-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .error-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      max-width: 280px;
+      margin-bottom: var(--space-5);
+      line-height: 1.5;
+    }
+    
+    .error-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+      transition: background-color var(--transition-fast);
+    }
+    .error-btn:hover { background-color: var(--bg-hover); }
+    .error-btn svg { width: 16px; height: 16px; }
+    
+    /* Offline Banner */
+    .offline-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--warning-subtle);
+      border-radius: var(--radius-md);
+    }
+    
+    .offline-banner svg { width: 18px; height: 18px; color: var(--warning); flex-shrink: 0; }
+    
+    .offline-banner-text {
+      flex: 1;
+    }
+    .offline-banner-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .offline-banner-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Inline Loading */
+    .inline-loading {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+    }
+    
+    .inline-loading-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    /* Progress Bar */
+    .progress-loading {
+      padding: var(--space-4);
+      text-align: center;
+    }
+    
+    .progress-bar {
+      height: 4px;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: var(--space-3);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      width: 60%;
+      background: linear-gradient(90deg, var(--sage-dark), var(--sage));
+      border-radius: var(--radius-full);
+      animation: progressPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .progress-text {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Saving Indicator */
+    .saving-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+    }
+    
+    .saving-dot {
+      width: 6px;
+      height: 6px;
+      background-color: var(--sage);
+      border-radius: var(--radius-full);
+      animation: savingPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes savingPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    
+    /* Component preview wrapper */
+    .component-preview {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  
+  <h1 class="page-title">Loading & Error States</h1>
+  <p class="page-desc">Component library for loading and error variations</p>
+  
+  <div class="states-grid">
+    
+    <!-- Full Page Loading -->
+    <div class="state-card">
+      <span class="state-label">Full Page Loading</span>
+      <div class="loading-state">
+        <div class="logo-loader">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+          </svg>
+          <div class="logo-ring"></div>
+        </div>
+        <span class="loading-text">Loading your reflections...</span>
+      </div>
+    </div>
+    
+    <!-- Spinner Loading -->
+    <div class="state-card">
+      <span class="state-label">Simple Spinner</span>
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span class="loading-text">Just a moment...</span>
+      </div>
+    </div>
+    
+    <!-- Pulse Loading -->
+    <div class="state-card">
+      <span class="state-label">Pulse Loader</span>
+      <div class="loading-state">
+        <div class="pulse-loader">
+          <div class="pulse-dot"></div>
+          <div class="pulse-dot"></div>
+          <div class="pulse-dot"></div>
+        </div>
+        <span class="loading-text">Analyzing patterns...</span>
+      </div>
+    </div>
+    
+    <!-- Skeleton Loading -->
+    <div class="state-card">
+      <span class="state-label">Skeleton Loading</span>
+      <div class="skeleton-container">
+        <div class="skeleton-card">
+          <div class="skeleton-header">
+            <div class="skeleton-avatar"></div>
+            <div style="flex: 1;">
+              <div class="skeleton-line skeleton-line--medium"></div>
+              <div class="skeleton-line skeleton-line--short" style="height: 8px; margin-top: 8px;"></div>
+            </div>
+          </div>
+          <div class="skeleton-line skeleton-line--full"></div>
+          <div class="skeleton-line skeleton-line--full"></div>
+          <div class="skeleton-line skeleton-line--medium"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-header">
+            <div class="skeleton-avatar"></div>
+            <div style="flex: 1;">
+              <div class="skeleton-line skeleton-line--short"></div>
+              <div class="skeleton-line skeleton-line--short" style="height: 8px; margin-top: 8px; width: 40%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Inline Components -->
+    <div class="state-card">
+      <span class="state-label">Inline Components</span>
+      <div class="component-preview">
+        <div class="inline-loading">
+          <div class="spinner spinner--small"></div>
+          <span class="inline-loading-text">Loading insights...</span>
+        </div>
+        
+        <div class="progress-loading">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <span class="progress-text">Syncing your notes...</span>
+        </div>
+        
+        <div style="display: flex; gap: var(--space-3);">
+          <div class="saving-indicator">
+            <div class="saving-dot"></div>
+            Saving...
+          </div>
+          <div class="saving-indicator" style="background-color: var(--sage-subtle);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--sage)" stroke-width="2" style="width: 12px; height: 12px;">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Saved
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Offline Banner -->
+    <div class="state-card">
+      <span class="state-label state-label--warning">Offline State</span>
+      <div class="component-preview">
+        <div class="offline-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="1" y1="1" x2="23" y2="23"/>
+            <path d="M16.72 11.06A10.94 10.94 0 0119 12.55"/>
+            <path d="M5 12.55a10.94 10.94 0 015.17-2.39"/>
+            <path d="M10.71 5.05A16 16 0 0122.58 9"/>
+            <path d="M1.42 9a15.91 15.91 0 014.7-2.88"/>
+            <path d="M8.53 16.11a6 6 0 016.95 0"/>
+            <line x1="12" y1="20" x2="12.01" y2="20"/>
+          </svg>
+          <div class="offline-banner-text">
+            <div class="offline-banner-title">You're offline</div>
+            <div class="offline-banner-desc">Changes will sync when you're back online</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Connection Error -->
+    <div class="state-card">
+      <span class="state-label state-label--error">Connection Error</span>
+      <div class="error-state">
+        <div class="error-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3 class="error-title">Connection lost</h3>
+        <p class="error-desc">We couldn't reach our servers. Check your internet and try again.</p>
+        <button class="error-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          Try again
+        </button>
+      </div>
+    </div>
+    
+    <!-- Something Went Wrong -->
+    <div class="state-card">
+      <span class="state-label state-label--error">Generic Error</span>
+      <div class="error-state">
+        <div class="error-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <h3 class="error-title">Something went wrong</h3>
+        <p class="error-desc">We're looking into it. Your notes are safe.</p>
+        <button class="error-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+    </div>
+    
+    <!-- Session Expired -->
+    <div class="state-card">
+      <span class="state-label state-label--warning">Session Expired</span>
+      <div class="error-state">
+        <div class="warning-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3 class="error-title">Session expired</h3>
+        <p class="error-desc">For your security, please sign in again to continue.</p>
+        <button class="error-btn" style="background-color: var(--sage); color: white;">
+          Sign in
+        </button>
+      </div>
+    </div>
+    
+    <!-- Sync Error -->
+    <div class="state-card">
+      <span class="state-label state-label--warning">Sync Warning</span>
+      <div class="error-state">
+        <div class="warning-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+        </div>
+        <h3 class="error-title">Sync paused</h3>
+        <p class="error-desc">Some changes haven't synced yet. They'll be saved when connection resumes.</p>
+        <button class="error-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          Retry sync
+        </button>
+      </div>
+    </div>
+    
+  </div>
+  
+</body>
+</html>

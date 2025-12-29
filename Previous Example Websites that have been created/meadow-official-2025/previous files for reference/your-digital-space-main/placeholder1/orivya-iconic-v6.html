@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<!-- ORIVYA Landing Page v6 - Updated links to v10, selection/scrollbar styles -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — See Yourself Clearly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a;
+            --sage-light: #9bb3a4;
+            --sage-dark: #6a8577;
+            --sage-glow: rgba(125, 155, 138, 0.5);
+            --sage-subtle: rgba(125, 155, 138, 0.08);
+
+            --bg-base: #08080a;
+            --bg-elevated: #0e0e11;
+            --bg-surface: #141417;
+            --bg-card: #101013;
+
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            --text-muted: #52525b;
+
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --border-default: rgba(255, 255, 255, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Accessibility: Focus visible styling */
+        *:focus { outline: none; }
+        :focus-visible {
+            outline: 2px solid rgba(125, 155, 138, 0.65);
+            outline-offset: 3px;
+            border-radius: 10px;
+        }
+        *::-moz-focus-inner { border: 0; }
+        ::selection { background: var(--sage); color: white; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           AMBIENT
+           ======================================== */
+        .ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse 50% 35% at 50% 0%, rgba(125, 155, 138, 0.06) 0%, transparent 60%);
+        }
+
+        /* ========================================
+           NAVIGATION
+           ======================================== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 14px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(8, 8, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            text-decoration: none;
+        }
+
+        /* ========================================
+           THE ICONIC SEED SHAPE
+           More dramatic asymmetry - like a tilted drop
+           ======================================== */
+        
+        /* Nav Avatar */
+        .nav-avatar {
+            width: 28px;
+            height: 26px;
+            position: relative;
+        }
+
+        .nav-avatar .body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%);
+            /* THE ICONIC SHAPE: dramatic taper on right, full on left */
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+            box-shadow: 0 2px 10px rgba(125, 155, 138, 0.25);
+            position: relative;
+            animation: nav-breathe 5s ease-in-out infinite;
+        }
+        
+        @keyframes nav-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+        .nav-avatar .eyes {
+            position: absolute;
+            top: 36%;
+            left: 42%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 7px;
+        }
+
+        .nav-avatar .eye {
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+        }
+
+        /* Distinctive: right eye slightly smaller */
+        .nav-avatar .eye:last-child {
+            width: 2.5px;
+            height: 2.5px;
+            opacity: 0.85;
+        }
+
+        .nav-wordmark {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-link {
+            font-size: 13px;
+            font-weight: 450;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border-radius: 7px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+        }
+
+        .btn-ghost:hover {
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            background: var(--sage);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--sage-light);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(125, 155, 138, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(125, 155, 138, 0.2);
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 110px 24px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ========================================
+           HERO AVATAR - THE ICONIC SEED
+           Using minimal container approach
+           ======================================== */
+        .hero-avatar-wrapper {
+            width: 180px;
+            height: 165px;
+            position: relative;
+            margin-bottom: 52px;
+            background: transparent;
+            border: none;
+            outline: none;
+            /* Safari fix: use isolation instead of 3D context */
+            isolation: isolate;
+            cursor: default;
+        }
+
+        .hero-avatar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            /* Allow wrapper to receive hover */
+            pointer-events: none;
+        }
+
+        .hero-avatar::before,
+        .hero-avatar::after {
+            display: none !important;
+        }
+
+        .hero-avatar *,
+        .hero-avatar *::before,
+        .hero-avatar *::after {
+            pointer-events: none;
+        }
+
+        .hero-avatar .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--sage);
+            /* Safari-safe blur */
+            -webkit-filter: blur(60px);
+            filter: blur(60px);
+            opacity: 0.4;
+            transition: opacity 0.5s ease;
+            border: none;
+            outline: none;
+            /* Prevent Safari box artifacts */
+            will-change: opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .hero-avatar .body {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 145px;
+            height: 125px;
+            background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%);
+            /* THE ICONIC SHAPE: dramatic asymmetric taper */
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+            box-shadow: 
+                0 15px 50px rgba(125, 155, 138, 0.35),
+                inset 0 -12px 28px rgba(0,0,0,0.1),
+                inset 0 12px 28px rgba(255,255,255,0.1);
+            transition: transform 0.4s ease, border-radius 0.4s ease;
+            border: none;
+            outline: none;
+            overflow: visible;
+            /* Safari fix: prevent box artifacts */
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        /* THE EYES - Distinctive asymmetric sizing */
+        .hero-avatar .eyes {
+            position: absolute;
+            top: 40%;
+            left: 42%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            /* Removed transform transition - was causing box artifact */
+            transition: gap 0.3s ease;
+            border: none;
+            outline: none;
+            background: transparent;
+        }
+
+        .hero-avatar .eye {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* Left eye - slightly larger (the "leading" eye) */
+        .hero-avatar .eye.left {
+            width: 11px;
+            height: 11px;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+        }
+
+        /* Right eye - slightly smaller (follows the taper) */
+        .hero-avatar .eye.right {
+            width: 9px;
+            height: 9px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            opacity: 0.9;
+        }
+
+        /* Eye shine dots */
+        .hero-avatar .eye::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 3px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+        }
+
+        .hero-avatar .eye.right::after {
+            width: 2px;
+            height: 2px;
+        }
+
+        /* ========================================
+           AVATAR STATES - CSS Only (no JS class toggling)
+           ======================================== */
+        .hero-avatar .body {
+            animation: idle-breathe 5s ease-in-out infinite;
+        }
+
+        .hero-avatar .eye {
+            animation: idle-blink 5s ease-in-out infinite;
+        }
+
+        @keyframes idle-breathe {
+            0%, 100% { 
+                transform: translate(-50%, -50%) translateZ(0) translateY(0) rotate(0deg);
+                border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+            }
+            33% { 
+                transform: translate(-50%, -50%) translateZ(0) translateY(-10px) rotate(-2deg);
+                border-radius: 72% 28% 62% 38% / 58% 42% 58% 42%;
+            }
+            66% { 
+                transform: translate(-50%, -50%) translateZ(0) translateY(-6px) rotate(1deg);
+                border-radius: 74% 26% 66% 34% / 62% 38% 62% 38%;
+            }
+        }
+
+        @keyframes idle-blink {
+            0%, 44%, 56%, 100% { transform: scaleY(1) translateZ(0); }
+            50% { transform: scaleY(0.1) translateZ(0); }
+        }
+
+        /* Hover state - CSS only, no JavaScript */
+        .hero-avatar-wrapper:hover .body {
+            animation: listening-pulse 2.5s ease-in-out infinite;
+        }
+
+        .hero-avatar-wrapper:hover .eye.left {
+            width: 13px;
+            height: 13px;
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.45);
+        }
+
+        .hero-avatar-wrapper:hover .eye.right {
+            width: 11px;
+            height: 11px;
+            box-shadow: 0 0 14px rgba(255, 255, 255, 0.4);
+        }
+
+        .hero-avatar-wrapper:hover .glow {
+            opacity: 0.55;
+            transform: translate(-50%, -50%) translateZ(0) scale(1.1);
+        }
+
+        @keyframes listening-pulse {
+            0%, 100% { transform: translate(-50%, -50%) translateZ(0) scale(1); }
+            50% { transform: translate(-50%, -50%) translateZ(0) scale(1.05); }
+        }
+
+        /* ========================================
+           HERO CONTENT
+           ======================================== */
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero-title {
+            font-size: clamp(38px, 5vw, 58px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 22px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(135deg, var(--sage-light) 20%, var(--sage) 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 44px;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-large {
+            padding: 15px 34px;
+            font-size: 14px;
+            border-radius: 9px;
+        }
+
+        .hero-note {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           VALUE PROP
+           ======================================== */
+        .value-section {
+            padding: 100px 24px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .value-content {
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        .value-statement {
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 1.5;
+            color: var(--text-primary);
+            margin-bottom: 18px;
+        }
+
+        .value-statement .em {
+            color: var(--sage-light);
+        }
+
+        .value-subtext {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           FEATURES
+           ======================================== */
+        .features {
+            padding: 80px 24px 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .features-header {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto 56px;
+        }
+
+        .features-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--sage);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+
+        .features-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .features-subtitle {
+            font-size: 15px;
+            color: var(--text-tertiary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 28px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--border-default);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--sage);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.55;
+        }
+
+        /* ========================================
+           CLARITY SYSTEM
+           ======================================== */
+        .clarity-section {
+            padding: 80px 24px 120px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .clarity-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .clarity-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .clarity-header p {
+            font-size: 15px;
+            color: var(--text-tertiary);
+        }
+
+        .clarity-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .clarity-step {
+            flex: 1;
+            max-width: 260px;
+        }
+
+        .clarity-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .clarity-card-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            color: var(--sage);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .clarity-card-content {
+            flex: 1;
+        }
+
+        .clarity-conversation .message {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            margin-bottom: 8px;
+            max-width: 85%;
+        }
+
+        .clarity-conversation .message.user {
+            background: var(--sage);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 3px;
+        }
+
+        .clarity-conversation .message.ai {
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            border-bottom-left-radius: 3px;
+        }
+
+        .clarity-insight {
+            border-color: var(--sage);
+            background: linear-gradient(180deg, rgba(125, 155, 138, 0.06) 0%, var(--bg-card) 100%);
+        }
+
+        .clarity-insight .insight-type {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--sage-light);
+            margin-bottom: 8px;
+        }
+
+        .clarity-insight .insight-text {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .clarity-library .library-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .clarity-library .library-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: var(--bg-surface);
+            border-radius: 6px;
+        }
+
+        .clarity-library .library-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--sage);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .clarity-library .library-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .clarity-arrow {
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .clarity-arrow svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-muted);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        /* ========================================
+           CONVERSATION PREVIEW
+           ======================================== */
+        .preview {
+            padding: 40px 24px 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .preview-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .preview-avatar {
+            width: 36px;
+            height: 32px;
+            position: relative;
+        }
+
+        .preview-avatar .body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(155deg, var(--sage-light), var(--sage), var(--sage-dark));
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+            position: relative;
+        }
+
+        .preview-avatar .eyes {
+            position: absolute;
+            top: 36%;
+            left: 42%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preview-avatar .eye {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+        }
+
+        .preview-avatar .eye.left {
+            width: 4px;
+            height: 4px;
+        }
+
+        .preview-avatar .eye.right {
+            width: 3.5px;
+            height: 3.5px;
+            opacity: 0.9;
+        }
+
+        .preview-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .preview-status {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .preview-messages {
+            padding: 24px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .preview-msg {
+            max-width: 82%;
+        }
+
+        .preview-msg.user {
+            align-self: flex-end;
+        }
+
+        .preview-msg.orivya {
+            align-self: flex-start;
+        }
+
+        .preview-bubble {
+            padding: 13px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .preview-msg.user .preview-bubble {
+            background: var(--sage);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .preview-msg.orivya .preview-bubble {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            border-bottom-left-radius: 4px;
+        }
+
+        /* ========================================
+           PERSONALITY MOMENT
+           ======================================== */
+        .personality-section {
+            padding: 80px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .personality-card {
+            max-width: 520px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 40px 36px;
+            text-align: center;
+        }
+
+        .personality-avatar {
+            width: 60px;
+            height: 52px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .personality-avatar .body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(155deg, var(--sage-light), var(--sage), var(--sage-dark));
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+            position: relative;
+        }
+
+        .personality-avatar .eyes {
+            position: absolute;
+            top: 36%;
+            left: 42%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .personality-avatar .eye {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+        }
+
+        .personality-avatar .eye.left {
+            width: 5px;
+            height: 5px;
+        }
+
+        .personality-avatar .eye.right {
+            width: 4px;
+            height: 4px;
+            opacity: 0.9;
+        }
+
+        .personality-quote {
+            font-size: 17px;
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+
+        .personality-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           MOBILE SECTION
+           ======================================== */
+        .mobile-section {
+            padding: 80px 24px 120px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mobile-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .mobile-header h2 {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .mobile-header p {
+            font-size: 14px;
+            color: var(--text-tertiary);
+        }
+
+        .mobile-showcase {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            align-items: flex-start;
+        }
+
+        .phone-mockup {
+            width: 280px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: 36px;
+            padding: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .phone-screen {
+            background: var(--bg-base);
+            border-radius: 26px;
+            overflow: hidden;
+            height: 560px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-notch {
+            height: 28px;
+            background: var(--bg-base);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 4px;
+        }
+
+        .phone-notch-inner {
+            width: 80px;
+            height: 6px;
+            background: var(--bg-elevated);
+            border-radius: 3px;
+        }
+
+        .phone-header {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .phone-avatar {
+            width: 32px;
+            height: 28px;
+        }
+
+        .phone-avatar .body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(155deg, var(--sage-light), var(--sage), var(--sage-dark));
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+            position: relative;
+        }
+
+        .phone-avatar .eyes {
+            position: absolute;
+            top: 36%;
+            left: 42%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .phone-avatar .eye {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+        }
+
+        .phone-avatar .eye.left {
+            width: 3px;
+            height: 3px;
+        }
+
+        .phone-avatar .eye.right {
+            width: 2.5px;
+            height: 2.5px;
+            opacity: 0.9;
+        }
+
+        .phone-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .phone-messages {
+            flex: 1;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .phone-msg {
+            max-width: 80%;
+        }
+
+        .phone-msg.user {
+            align-self: flex-end;
+        }
+
+        .phone-msg.ai {
+            align-self: flex-start;
+        }
+
+        .phone-bubble {
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .phone-msg.user .phone-bubble {
+            background: var(--sage);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .phone-msg.ai .phone-bubble {
+            background: var(--bg-surface);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            border-bottom-left-radius: 4px;
+        }
+
+        .phone-input {
+            padding: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .phone-input-field {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .phone-home-bar {
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-home-indicator {
+            width: 100px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 2px;
+        }
+
+        .mobile-features {
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-top: 40px;
+        }
+
+        .mobile-feature {
+            display: flex;
+            gap: 14px;
+        }
+
+        .mobile-feature-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--sage-subtle);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .mobile-feature-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--sage);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .mobile-feature-text h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .mobile-feature-text p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        /* ========================================
+           CTA SECTION
+           ======================================== */
+        .cta-section {
+            padding: 100px 24px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-content {
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .cta-avatar {
+            width: 95px;
+            height: 85px;
+            margin: 0 auto 36px;
+            position: relative;
+        }
+
+        .cta-avatar .glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85px;
+            height: 75px;
+            border-radius: 50%;
+            background: var(--sage);
+            filter: blur(35px);
+            opacity: 0.35;
+        }
+
+        .cta-avatar .body {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 76px;
+            height: 66px;
+            background: linear-gradient(155deg, var(--sage-light), var(--sage), var(--sage-dark));
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+        }
+
+        .cta-avatar .eyes {
+            position: absolute;
+            top: 36%;
+            left: 42%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .cta-avatar .eye {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+        }
+
+        .cta-avatar .eye.left {
+            width: 6px;
+            height: 6px;
+        }
+
+        .cta-avatar .eye.right {
+            width: 5px;
+            height: 5px;
+            opacity: 0.9;
+        }
+
+        .cta-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .cta-subtitle {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            margin-bottom: 32px;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .footer {
+            padding: 36px 24px;
+            border-top: 1px solid var(--border-subtle);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            text-decoration: none;
+        }
+
+        .footer-avatar {
+            width: 22px;
+            height: 20px;
+            background: linear-gradient(155deg, var(--sage-light), var(--sage), var(--sage-dark));
+            border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+        }
+
+        .footer-wordmark {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-link {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--text-secondary);
+        }
+
+        .footer-copy {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 900px) {
+            .nav {
+                padding: 14px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .clarity-flow {
+                flex-direction: column;
+            }
+
+            .clarity-arrow {
+                transform: rotate(90deg);
+            }
+
+            .clarity-step {
+                max-width: 320px;
+            }
+
+            .mobile-showcase {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .mobile-features {
+                padding-top: 32px;
+                max-width: 320px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 18px;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .hero-avatar-wrapper {
+                width: 140px;
+                height: 130px;
+                margin-bottom: 40px;
+            }
+
+            .hero-avatar .glow {
+                width: 120px;
+                height: 110px;
+            }
+
+            .hero-avatar .body {
+                width: 115px;
+                height: 100px;
+            }
+
+            .hero-avatar .eyes {
+                gap: 26px;
+            }
+
+            .hero-avatar .eye.left {
+                width: 9px;
+                height: 9px;
+            }
+
+            .hero-avatar .eye.right {
+                width: 7px;
+                height: 7px;
+            }
+
+            /* Mobile hover states */
+            .hero-avatar-wrapper:hover .eye.left {
+                width: 11px;
+                height: 11px;
+            }
+
+            .hero-avatar-wrapper:hover .eye.right {
+                width: 9px;
+                height: 9px;
+            }
+
+            .value-statement {
+                font-size: 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                max-width: 340px;
+            }
+
+            .features-title, .cta-title {
+                font-size: 24px;
+            }
+
+            .phone-mockup {
+                width: 260px;
+            }
+
+            .phone-screen {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient"></div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="#" class="nav-logo">
+            <div class="nav-avatar">
+                <div class="body">
+                    <div class="eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                </div>
+            </div>
+            <span class="nav-wordmark">ORIVYA</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#" class="nav-link">Pricing</a>
+            <a href="#" class="nav-link">About</a>
+        </div>
+        <div class="nav-cta">
+            <button class="btn btn-ghost" onclick="window.location.href='orivya-app-v10.html'">Sign In</button>
+            <a href="orivya-onboarding-v10.html" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-avatar-wrapper">
+            <div class="hero-avatar" id="hero-avatar">
+                <div class="glow"></div>
+                <div class="body">
+                    <div class="eyes">
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-title">
+                See yourself <span class="highlight">clearly</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Not advice. Not noise. Just the questions that unlock what you already know.
+            </p>
+
+            <div class="hero-cta">
+                <a href="orivya-onboarding-v10.html" class="btn btn-primary btn-large">Begin</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Prop -->
+    <section class="value-section">
+        <div class="value-content">
+            <p class="value-statement">
+                Orivya is a clarity companion. An AI that <span class="em">notices patterns</span> in how you think, asks the questions you haven't asked yourself, and helps you see what you couldn't see alone.
+            </p>
+            <p class="value-subtext">
+                Every conversation becomes a piece of understanding, organized and always there when you need it.
+            </p>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="features-header">
+            <div class="features-label">What Makes This Different</div>
+            <h2 class="features-title">Clarity, not just conversation</h2>
+            <p class="features-subtitle">Most AI just responds. Orivya actually pays attention.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Pattern Recognition</h3>
+                <p class="feature-desc">Notices themes across conversations. The stories you tell, the things you avoid, the questions you circle back to.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Thoughtful Challenge</h3>
+                <p class="feature-desc">Asks the questions that help you see your situation from angles you hadn't considered.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Living Memory</h3>
+                <p class="feature-desc">Every conversation builds on the last. Remembers what matters to you, what you're working through.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Surfaced Insights</h3>
+                <p class="feature-desc">Conversations become a library of clarity. Organized, searchable, accessible when you need it.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Gentle Rhythm</h3>
+                <p class="feature-desc">Start your day with intention. End it with reflection. Orivya meets you where you are.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+                        <line x1="12" y1="6" x2="12" y2="12"/>
+                        <line x1="9" y1="9" x2="15" y2="9"/>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Continuous Context</h3>
+                <p class="feature-desc">Pick up where you left off. Reference past conversations. Your history becomes a resource, not a blur.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clarity System -->
+    <section class="clarity-section">
+        <div class="clarity-header">
+            <h2>From conversation to clarity</h2>
+            <p>Your thoughts become organized understanding</p>
+        </div>
+
+        <div class="clarity-flow">
+            <div class="clarity-step">
+                <div class="clarity-card clarity-conversation">
+                    <div class="clarity-card-label">Conversation</div>
+                    <div class="clarity-card-content">
+                        <div class="message user">I keep putting this off...</div>
+                        <div class="message ai">What would change if you stopped waiting?</div>
+                        <div class="message user">Maybe I'm scared it'll work.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clarity-arrow">
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </div>
+
+            <div class="clarity-step">
+                <div class="clarity-card clarity-insight">
+                    <div class="clarity-card-label">Insight</div>
+                    <div class="clarity-card-content">
+                        <div class="insight-type">Pattern Recognized</div>
+                        <div class="insight-text">Your hesitation isn't about fear of failure. It's about what success would require you to become.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clarity-arrow">
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </div>
+
+            <div class="clarity-step">
+                <div class="clarity-card clarity-library">
+                    <div class="clarity-card-label">Library</div>
+                    <div class="clarity-card-content">
+                        <div class="library-items">
+                            <div class="library-item">
+                                <div class="library-dot"></div>
+                                <div class="library-text">Fear of success pattern</div>
+                            </div>
+                            <div class="library-item">
+                                <div class="library-dot"></div>
+                                <div class="library-text">Identity and change</div>
+                            </div>
+                            <div class="library-item">
+                                <div class="library-dot"></div>
+                                <div class="library-text">Procrastination triggers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conversation Preview -->
+    <section class="preview">
+        <div class="preview-container">
+            <div class="preview-header">
+                <div class="preview-avatar">
+                    <div class="body">
+                        <div class="eyes">
+                            <div class="eye left"></div>
+                            <div class="eye right"></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="preview-name">Orivya</div>
+                    <div class="preview-status">Listening</div>
+                </div>
+            </div>
+            <div class="preview-messages">
+                <div class="preview-msg user">
+                    <div class="preview-bubble">Every Sunday I tell myself this is the week I'll finally ask my manager about the promotion. Then Monday comes and I just... don't. It's been months.</div>
+                </div>
+                <div class="preview-msg orivya">
+                    <div class="preview-bubble">That's interesting. The wanting is clearly there. But something changes between Sunday night and Monday morning. What do you think you're protecting yourself from?</div>
+                </div>
+                <div class="preview-msg user">
+                    <div class="preview-bubble">Hearing no, I guess. Or maybe finding out I'm not as ready as I thought.</div>
+                </div>
+                <div class="preview-msg orivya">
+                    <div class="preview-bubble">So the silence keeps the possibility alive. You're not procrastinating. You're protecting something that matters to you. That's actually worth sitting with before you decide what to do next.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personality Moment -->
+    <section class="personality-section">
+        <div class="personality-card">
+            <div class="personality-avatar">
+                <div class="body">
+                    <div class="eyes">
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="personality-quote">"Most of us don't lack answers. We lack the right questions. The things that keep you stuck usually aren't complicated. They're just hard to see when you're standing inside them."</p>
+            <span class="personality-time" id="personality-time"></span>
+        </div>
+    </section>
+
+    <!-- Mobile -->
+    <section class="mobile-section">
+        <div class="mobile-header">
+            <h2>With you everywhere</h2>
+            <p>Clarity when you need it, wherever you are</p>
+        </div>
+
+        <div class="mobile-showcase">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="phone-notch">
+                        <div class="phone-notch-inner"></div>
+                    </div>
+                    <div class="phone-header">
+                        <div class="phone-avatar">
+                            <div class="body">
+                                <div class="eyes">
+                                    <div class="eye left"></div>
+                                    <div class="eye right"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="phone-name">Orivya</span>
+                    </div>
+                    <div class="phone-messages">
+                        <div class="phone-msg ai">
+                            <div class="phone-bubble">Good morning. You mentioned yesterday you wanted to revisit that decision. How are you feeling about it now?</div>
+                        </div>
+                        <div class="phone-msg user">
+                            <div class="phone-bubble">Clearer actually. I think I was overcomplicating it.</div>
+                        </div>
+                        <div class="phone-msg ai">
+                            <div class="phone-bubble">That happens. Sometimes clarity sneaks up once we stop overthinking. What's the simple version you're seeing now?</div>
+                        </div>
+                        <div class="phone-msg user">
+                            <div class="phone-bubble">I just need to say no.</div>
+                        </div>
+                        <div class="phone-msg ai">
+                            <div class="phone-bubble">There it is. How does it feel to say that out loud?</div>
+                        </div>
+                    </div>
+                    <div class="phone-input">
+                        <div class="phone-input-field">What's on your mind?</div>
+                    </div>
+                    <div class="phone-home-bar">
+                        <div class="phone-home-indicator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-features">
+                <div class="mobile-feature">
+                    <div class="mobile-feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                        </svg>
+                    </div>
+                    <div class="mobile-feature-text">
+                        <h4>Gentle nudges</h4>
+                        <p>Check-ins that respect your time and energy</p>
+                    </div>
+                </div>
+                <div class="mobile-feature">
+                    <div class="mobile-feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+                            <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+                        </svg>
+                    </div>
+                    <div class="mobile-feature-text">
+                        <h4>Voice when you need it</h4>
+                        <p>Talk through thoughts without typing</p>
+                    </div>
+                </div>
+                <div class="mobile-feature">
+                    <div class="mobile-feature-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                    </div>
+                    <div class="mobile-feature-text">
+                        <h4>Daily rhythm</h4>
+                        <p>Morning intention, evening reflection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <div class="cta-avatar">
+                <div class="glow"></div>
+                <div class="body">
+                    <div class="eyes">
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                    </div>
+                </div>
+            </div>
+            <h2 class="cta-title">Ready to think clearly?</h2>
+            <p class="cta-subtitle">Start a conversation. No judgment. No rush.</p>
+            <a href="orivya-onboarding-v10.html" class="btn btn-primary btn-large">Begin</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="#" class="footer-logo">
+                <div class="footer-avatar"></div>
+                <span class="footer-wordmark">ORIVYA</span>
+            </a>
+            <div class="footer-links">
+                <a href="#how-it-works" class="footer-link">About</a>
+                <a href="#pricing" class="footer-link">Pricing</a>
+                <a href="orivya-privacy-v1.html" class="footer-link">Privacy</a>
+                <a href="orivya-terms-v1.html" class="footer-link">Terms</a>
+            </div>
+            <div class="footer-copy">© 2025 Orivya</div>
+        </div>
+    </footer>
+
+    <script>
+        // Personality time
+        const personalityTime = document.getElementById('personality-time');
+        const hour = new Date().getHours();
+        let timeContext = '';
+        
+        if (hour >= 5 && hour < 12) {
+            timeContext = 'Morning thoughts tend to be clearer.';
+        } else if (hour >= 12 && hour < 17) {
+            timeContext = 'Afternoon — when the day\'s weight settles in.';
+        } else if (hour >= 17 && hour < 21) {
+            timeContext = 'Evening — a good time to reflect.';
+        } else {
+            timeContext = 'Late night clarity hits different.';
+        }
+        
+        personalityTime.textContent = timeContext;
+    </script>
+</body>
+</html>

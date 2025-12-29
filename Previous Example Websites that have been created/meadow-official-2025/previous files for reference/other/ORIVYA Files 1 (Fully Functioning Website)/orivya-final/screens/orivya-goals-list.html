@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Goals</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.3);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 20px var(--sage-glow);
+      
+      --z-sticky: 100;
+      
+      --header-height: 56px;
+      --tab-bar-height: 64px;
+      --content-max-width: 720px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    /* Header */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .page-header { padding: 0 var(--space-6); }
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .back-btn:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .back-btn svg { width: 22px; height: 22px; }
+    
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+    }
+    
+    .add-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .add-btn:hover { background-color: var(--sage-muted); }
+    .add-btn svg { width: 16px; height: 16px; }
+    
+    /* Content */
+    .content {
+      padding: var(--space-6) var(--space-4);
+      padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom) + var(--space-8));
+    }
+    
+    @media (min-width: 768px) {
+      .content { padding: var(--space-8) var(--space-6); }
+    }
+    
+    .content-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    /* Intro Card */
+    .intro-card {
+      background: linear-gradient(135deg, var(--sage-subtle) 0%, transparent 100%);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
+    
+    .intro-card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    
+    .intro-card-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-muted);
+      border-radius: var(--radius-md);
+    }
+    .intro-card-icon svg { width: 18px; height: 18px; color: var(--sage); }
+    
+    .intro-card-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .intro-card-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    /* Section */
+    .section {
+      margin-bottom: var(--space-8);
+    }
+    .section:last-child { margin-bottom: 0; }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .section-count {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Goals Grid */
+    .goals-grid {
+      display: grid;
+      gap: var(--space-3);
+    }
+    
+    @media (min-width: 640px) {
+      .goals-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    /* Goal Card */
+    .goal-card {
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    .goal-card:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    
+    .goal-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    
+    .goal-card-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .goal-card-icon svg { width: 20px; height: 20px; color: var(--sage); }
+    
+    .goal-card-icon--achieved {
+      background-color: rgba(74, 222, 128, 0.1);
+    }
+    .goal-card-icon--achieved svg { color: #4ade80; }
+    
+    .goal-card-meta { flex: 1; }
+    
+    .goal-card-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .goal-card-stats {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .goal-card-progress {
+      margin-bottom: var(--space-3);
+    }
+    
+    .goal-progress-bar {
+      height: 4px;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .goal-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage-dark), var(--sage));
+      border-radius: var(--radius-full);
+    }
+    
+    .goal-card-observation {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .goal-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: var(--space-3);
+    }
+    
+    .goal-card-date {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .goal-card-arrow {
+      color: var(--text-muted);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: all var(--transition-fast);
+    }
+    .goal-card:hover .goal-card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .goal-card-arrow svg { width: 16px; height: 16px; }
+    
+    /* Add Goal Card */
+    .add-goal-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-8);
+      background-color: transparent;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+      min-height: 180px;
+    }
+    .add-goal-card:hover {
+      background-color: var(--sage-subtle);
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+    .add-goal-card svg { width: 24px; height: 24px; }
+    
+    /* Tab Bar (Mobile) */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--tab-bar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background-color: var(--bg-elevated);
+      border-top: 1px solid var(--border-subtle);
+      padding-bottom: var(--safe-area-bottom);
+      z-index: var(--z-sticky);
+    }
+    @media (min-width: 1024px) { .tab-bar { display: none; } }
+    .tab-bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2);
+      color: var(--text-tertiary);
+      min-width: 64px;
+    }
+    .tab-bar-item.is-active { color: var(--sage); }
+    .tab-bar-item svg { width: 24px; height: 24px; }
+    .tab-bar-item span { font-size: var(--text-xs); font-weight: 500; }
+    .tab-bar-create { position: relative; top: -12px; }
+    .tab-bar-create-btn {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage);
+      border-radius: var(--radius-full);
+      color: white;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+    .tab-bar-create-btn svg { width: 24px; height: 24px; stroke-width: 2.5; }
+  </style>
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="back-btn" onclick="goBack()" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <h1 class="page-title">Questions You're Living With</h1>
+    </div>
+    <button class="add-btn" onclick="addGoal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New question
+    </button>
+  </header>
+  
+  <!-- Content -->
+  <main class="content">
+    <div class="content-inner">
+      
+      <!-- Intro -->
+      <section class="intro-card">
+        <div class="intro-card-header">
+          <div class="intro-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+          </div>
+          <h2 class="intro-card-title">What are you trying to understand?</h2>
+        </div>
+        <p class="intro-card-text">Some questions stay with us for weeks or months. Name them here, and Orivya will help you notice when your writing touches them.</p>
+      </section>
+      
+      <!-- Active Goals -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Currently exploring</h2>
+          <span class="section-count">2 questions</span>
+        </div>
+        <div class="goals-grid">
+          
+          <div class="goal-card" onclick="openGoal('goal-1')">
+            <div class="goal-card-header">
+              <div class="goal-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
+              <div class="goal-card-meta">
+                <h3 class="goal-card-title">What I want from work</h3>
+                <span class="goal-card-stats">4 notes · 2 of 4 milestones</span>
+              </div>
+            </div>
+            <div class="goal-card-progress">
+              <div class="goal-progress-bar">
+                <div class="goal-progress-fill" style="width: 50%"></div>
+              </div>
+            </div>
+            <p class="goal-card-observation">Autonomy and impact keep coming up as non-negotiables. You're getting clearer on this.</p>
+            <div class="goal-card-footer">
+              <span class="goal-card-date">Updated today</span>
+              <span class="goal-card-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+          
+          <div class="goal-card" onclick="openGoal('goal-2')">
+            <div class="goal-card-header">
+              <div class="goal-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
+              <div class="goal-card-meta">
+                <h3 class="goal-card-title">Being more present</h3>
+                <span class="goal-card-stats">2 notes · 1 of 3 milestones</span>
+              </div>
+            </div>
+            <div class="goal-card-progress">
+              <div class="goal-progress-bar">
+                <div class="goal-progress-fill" style="width: 33%"></div>
+              </div>
+            </div>
+            <p class="goal-card-observation">Some progress around morning routines. You've mentioned wanting to be less in your head.</p>
+            <div class="goal-card-footer">
+              <span class="goal-card-date">Updated Dec 3</span>
+              <span class="goal-card-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+          
+          <button class="add-goal-card" onclick="addGoal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add a new goal
+          </button>
+          
+        </div>
+      </section>
+      
+      <!-- Achieved Goals -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Achieved</h2>
+          <span class="section-count">1 goal</span>
+        </div>
+        <div class="goals-grid">
+          
+          <div class="goal-card" onclick="openGoal('goal-3')">
+            <div class="goal-card-header">
+              <div class="goal-card-icon goal-card-icon--achieved">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="goal-card-meta">
+                <h3 class="goal-card-title">Set boundaries with work calls</h3>
+                <span class="goal-card-stats">3 notes · Achieved Oct 20</span>
+              </div>
+            </div>
+            <p class="goal-card-observation">You worked through the discomfort of saying no. The pattern showed this was about self-worth, not just time.</p>
+            <div class="goal-card-footer">
+              <span class="goal-card-date">Achieved Oct 20</span>
+              <span class="goal-card-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+      
+    </div>
+  </main>
+  
+  <!-- Tab Bar (Mobile) -->
+  <nav class="tab-bar">
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+      <span>Notes</span>
+    </a>
+    <div class="tab-bar-create">
+      <button class="tab-bar-create-btn" aria-label="New note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+    <a href="#" class="tab-bar-item is-active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+      <span>Insights</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+  
+  <script>
+    function goBack() { console.log('Going back'); }
+    function addGoal() { console.log('Add new goal'); }
+    function openGoal(id) { console.log('Open goal:', id); }
+  </script>
+</body>
+</html>

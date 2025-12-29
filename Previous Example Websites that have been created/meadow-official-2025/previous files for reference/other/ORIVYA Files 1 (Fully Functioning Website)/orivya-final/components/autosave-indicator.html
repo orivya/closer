@@ -1,0 +1,186 @@
+<!-- ===========================================
+   ORIVYA COMPONENT: Autosave Indicator
+   
+   Shows save status in the editor header.
+   States: idle, saving, saved, error
+   =========================================== -->
+
+<!-- 
+  USAGE:
+  Place in editor header. JavaScript controls state via classes.
+  
+  States:
+  - Default (idle): No special class
+  - Saving: Add .is-saving to .autosave-indicator
+  - Saved: Add .is-saved to .autosave-indicator
+  - Error: Add .is-error to .autosave-indicator
+-->
+
+<style>
+.autosave-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.autosave-indicator.is-saving,
+.autosave-indicator.is-saved,
+.autosave-indicator.is-error {
+  opacity: 1;
+}
+
+.autosave-indicator .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--text-muted);
+  transition: all var(--transition-normal);
+}
+
+/* Saving State */
+.autosave-indicator.is-saving .status-dot {
+  background-color: var(--warning);
+  animation: savingPulse 1.5s ease-in-out infinite;
+}
+
+.autosave-indicator.is-saving .status-text::after {
+  content: 'Saving...';
+}
+
+/* Saved State */
+.autosave-indicator.is-saved .status-dot {
+  background-color: var(--success);
+  animation: savedCheck 300ms ease-out forwards;
+}
+
+.autosave-indicator.is-saved .status-text::after {
+  content: 'Saved';
+}
+
+/* Error State */
+.autosave-indicator.is-error .status-dot {
+  background-color: var(--error);
+}
+
+.autosave-indicator.is-error .status-text::after {
+  content: 'Couldn\'t save';
+}
+
+/* Auto-hide after saved */
+.autosave-indicator.is-saved {
+  animation: fadeOutDelay 2s ease-out forwards;
+}
+
+@keyframes savingPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes savedCheck {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOutDelay {
+  0%, 80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+</style>
+
+<!-- Component HTML -->
+<div class="autosave-indicator" id="autosaveIndicator">
+  <span class="status-dot"></span>
+  <span class="status-text"></span>
+</div>
+
+<!-- Example: All states for reference -->
+<div style="display: flex; gap: 32px; padding: 24px; background: var(--bg-base);">
+  
+  <!-- Idle (hidden) -->
+  <div class="autosave-indicator">
+    <span class="status-dot"></span>
+    <span class="status-text"></span>
+  </div>
+  
+  <!-- Saving -->
+  <div class="autosave-indicator is-saving">
+    <span class="status-dot"></span>
+    <span class="status-text"></span>
+  </div>
+  
+  <!-- Saved -->
+  <div class="autosave-indicator is-saved" style="animation: none; opacity: 1;">
+    <span class="status-dot"></span>
+    <span class="status-text"></span>
+  </div>
+  
+  <!-- Error -->
+  <div class="autosave-indicator is-error">
+    <span class="status-dot"></span>
+    <span class="status-text"></span>
+  </div>
+  
+</div>
+
+<script>
+// Autosave indicator controller
+const AutosaveIndicator = {
+  element: null,
+  
+  init(elementId = 'autosaveIndicator') {
+    this.element = document.getElementById(elementId);
+  },
+  
+  setState(state) {
+    if (!this.element) return;
+    
+    // Remove all state classes
+    this.element.classList.remove('is-saving', 'is-saved', 'is-error');
+    
+    // Add new state class
+    if (state === 'saving' || state === 'saved' || state === 'error') {
+      this.element.classList.add(`is-${state}`);
+    }
+  },
+  
+  saving() {
+    this.setState('saving');
+  },
+  
+  saved() {
+    this.setState('saved');
+  },
+  
+  error() {
+    this.setState('error');
+  },
+  
+  hide() {
+    this.setState('idle');
+  }
+};
+
+// Initialize
+// AutosaveIndicator.init();
+</script>

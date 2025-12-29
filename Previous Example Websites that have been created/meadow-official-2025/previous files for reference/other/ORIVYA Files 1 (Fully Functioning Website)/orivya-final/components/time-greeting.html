@@ -1,0 +1,289 @@
+<!-- ===========================================
+   ORIVYA COMPONENT: Time Greeting
+   
+   Dynamic greeting based on time of day with
+   contextual subline based on user state.
+   
+   Used on: Homepage (Hero Section)
+   =========================================== -->
+
+<style>
+/* ===========================================
+   TIME GREETING
+   =========================================== */
+.time-greeting {
+  margin-bottom: var(--space-8);
+}
+
+.time-greeting-text {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: var(--space-2);
+}
+
+@media (min-width: 768px) {
+  .time-greeting-text {
+    font-size: var(--text-4xl);
+  }
+}
+
+.time-greeting-subline {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .time-greeting-subline {
+    font-size: var(--text-lg);
+  }
+}
+
+/* ===========================================
+   TIME GREETING - Compact Variant
+   For smaller spaces
+   =========================================== */
+.time-greeting--compact .time-greeting-text {
+  font-size: var(--text-2xl);
+}
+
+.time-greeting--compact .time-greeting-subline {
+  font-size: var(--text-base);
+}
+</style>
+
+<!-- Component HTML -->
+<div class="time-greeting">
+  <h1 class="time-greeting-text" id="greetingText">Good evening, Sarah</h1>
+  <p class="time-greeting-subline" id="greetingSubline">What's on your mind today?</p>
+</div>
+
+<!-- Compact Variant -->
+<div class="time-greeting time-greeting--compact">
+  <h1 class="time-greeting-text">Good morning, Sarah</h1>
+  <p class="time-greeting-subline">You're building something. One entry at a time.</p>
+</div>
+
+<script>
+/**
+ * TimeGreeting Controller
+ * 
+ * Manages the greeting text and contextual subline
+ * based on time of day and user state.
+ */
+const TimeGreeting = {
+  // User's name (from database/state)
+  userName: 'Sarah',
+  
+  // User state for contextual sublines
+  userState: {
+    isFirstSession: false,
+    isFirstDayAfterFirstEntry: false,
+    dayNumber: 5,
+    daysInactive: 0,
+    lastEntryWasDeep: false,
+    recentTheme: 'career',
+    hasActiveThread: true,
+    activeThreadName: 'Career Decision'
+  },
+  
+  init() {
+    this.updateGreeting();
+    // Update every minute
+    setInterval(() => this.updateGreeting(), 60000);
+  },
+  
+  getTimeOfDay() {
+    const hour = new Date().getHours();
+    
+    if (hour >= 5 && hour < 12) return 'morning';
+    if (hour >= 12 && hour < 17) return 'afternoon';
+    if (hour >= 17 && hour < 21) return 'evening';
+    return 'night';
+  },
+  
+  getGreetingText() {
+    const timeOfDay = this.getTimeOfDay();
+    const greetings = {
+      morning: 'Good morning',
+      afternoon: 'Good afternoon',
+      evening: 'Good evening',
+      night: 'Hello'
+    };
+    
+    return `${greetings[timeOfDay]}, ${this.userName}`;
+  },
+  
+  getSublineText() {
+    const state = this.userState;
+    
+    // First session ever
+    if (state.isFirstSession) {
+      return 'This is your space. Start wherever you are.';
+    }
+    
+    // Day 1 after first entry
+    if (state.isFirstDayAfterFirstEntry) {
+      return 'You wrote something yesterday. That\'s a start.';
+    }
+    
+    // Days 2-3
+    if (state.dayNumber >= 2 && state.dayNumber <= 3) {
+      return 'You\'re building something. One entry at a time.';
+    }
+    
+    // Days 4-7 (building momentum)
+    if (state.dayNumber >= 4 && state.dayNumber <= 7) {
+      if (state.recentTheme) {
+        return `You've been exploring ${state.recentTheme}. There might be more there.`;
+      }
+      return `${state.dayNumber} entries so far. You're showing up.`;
+    }
+    
+    // Returning after 2-3 days
+    if (state.daysInactive >= 2 && state.daysInactive <= 3) {
+      if (state.recentTheme) {
+        return `Last time you wrote about ${state.recentTheme}. Still on your mind?`;
+      }
+      return 'It\'s been a couple of days. What\'s been sitting with you?';
+    }
+    
+    // Returning after 4-7 days
+    if (state.daysInactive >= 4 && state.daysInactive <= 7) {
+      return 'Welcome back. The page is here when you need it.';
+    }
+    
+    // Returning after 7+ days
+    if (state.daysInactive > 7) {
+      return 'It\'s been a minute. Welcome back.';
+    }
+    
+    // After a deep/long entry
+    if (state.lastEntryWasDeep) {
+      return 'You went deep last time. Take whatever pace you need today.';
+    }
+    
+    // When user has active thread
+    if (state.hasActiveThread && state.activeThreadName) {
+      return `Your thread "${state.activeThreadName}" has been active. Want to continue?`;
+    }
+    
+    // When AI detects active theme
+    if (state.recentTheme) {
+      return `You've been circling ${state.recentTheme} lately. Something there?`;
+    }
+    
+    // Default fallbacks (random selection)
+    const defaults = [
+      'What\'s here today?',
+      'The page is ready when you are.',
+      'What needs space right now?',
+      'What\'s on your mind?'
+    ];
+    
+    return defaults[Math.floor(Math.random() * defaults.length)];
+  },
+  
+  updateGreeting() {
+    const greetingEl = document.getElementById('greetingText');
+    const sublineEl = document.getElementById('greetingSubline');
+    
+    if (greetingEl) {
+      greetingEl.textContent = this.getGreetingText();
+    }
+    
+    if (sublineEl) {
+      sublineEl.textContent = this.getSublineText();
+    }
+    
+    // Also update time-of-day body class for theming
+    this.updateTimeClass();
+  },
+  
+  updateTimeClass() {
+    const timeOfDay = this.getTimeOfDay();
+    const body = document.body;
+    
+    // Remove existing time classes
+    body.classList.remove('time-morning', 'time-afternoon', 'time-evening', 'time-night');
+    
+    // Add current time class
+    body.classList.add(`time-${timeOfDay}`);
+  },
+  
+  // Method to update user state (called from app logic)
+  setState(newState) {
+    this.userState = { ...this.userState, ...newState };
+    this.updateGreeting();
+  },
+  
+  // Method to update user name
+  setUserName(name) {
+    this.userName = name;
+    this.updateGreeting();
+  }
+};
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  TimeGreeting.init();
+});
+
+// Example: Simulating different states
+// TimeGreeting.setState({ isFirstSession: true });
+// TimeGreeting.setState({ daysInactive: 5 });
+// TimeGreeting.setState({ recentTheme: 'relationships' });
+</script>
+
+<!-- 
+CONTEXTUAL SUBLINE EXAMPLES:
+
+First session ever:
+"This is your space. Start wherever you are."
+"What's on your mind?"
+
+Day 1 (after first entry):
+"You wrote something yesterday. That's a start."
+"Your first entry is here. Today could be your second."
+
+Day 2-3:
+"You're building something. One entry at a time."
+"Still thinking about [DETECTED_THEME]?"
+
+Day 4-7 (building momentum):
+"[X] entries so far. You're showing up."
+"You've been exploring [THEME]. There might be more there."
+
+Returning after 2-3 days:
+"It's been a couple of days. What's been sitting with you?"
+"Last time you wrote about [THEME]. Still on your mind?"
+
+Returning after 4-7 days:
+"Welcome back. The page is here when you need it."
+"It's been a little while. No pressure — just space."
+
+Returning after 7+ days:
+"It's been a minute. Welcome back."
+"The quiet is still here. So is the space."
+
+After a deep/long entry:
+"You went deep last time. Take whatever pace you need today."
+"Last time was a lot. Today can be lighter if you want."
+
+When AI detects active theme:
+"You've been circling [THEME] lately. Something there?"
+"[THEME] keeps coming up. Might be worth following."
+
+When user has active thread:
+"Your thread '[THREAD_NAME]' has been active. Want to continue?"
+"Still thinking about [THREAD_THEME]?"
+
+Random warm variations (when no specific context):
+"What's here today?"
+"The page is ready when you are."
+"What needs space right now?"
+-->

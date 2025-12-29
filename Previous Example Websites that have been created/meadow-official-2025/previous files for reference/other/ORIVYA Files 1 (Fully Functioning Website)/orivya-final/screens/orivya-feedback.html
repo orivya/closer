@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Send Feedback</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --success: #4ade80;
+      --success-subtle: rgba(74, 222, 128, 0.1);
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      
+      --z-sticky: 100;
+      
+      --header-height: 56px;
+      --content-max-width: 560px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    textarea { font-family: inherit; background: none; border: none; color: inherit; resize: none; }
+    textarea:focus { outline: none; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    /* Header */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .page-header { padding: 0 var(--space-6); }
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .back-btn:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .back-btn svg { width: 22px; height: 22px; }
+    
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+    }
+    
+    .send-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .send-btn:hover { background-color: var(--sage-dark); }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .send-btn svg { width: 16px; height: 16px; }
+    
+    /* Content */
+    .content {
+      padding: var(--space-6) var(--space-4);
+      padding-bottom: calc(var(--space-8) + var(--safe-area-bottom));
+    }
+    
+    @media (min-width: 768px) {
+      .content { padding: var(--space-8) var(--space-6); }
+    }
+    
+    .content-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    /* Intro */
+    .intro {
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    
+    .intro-icon {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-xl);
+      margin: 0 auto var(--space-4);
+    }
+    .intro-icon svg { width: 28px; height: 28px; color: var(--sage); }
+    
+    .intro-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .intro-desc {
+      font-size: var(--text-base);
+      color: var(--text-tertiary);
+    }
+    
+    /* Form */
+    .form-group {
+      margin-bottom: var(--space-6);
+    }
+    
+    .form-label {
+      display: block;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+    
+    /* Mood Selector */
+    .mood-selector {
+      display: flex;
+      gap: var(--space-2);
+    }
+    
+    .mood-option {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .mood-option:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    .mood-option.is-selected {
+      background-color: var(--sage-subtle);
+      border-color: var(--sage);
+    }
+    
+    .mood-emoji {
+      font-size: 28px;
+      line-height: 1;
+    }
+    
+    .mood-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .mood-option.is-selected .mood-label { color: var(--sage); }
+    
+    /* Category Pills */
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    
+    .category-pill {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+    .category-pill:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-default);
+      color: var(--text-primary);
+    }
+    .category-pill.is-selected {
+      background-color: var(--sage-subtle);
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+    
+    /* Textarea */
+    .form-textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: var(--space-4);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--text-primary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .form-textarea:focus {
+      border-color: var(--sage);
+      background-color: var(--bg-surface-2);
+    }
+    .form-textarea::placeholder { color: var(--text-muted); }
+    
+    .form-hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    
+    /* Screenshot Toggle */
+    .screenshot-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+    }
+    
+    .screenshot-info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .screenshot-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+    }
+    .screenshot-icon svg { width: 20px; height: 20px; color: var(--text-muted); }
+    
+    .screenshot-text { }
+    .screenshot-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .screenshot-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .toggle {
+      position: relative;
+      width: 52px;
+      height: 28px;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: background-color var(--transition-fast);
+      flex-shrink: 0;
+    }
+    .toggle.is-on { background-color: var(--sage); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      background-color: white;
+      border-radius: var(--radius-full);
+      transition: transform var(--transition-fast);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .toggle.is-on::after { transform: translateX(24px); }
+    
+    /* Success State */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: var(--space-8) 0;
+    }
+    .success-state.is-visible { display: block; }
+    
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--success-subtle);
+      border-radius: var(--radius-full);
+      margin: 0 auto var(--space-5);
+    }
+    .success-icon svg { width: 32px; height: 32px; color: var(--success); }
+    
+    .success-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .success-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-6);
+    }
+    
+    .success-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border-radius: var(--radius-md);
+      transition: background-color var(--transition-fast);
+    }
+    .success-btn:hover { background-color: var(--sage-dark); }
+    
+    /* Hide form when success */
+    .form-content.is-hidden { display: none; }
+  </style>
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="back-btn" onclick="goBack()" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <h1 class="page-title">Send Feedback</h1>
+    </div>
+    <button class="send-btn" id="sendBtn" onclick="submitFeedback()" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      Send
+    </button>
+  </header>
+  
+  <!-- Content -->
+  <main class="content">
+    <div class="content-inner">
+      
+      <!-- Form -->
+      <div class="form-content" id="formContent">
+        
+        <!-- Intro -->
+        <div class="intro">
+          <div class="intro-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+          </div>
+          <h2 class="intro-title">We'd love to hear from you</h2>
+          <p class="intro-desc">Your feedback helps us make Orivya better for everyone.</p>
+        </div>
+        
+        <!-- Mood -->
+        <div class="form-group">
+          <label class="form-label">How are you feeling about Orivya?</label>
+          <div class="mood-selector">
+            <button class="mood-option" onclick="selectMood(this, 'love')">
+              <span class="mood-emoji">😍</span>
+              <span class="mood-label">Love it</span>
+            </button>
+            <button class="mood-option" onclick="selectMood(this, 'like')">
+              <span class="mood-emoji">🙂</span>
+              <span class="mood-label">It's good</span>
+            </button>
+            <button class="mood-option" onclick="selectMood(this, 'meh')">
+              <span class="mood-emoji">😐</span>
+              <span class="mood-label">It's okay</span>
+            </button>
+            <button class="mood-option" onclick="selectMood(this, 'frustrated')">
+              <span class="mood-emoji">😔</span>
+              <span class="mood-label">Frustrated</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Category -->
+        <div class="form-group">
+          <label class="form-label">What's this about?</label>
+          <div class="category-pills">
+            <button class="category-pill" onclick="selectCategory(this, 'feature')">Feature request</button>
+            <button class="category-pill" onclick="selectCategory(this, 'bug')">Bug report</button>
+            <button class="category-pill" onclick="selectCategory(this, 'question')">Question</button>
+            <button class="category-pill" onclick="selectCategory(this, 'praise')">Just saying thanks</button>
+            <button class="category-pill" onclick="selectCategory(this, 'other')">Other</button>
+          </div>
+        </div>
+        
+        <!-- Message -->
+        <div class="form-group">
+          <label class="form-label">Tell us more</label>
+          <textarea class="form-textarea" id="messageInput" placeholder="Share your thoughts, ideas, or what's not working..." oninput="checkForm()"></textarea>
+          <p class="form-hint">Be as specific as you can—it helps us understand and respond.</p>
+        </div>
+        
+        <!-- Screenshot -->
+        <div class="form-group">
+          <div class="screenshot-toggle">
+            <div class="screenshot-info">
+              <div class="screenshot-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+              <div class="screenshot-text">
+                <div class="screenshot-label">Include screenshot</div>
+                <div class="screenshot-desc">Helps us see what you're seeing</div>
+              </div>
+            </div>
+            <div class="toggle" onclick="toggleSwitch(this)"></div>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Success State -->
+      <div class="success-state" id="successState">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h2 class="success-title">Thank you!</h2>
+        <p class="success-desc">Your feedback has been sent. We read every message and it truly helps shape Orivya.</p>
+        <button class="success-btn" onclick="goBack()">
+          Back to settings
+        </button>
+      </div>
+      
+    </div>
+  </main>
+  
+  <script>
+    let selectedMood = null;
+    let selectedCategory = null;
+    
+    function goBack() { console.log('Going back'); }
+    
+    function selectMood(el, mood) {
+      document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('is-selected'));
+      el.classList.add('is-selected');
+      selectedMood = mood;
+      checkForm();
+    }
+    
+    function selectCategory(el, cat) {
+      document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('is-selected'));
+      el.classList.add('is-selected');
+      selectedCategory = cat;
+      checkForm();
+    }
+    
+    function toggleSwitch(el) {
+      el.classList.toggle('is-on');
+    }
+    
+    function checkForm() {
+      const message = document.getElementById('messageInput').value.trim();
+      const sendBtn = document.getElementById('sendBtn');
+      
+      // Enable send if mood is selected and message has content
+      if (selectedMood && message.length > 10) {
+        sendBtn.disabled = false;
+      } else {
+        sendBtn.disabled = true;
+      }
+    }
+    
+    function submitFeedback() {
+      const message = document.getElementById('messageInput').value.trim();
+      console.log('Submitting feedback:', { mood: selectedMood, category: selectedCategory, message });
+      
+      // Show success
+      document.getElementById('formContent').classList.add('is-hidden');
+      document.getElementById('successState').classList.add('is-visible');
+      document.querySelector('.send-btn').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Edge Cases & Error Boundaries</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --success: #4ade80;
+      --success-subtle: rgba(74, 222, 128, 0.1);
+      --error: #f87171;
+      --error-subtle: rgba(248, 113, 113, 0.1);
+      --warning: #fbbf24;
+      --warning-subtle: rgba(251, 191, 36, 0.1);
+      --info: #60a5fa;
+      --info-subtle: rgba(96, 165, 250, 0.1);
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      padding: var(--space-8);
+    }
+    button { font-family: inherit; cursor: pointer; }
+    
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .subtitle {
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-10);
+    }
+    
+    .section {
+      margin-bottom: var(--space-10);
+    }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-4);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: var(--space-6);
+    }
+    
+    .demo-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    
+    .demo-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    /* ==========================================
+       FULL PAGE ERROR STATES
+    ========================================== */
+    
+    .error-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-10) var(--space-6);
+      min-height: 400px;
+    }
+    
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-6);
+    }
+    .error-icon svg {
+      width: 36px;
+      height: 36px;
+      color: var(--text-muted);
+    }
+    .error-icon--warning { background-color: var(--warning-subtle); }
+    .error-icon--warning svg { color: var(--warning); }
+    .error-icon--error { background-color: var(--error-subtle); }
+    .error-icon--error svg { color: var(--error); }
+    .error-icon--info { background-color: var(--info-subtle); }
+    .error-icon--info svg { color: var(--info); }
+    
+    .error-code {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-2);
+    }
+    
+    .error-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .error-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      max-width: 300px;
+      margin-bottom: var(--space-6);
+    }
+    
+    .error-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      width: 100%;
+      max-width: 240px;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      height: 44px;
+      padding: 0 var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-md);
+      transition: all 150ms ease;
+    }
+    .btn svg { width: 18px; height: 18px; }
+    
+    .btn--primary {
+      color: white;
+      background-color: var(--sage);
+    }
+    .btn--primary:hover { background-color: var(--sage-dark); }
+    
+    .btn--secondary {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface-2);
+    }
+    .btn--secondary:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    
+    .btn--ghost {
+      color: var(--text-tertiary);
+      background: transparent;
+      height: auto;
+      padding: var(--space-2);
+    }
+    .btn--ghost:hover { color: var(--text-secondary); }
+    
+    .error-details {
+      margin-top: var(--space-6);
+      padding: var(--space-4);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-family: monospace;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    
+    /* ==========================================
+       SESSION & AUTH STATES
+    ========================================== */
+    
+    .session-modal {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      max-width: 360px;
+      text-align: center;
+    }
+    
+    .session-icon {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--warning-subtle);
+      border-radius: var(--radius-full);
+      margin: 0 auto var(--space-5);
+    }
+    .session-icon svg { width: 28px; height: 28px; color: var(--warning); }
+    
+    .session-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .session-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-6);
+    }
+    
+    .session-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      color: var(--warning);
+      margin-bottom: var(--space-6);
+    }
+    .session-timer svg { width: 16px; height: 16px; }
+    
+    /* ==========================================
+       RATE LIMITING
+    ========================================== */
+    
+    .rate-limit-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--warning-subtle);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: var(--radius-lg);
+    }
+    
+    .rate-limit-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(251, 191, 36, 0.2);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .rate-limit-icon svg { width: 20px; height: 20px; color: var(--warning); }
+    
+    .rate-limit-content { flex: 1; }
+    .rate-limit-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    .rate-limit-message {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .rate-limit-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--warning);
+      font-weight: 500;
+    }
+    
+    /* ==========================================
+       STORAGE FULL
+    ========================================== */
+    
+    .storage-card {
+      padding: var(--space-5);
+    }
+    
+    .storage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    
+    .storage-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .storage-value {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--error);
+    }
+    
+    .storage-bar {
+      height: 8px;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: var(--space-4);
+    }
+    
+    .storage-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--warning), var(--error));
+      border-radius: var(--radius-full);
+      width: 95%;
+    }
+    
+    .storage-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-4);
+    }
+    
+    .storage-actions {
+      display: flex;
+      gap: var(--space-3);
+    }
+    
+    /* ==========================================
+       MAINTENANCE MODE
+    ========================================== */
+    
+    .maintenance-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-10);
+      min-height: 400px;
+    }
+    
+    .maintenance-illustration {
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--sage-subtle), var(--sage-muted));
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-6);
+    }
+    .maintenance-illustration svg {
+      width: 56px;
+      height: 56px;
+      color: var(--sage);
+    }
+    
+    .maintenance-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .maintenance-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      max-width: 320px;
+      margin-bottom: var(--space-6);
+    }
+    
+    .maintenance-status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--warning);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    
+    /* ==========================================
+       VERSION MISMATCH
+    ========================================== */
+    
+    .update-modal {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      max-width: 360px;
+    }
+    
+    .update-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background-color: var(--success-subtle);
+      border-radius: var(--radius-full);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--success);
+      margin-bottom: var(--space-4);
+    }
+    .update-badge svg { width: 14px; height: 14px; }
+    
+    .update-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .update-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-5);
+    }
+    
+    .update-features {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-5);
+    }
+    
+    .update-feature {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .update-feature svg { width: 16px; height: 16px; color: var(--success); }
+    
+    .update-actions {
+      display: flex;
+      gap: var(--space-3);
+    }
+    
+    /* ==========================================
+       UNSAVED CHANGES
+    ========================================== */
+    
+    .unsaved-modal {
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      max-width: 360px;
+      text-align: center;
+    }
+    
+    .unsaved-icon {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--warning-subtle);
+      border-radius: var(--radius-full);
+      margin: 0 auto var(--space-4);
+    }
+    .unsaved-icon svg { width: 24px; height: 24px; color: var(--warning); }
+    
+    .unsaved-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .unsaved-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-6);
+    }
+    
+    .unsaved-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    
+    .btn--danger {
+      color: white;
+      background-color: var(--error);
+    }
+    .btn--danger:hover { background-color: #ef4444; }
+    
+    /* ==========================================
+       PERMISSION DENIED
+    ========================================== */
+    
+    .permission-card {
+      padding: var(--space-6);
+      text-align: center;
+    }
+    
+    .permission-icon {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--error-subtle);
+      border-radius: var(--radius-full);
+      margin: 0 auto var(--space-4);
+    }
+    .permission-icon svg { width: 28px; height: 28px; color: var(--error); }
+    
+    .permission-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .permission-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>Edge Cases & Error Boundaries</h1>
+  <p class="subtitle">Handling unexpected states gracefully</p>
+  
+  <!-- Full Page Errors -->
+  <section class="section">
+    <h2 class="section-title">Full Page Error States</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">404 - Page Not Found</div>
+        <div class="error-page">
+          <div class="error-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          </div>
+          <div class="error-code">Error 404</div>
+          <h2 class="error-title">Page not found</h2>
+          <p class="error-message">The page you're looking for doesn't exist or has been moved.</p>
+          <div class="error-actions">
+            <button class="btn btn--primary">Go home</button>
+            <button class="btn btn--ghost">Go back</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">500 - Server Error</div>
+        <div class="error-page">
+          <div class="error-icon error-icon--error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="error-code">Error 500</div>
+          <h2 class="error-title">Something went wrong</h2>
+          <p class="error-message">We're having trouble loading this page. Your data is safe — please try again.</p>
+          <div class="error-actions">
+            <button class="btn btn--primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Try again
+            </button>
+            <button class="btn btn--secondary">Contact support</button>
+          </div>
+          <div class="error-details">Error ID: err_7x9k2m3n</div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Session States -->
+  <section class="section">
+    <h2 class="section-title">Session & Authentication</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Session Expiring Warning</div>
+        <div style="padding: var(--space-6); display: flex; justify-content: center;">
+          <div class="session-modal">
+            <div class="session-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h3 class="session-title">Session expiring soon</h3>
+            <p class="session-message">Your session will expire due to inactivity. Would you like to stay signed in?</p>
+            <div class="session-timer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Expires in 2:00</span>
+            </div>
+            <div class="error-actions" style="margin: 0 auto;">
+              <button class="btn btn--primary">Stay signed in</button>
+              <button class="btn btn--ghost">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Session Expired</div>
+        <div class="error-page">
+          <div class="error-icon error-icon--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          </div>
+          <h2 class="error-title">Session expired</h2>
+          <p class="error-message">You've been signed out due to inactivity. Sign in again to continue.</p>
+          <div class="error-actions">
+            <button class="btn btn--primary">Sign in</button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Rate Limiting -->
+  <section class="section">
+    <h2 class="section-title">Rate Limiting</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">AI Feature Rate Limited</div>
+        <div style="padding: var(--space-5);">
+          <div class="rate-limit-banner">
+            <div class="rate-limit-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="rate-limit-content">
+              <div class="rate-limit-title">Slow down there!</div>
+              <p class="rate-limit-message">You've reached the AI analysis limit for this hour. Your notes are still saved.</p>
+              <div class="rate-limit-timer">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Resets in 47 minutes
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Storage Almost Full</div>
+        <div class="storage-card">
+          <div class="storage-header">
+            <span class="storage-label">Storage used</span>
+            <span class="storage-value">4.75 GB / 5 GB</span>
+          </div>
+          <div class="storage-bar">
+            <div class="storage-fill"></div>
+          </div>
+          <p class="storage-message">You're almost out of storage. Delete old notes or upgrade to Pro for unlimited storage.</p>
+          <div class="storage-actions">
+            <button class="btn btn--primary" style="flex: 1;">Upgrade to Pro</button>
+            <button class="btn btn--secondary" style="flex: 1;">Manage storage</button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Maintenance & Updates -->
+  <section class="section">
+    <h2 class="section-title">Maintenance & Updates</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Scheduled Maintenance</div>
+        <div class="maintenance-page">
+          <div class="maintenance-illustration">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h2 class="maintenance-title">We'll be right back</h2>
+          <p class="maintenance-message">We're making some improvements to give you a better experience. This shouldn't take long.</p>
+          <div class="maintenance-status">
+            <span class="status-dot"></span>
+            <span>Estimated: 30 minutes</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">New Version Available</div>
+        <div style="padding: var(--space-6); display: flex; justify-content: center;">
+          <div class="update-modal">
+            <div class="update-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+              New version
+            </div>
+            <h3 class="update-title">Update available</h3>
+            <p class="update-message">A new version of Orivya is ready with improvements and bug fixes.</p>
+            <div class="update-features">
+              <div class="update-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Faster note loading</span>
+              </div>
+              <div class="update-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Improved AI insights</span>
+              </div>
+              <div class="update-feature">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Bug fixes</span>
+              </div>
+            </div>
+            <div class="update-actions">
+              <button class="btn btn--primary" style="flex: 1;">Update now</button>
+              <button class="btn btn--secondary" style="flex: 1;">Later</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Confirmation Dialogs -->
+  <section class="section">
+    <h2 class="section-title">Confirmation Dialogs</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Unsaved Changes Warning</div>
+        <div style="padding: var(--space-6); display: flex; justify-content: center;">
+          <div class="unsaved-modal">
+            <div class="unsaved-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3 class="unsaved-title">Unsaved changes</h3>
+            <p class="unsaved-message">You have unsaved changes. Are you sure you want to leave?</p>
+            <div class="unsaved-actions">
+              <button class="btn btn--primary">Save & leave</button>
+              <button class="btn btn--danger">Discard changes</button>
+              <button class="btn btn--ghost">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Permission Required</div>
+        <div class="permission-card">
+          <div class="permission-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <h3 class="permission-title">Access denied</h3>
+          <p class="permission-message">You don't have permission to view this note. It may have been shared with specific people.</p>
+          <button class="btn btn--secondary">Request access</button>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a; --sage-light: #9bb3a4; --sage-dark: #6a8577;
+            --sage-subtle: rgba(125, 155, 138, 0.08); --sage-muted: rgba(125, 155, 138, 0.15);
+            --bg-base: #08080a; --bg-elevated: #0e0e11; --bg-surface: #141417; --bg-hover: #1a1a1d;
+            --border-subtle: rgba(255, 255, 255, 0.04); --border-default: rgba(255, 255, 255, 0.07);
+            --text-primary: #fafafa; --text-secondary: #a1a1aa; --text-tertiary: #71717a; --text-muted: #52525b;
+            --gold: #d4a574; --gold-subtle: rgba(212, 165, 116, 0.12);
+            --purple: #a78bfa; --purple-subtle: rgba(167, 139, 250, 0.12);
+            --blue: #64b5f6; --blue-subtle: rgba(100, 181, 246, 0.12);
+            --nav-width: 72px;
+            --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 20px; --space-xl: 24px; --space-2xl: 32px;
+            --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+            --transition-fast: 0.15s ease; --transition-smooth: 0.25s ease-out;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus { outline: none; }
+        :focus-visible { outline: 2px solid rgba(125, 155, 138, 0.65); outline-offset: 3px; border-radius: var(--radius-sm); }
+        ::selection { background: var(--sage); color: white; }
+        html, body { height: 100%; }
+        body { font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; line-height: 1.5; color: var(--text-primary); background: var(--bg-base); -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); padding: 12px 20px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000; }
+        .toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; }
+        .toast-icon { width: 18px; height: 18px; color: var(--sage); }
+        .toast-icon svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        .app { display: flex; height: 100vh; }
+
+        /* Navigation Rail */
+        .nav-rail { width: var(--nav-width); background: var(--bg-elevated); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; padding: var(--space-lg) 0; flex-shrink: 0; }
+        .nav-logo { width: 40px; height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-xl); cursor: pointer; text-decoration: none; }
+        .nav-logo .body { width: 32px; height: 28px; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; position: relative; animation: breathe 5s ease-in-out infinite; }
+        .nav-logo .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .nav-logo .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; }
+        .nav-logo .eye.left { width: 4px; height: 4px; }
+        .nav-logo .eye.right { width: 3px; height: 3px; opacity: 0.9; }
+        .nav-items { display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); }
+        .nav-item { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--radius-md); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); position: relative; text-decoration: none; }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { background: var(--sage-subtle); color: var(--sage); }
+        .nav-item.active::before { content: ''; position: absolute; left: -14px; top: 10px; bottom: 10px; width: 3px; background: var(--sage); border-radius: 0 2px 2px 0; }
+        .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .nav-item::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%); padding: 6px 10px; background: var(--bg-hover); border: 1px solid var(--border-default); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; color: var(--text-primary); white-space: nowrap; opacity: 0; visibility: hidden; transition: all var(--transition-fast); pointer-events: none; }
+        .nav-item:hover::after { opacity: 1; visibility: visible; }
+        .nav-bottom { margin-top: auto; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        .page-header { padding: var(--space-lg) var(--space-2xl); border-bottom: 1px solid var(--border-subtle); background: var(--bg-elevated); }
+        .page-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md); }
+        .page-title { font-size: 20px; font-weight: 600; color: var(--text-primary); }
+        .page-subtitle { font-size: 13px; color: var(--text-secondary); }
+        .header-actions { display: flex; gap: var(--space-sm); }
+        .header-btn { padding: 8px 14px; background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all var(--transition-fast); }
+        .header-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .header-btn:active { transform: scale(0.97); }
+        .header-btn.primary { background: var(--sage); border-color: var(--sage); color: white; }
+        .header-btn.primary:hover { background: var(--sage-light); }
+        .header-btn.primary:active { transform: scale(0.97); }
+        .header-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+        /* Stats Bar */
+        .stats-bar { display: flex; gap: var(--space-xl); padding: var(--space-md) 0; }
+        .stat-item { display: flex; align-items: center; gap: var(--space-sm); }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 600; color: var(--text-primary); }
+        .stat-label { font-size: 12px; color: var(--text-muted); }
+        .stat-trend { font-size: 11px; color: var(--sage); margin-left: 4px; }
+
+        /* Filters */
+        .filters { display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap; }
+        .filter-chips { display: flex; gap: var(--space-xs); flex-wrap: wrap; }
+        .filter-chip { padding: 6px 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 100px; color: var(--text-secondary); font-family: inherit; font-size: 12px; cursor: pointer; transition: all var(--transition-fast); }
+        .filter-chip:hover { border-color: var(--border-default); color: var(--text-primary); }
+        .filter-chip:active { transform: scale(0.96); }
+        .filter-chip.active { background: var(--sage-subtle); border-color: var(--sage-muted); color: var(--sage); }
+        .filter-dropdown { padding: 6px 28px 6px 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 12px; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+        .search-input { padding: 6px 12px 6px 32px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-primary); font-family: inherit; font-size: 12px; width: 180px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 10px center; }
+        .search-input::placeholder { color: var(--text-muted); }
+
+        .library-scroll { flex: 1; overflow-y: auto; padding: var(--space-2xl); }
+        .library-container { max-width: 1000px; margin: 0 auto; }
+
+        /* Section */
+        .section { margin-bottom: var(--space-2xl); animation: fadeInUp 0.4s ease-out both; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md); }
+        .section-title { font-size: 14px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: var(--space-sm); }
+        .section-count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); padding: 2px 8px; background: var(--bg-surface); border-radius: 100px; }
+        .section-link { font-size: 12px; color: var(--sage); background: none; border: none; cursor: pointer; transition: all var(--transition-fast); }
+        .section-link:hover { text-decoration: underline; opacity: 0.8; }
+
+        /* Quick Add */
+        .quick-add { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-sm); margin-bottom: var(--space-2xl); }
+        @media (max-width: 700px) { .quick-add { grid-template-columns: repeat(2, 1fr); } }
+        .quick-add-btn { padding: var(--space-md); background: var(--bg-elevated); border: 1px dashed var(--border-default); border-radius: var(--radius-md); color: var(--text-muted); font-family: inherit; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: var(--space-sm); transition: all var(--transition-smooth); }
+        .quick-add-btn:hover { border-color: var(--sage-muted); color: var(--sage); background: var(--sage-subtle); border-style: solid; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .quick-add-btn:active { transform: translateY(0); box-shadow: none; }
+        .quick-add-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+
+        /* Item Grid */
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-md); }
+
+        /* Item Card */
+        .item-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: var(--space-lg); cursor: pointer; transition: all var(--transition-smooth); position: relative; }
+        .item-card:hover { border-color: var(--border-default); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); }
+        .item-card:active { transform: translateY(0); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+        .item-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: var(--space-sm); }
+        .item-type { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+        .item-type.insight { background: var(--sage-subtle); color: var(--sage); }
+        .item-type.decision { background: var(--gold-subtle); color: var(--gold); }
+        .item-type.pattern { background: var(--blue-subtle); color: var(--blue); }
+        .item-type.note { background: var(--bg-surface); color: var(--text-muted); }
+        .item-type.turning-point { background: var(--purple-subtle); color: var(--purple); }
+        .item-type.weekly { background: var(--sage-subtle); color: var(--sage); }
+        .item-star { width: 24px; height: 24px; background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .item-star:hover { color: var(--gold); transform: scale(1.1); }
+        .item-star:active { transform: scale(0.9); }
+        .item-star.active { color: var(--gold); }
+        .item-star.active svg { fill: var(--gold); }
+        .item-star svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .item-title { font-size: 14px; font-weight: 500; color: var(--text-primary); line-height: 1.5; margin-bottom: var(--space-xs); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .item-preview { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: var(--space-sm); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .item-meta { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: var(--space-sm); flex-wrap: wrap; }
+        .item-tag { padding: 2px 6px; background: var(--bg-surface); border-radius: 4px; cursor: pointer; transition: all var(--transition-fast); }
+        .item-tag:hover { background: var(--sage-subtle); color: var(--sage); }
+        .item-actions { display: flex; gap: var(--space-xs); margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--border-subtle); }
+        .item-action { padding: 4px 10px; background: transparent; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-muted); font-family: inherit; font-size: 11px; cursor: pointer; transition: all var(--transition-fast); }
+        .item-action:hover { border-color: var(--sage-muted); color: var(--sage); background: var(--sage-subtle); }
+        .item-action:active { transform: scale(0.96); }
+
+        /* Notes Section Special */
+        .notes-empty { padding: var(--space-xl); background: var(--bg-elevated); border: 1px dashed var(--border-default); border-radius: var(--radius-lg); text-align: center; }
+        .notes-empty-icon { width: 48px; height: 48px; background: var(--bg-surface); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-md); }
+        .notes-empty-icon svg { width: 24px; height: 24px; stroke: var(--text-muted); stroke-width: 1.5; fill: none; }
+        .notes-empty-text { font-size: 14px; color: var(--text-secondary); margin-bottom: var(--space-md); }
+        .notes-empty-btn { padding: 8px 16px; background: var(--sage); border: none; border-radius: var(--radius-sm); color: white; font-family: inherit; font-size: 13px; cursor: pointer; transition: all var(--transition-fast); }
+        .notes-empty-btn:hover { background: var(--sage-light); }
+
+        /* Note Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all var(--transition-fast); }
+        .modal-overlay.visible { opacity: 1; visibility: visible; }
+        .modal { width: 100%; max-width: 500px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; transform: translateY(20px); transition: transform var(--transition-smooth); }
+        .modal-overlay.visible .modal { transform: translateY(0); }
+        .modal-header { padding: var(--space-lg); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+        .modal-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+        .modal-close { width: 32px; height: 32px; background: transparent; border: none; border-radius: var(--radius-sm); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all var(--transition-fast); }
+        .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .modal-close:active { transform: scale(0.95); }
+        .modal-close svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .modal-body { padding: var(--space-lg); }
+        .modal-input { width: 100%; padding: var(--space-md); background: var(--bg-base); border: 1px solid var(--border-default); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 14px; margin-bottom: var(--space-md); }
+        .modal-input::placeholder { color: var(--text-muted); }
+        .modal-input:focus { outline: none; border-color: var(--sage-muted); }
+        .modal-textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+        .modal-select { width: 100%; padding: var(--space-sm) var(--space-md); background: var(--bg-base); border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 13px; margin-bottom: var(--space-md); }
+        .modal-footer { padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: var(--space-sm); }
+        .modal-btn { padding: 8px 16px; background: transparent; border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 13px; cursor: pointer; transition: all var(--transition-fast); }
+        .modal-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .modal-btn:active { transform: scale(0.97); }
+        .modal-btn.primary { background: var(--sage); border-color: var(--sage); color: white; }
+        .modal-btn.primary:hover { background: var(--sage-light); }
+        .modal-btn.primary:active { transform: scale(0.97); }
+
+        @media (max-width: 768px) {
+            .nav-rail { width: 56px; }
+            .nav-item::after { display: none; }
+            .page-header { padding: var(--space-md) var(--space-lg); flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
+            .library-scroll { padding: var(--space-lg); }
+            .stats-bar { flex-wrap: wrap; gap: var(--space-md); }
+            .filters { flex-direction: column; align-items: stretch; }
+            .search-input { width: 100%; }
+            .items-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .nav-rail { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 64px; flex-direction: row; justify-content: space-around; padding: 0; border-right: none; border-top: 1px solid var(--border-subtle); z-index: 100; }
+            .nav-logo { display: none; }
+            .nav-items { flex-direction: row; width: 100%; justify-content: space-around; }
+            .nav-bottom { margin-top: 0; }
+            .main-content { padding-bottom: 64px; }
+            .library-scroll { padding: var(--space-md); }
+            .page-header { padding: var(--space-md); }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"><div class="toast-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span id="toastMessage">Saved</span></div>
+
+    <!-- Note Modal -->
+    <div class="modal-overlay" id="noteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">New Note</span>
+                <button class="modal-close" onclick="closeModal('noteModal')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="modal-input" id="noteTitle" placeholder="Title (optional)">
+                <textarea class="modal-input modal-textarea" id="noteContent" placeholder="Write your reflection, observation, or reminder..."></textarea>
+                <select class="modal-select" id="noteCategory">
+                    <option value="">Select category (optional)</option>
+                    <option value="self">Self</option>
+                    <option value="work">Work</option>
+                    <option value="relationships">Relationships</option>
+                    <option value="health">Health</option>
+                    <option value="growth">Growth</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal('noteModal')">Cancel</button>
+                <button class="modal-btn primary" onclick="saveNote()">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app">
+        <nav class="nav-rail">
+            <a href="orivya-app-v10.html" class="nav-logo"><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></a>
+            <div class="nav-items">
+                <a href="orivya-app-v10.html" class="nav-item" data-tooltip="Chat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></a>
+                <a href="orivya-explore-v5.html" class="nav-item" data-tooltip="Explore"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></a>
+                <a href="orivya-library-v7.html" class="nav-item active" data-tooltip="Library"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></a>
+            </div>
+            <div class="nav-bottom">
+                <a href="orivya-profile-v1.html" class="nav-item" data-tooltip="Profile"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+                <a href="orivya-settings-v1.html" class="nav-item" data-tooltip="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="page-header">
+                <div class="page-header-top">
+                    <div>
+                        <h1 class="page-title">Library</h1>
+                        <p class="page-subtitle">Your personal collection of insights, decisions, and reflections</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="header-btn" onclick="openModal('noteModal')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Note</button>
+                    </div>
+                </div>
+                <div class="stats-bar">
+                    <div class="stat-item"><span class="stat-value">24</span><span class="stat-label">Items</span><span class="stat-trend">+3 this week</span></div>
+                    <div class="stat-item"><span class="stat-value">8</span><span class="stat-label">Insights</span></div>
+                    <div class="stat-item"><span class="stat-value">3</span><span class="stat-label">Decisions</span></div>
+                    <div class="stat-item"><span class="stat-value">5</span><span class="stat-label">Notes</span></div>
+                </div>
+                <div class="filters">
+                    <div class="filter-chips">
+                        <button class="filter-chip active" onclick="filterType(this, 'all')">All</button>
+                        <button class="filter-chip" onclick="filterType(this, 'insights')">Insights</button>
+                        <button class="filter-chip" onclick="filterType(this, 'decisions')">Decisions</button>
+                        <button class="filter-chip" onclick="filterType(this, 'patterns')">Patterns</button>
+                        <button class="filter-chip" onclick="filterType(this, 'notes')">Notes</button>
+                    </div>
+                    <select class="filter-dropdown"><option>All categories</option><option>Self</option><option>Work</option><option>Relationships</option><option>Health</option></select>
+                    <input type="text" class="search-input" placeholder="Search library...">
+                </div>
+            </header>
+
+            <div class="library-scroll">
+                <div class="library-container">
+                    <!-- Quick Add -->
+                    <div class="quick-add">
+                        <button class="quick-add-btn" onclick="openModal('noteModal')"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Write Note</button>
+                        <button class="quick-add-btn" onclick="startDecision()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 12l-4 4-4-4M12 8v7"/></svg>Track Decision</button>
+                        <button class="quick-add-btn" onclick="goToChat()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>New Session</button>
+                        <button class="quick-add-btn" onclick="goToExplore()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>Explore Patterns</button>
+                    </div>
+
+                    <!-- Starred Items -->
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-title"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--gold);stroke-width:1.5;fill:var(--gold);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Starred <span class="section-count">3</span></span>
+                        </div>
+                        <div class="items-grid">
+                            <div class="item-card" onclick="openItem('insight-1')">
+                                <div class="item-header"><span class="item-type insight">Insight</span><button class="item-star active" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Thoroughness can be both a strength and a form of hesitation</div>
+                                <div class="item-preview">You consider multiple perspectives carefully, but this can sometimes delay action.</div>
+                                <div class="item-meta"><span>Dec 3</span><span class="item-tag" onclick="event.stopPropagation(); filterByTag('self')">Self</span></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('decision-1')">
+                                <div class="item-header"><span class="item-type decision">Decision</span><button class="item-star active" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Should I take the new role?</div>
+                                <div class="item-preview">Weighing career growth against current stability and work-life balance.</div>
+                                <div class="item-meta"><span>Open · Started Dec 1</span><span class="item-tag" onclick="event.stopPropagation(); filterByTag('work')">Work</span></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('note-1')">
+                                <div class="item-header"><span class="item-type note">Note</span><button class="item-star active" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">What I want my life to look like in 5 years</div>
+                                <div class="item-preview">Freedom to work from anywhere, meaningful projects, strong relationships...</div>
+                                <div class="item-meta"><span>Nov 28</span><span class="item-tag" onclick="event.stopPropagation(); filterByTag('growth')">Growth</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Recent Insights -->
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-title">Recent Insights <span class="section-count">8</span></span>
+                            <button class="section-link" onclick="viewAll('insights')">View all</button>
+                        </div>
+                        <div class="items-grid">
+                            <div class="item-card" onclick="openItem('insight-2')">
+                                <div class="item-header"><span class="item-type insight">Insight</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">You may be treating negotiable constraints as fixed</div>
+                                <div class="item-preview">The time issue, manager assumptions, and waiting pattern all suggest flexibility you haven't tested.</div>
+                                <div class="item-meta"><span>Dec 4</span><span class="item-tag">Work</span></div>
+                                <div class="item-actions"><button class="item-action" onclick="event.stopPropagation(); exploreInsight()">Explore</button><button class="item-action" onclick="event.stopPropagation(); createCard()">Create Card</button></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('insight-3')">
+                                <div class="item-header"><span class="item-type insight">Insight</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">You defer to others before acting on your own instincts</div>
+                                <div class="item-preview">This pattern has appeared across 4 sessions when discussing major decisions.</div>
+                                <div class="item-meta"><span>Dec 2</span><span class="item-tag">Self</span></div>
+                                <div class="item-actions"><button class="item-action" onclick="event.stopPropagation(); exploreInsight()">Explore</button></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('insight-4')">
+                                <div class="item-header"><span class="item-type insight">Insight</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Freedom means something specific to you that you haven't defined</div>
+                                <div class="item-preview">You talk about freedom frequently but in abstract terms—concrete definition might help.</div>
+                                <div class="item-meta"><span>Nov 30</span><span class="item-tag">Self</span></div>
+                                <div class="item-actions"><button class="item-action" onclick="event.stopPropagation(); exploreInsight()">Explore</button></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Decisions -->
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-title">Decisions <span class="section-count">3</span></span>
+                            <button class="section-link" onclick="startDecision()">+ New decision</button>
+                        </div>
+                        <div class="items-grid">
+                            <div class="item-card" onclick="openItem('decision-1')">
+                                <div class="item-header"><span class="item-type decision">Open</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Should I take the new role?</div>
+                                <div class="item-preview">Weighing career growth against stability. Key factors: compensation, growth potential, team culture.</div>
+                                <div class="item-meta"><span>Started Dec 1</span><span class="item-tag">Work</span></div>
+                                <div class="item-actions"><button class="item-action" onclick="event.stopPropagation(); viewBrief()">View Brief</button><button class="item-action" onclick="event.stopPropagation(); continueDecision()">Continue</button></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('decision-2')">
+                                <div class="item-header"><span class="item-type" style="background:var(--sage-subtle);color:var(--sage);">Resolved</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Whether to relocate</div>
+                                <div class="item-preview">Decided: Stay for now. Family ties and current opportunity outweigh adventure.</div>
+                                <div class="item-meta"><span>Resolved Nov 28</span><span class="item-tag">Life</span></div>
+                                <div class="item-actions"><button class="item-action" onclick="event.stopPropagation(); viewBrief()">View Brief</button><button class="item-action" onclick="event.stopPropagation(); reopenDecision()">Revisit</button></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Patterns -->
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-title">Patterns <span class="section-count">5</span></span>
+                            <button class="section-link" onclick="goToExplore()">Explore all</button>
+                        </div>
+                        <div class="items-grid">
+                            <div class="item-card" onclick="openItem('pattern-1')">
+                                <div class="item-header"><span class="item-type pattern">Pattern</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Seeking certainty before acting</div>
+                                <div class="item-preview">Appears in 6 sessions. You often wait for more information before making decisions.</div>
+                                <div class="item-meta"><span>Active · 6 sessions</span></div>
+                                <div class="item-actions"><button class="item-action" onclick="event.stopPropagation(); explorePattern()">Explore</button></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('pattern-2')">
+                                <div class="item-header"><span class="item-type pattern">Pattern</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Time consumed by primary work</div>
+                                <div class="item-preview">Mentioned 8 times. A constraint you reference often but haven't explored deeply.</div>
+                                <div class="item-meta"><span>Active · 8 sessions</span></div>
+                                <div class="item-actions"><button class="item-action" onclick="event.stopPropagation(); explorePattern()">Explore</button></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Notes -->
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-title">Notes <span class="section-count">5</span></span>
+                            <button class="section-link" onclick="openModal('noteModal')">+ New note</button>
+                        </div>
+                        <div class="items-grid">
+                            <div class="item-card" onclick="openItem('note-1')">
+                                <div class="item-header"><span class="item-type note">Note</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">What I want my life to look like in 5 years</div>
+                                <div class="item-preview">Freedom to work from anywhere, meaningful projects that help people, strong relationships with family...</div>
+                                <div class="item-meta"><span>Nov 28</span><span class="item-tag">Growth</span></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('note-2')">
+                                <div class="item-header"><span class="item-type note">Note</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Questions to ask in the next conversation</div>
+                                <div class="item-preview">What does enough look like? Why do I assume my manager won't be flexible?</div>
+                                <div class="item-meta"><span>Dec 2</span><span class="item-tag">Self</span></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('note-3')">
+                                <div class="item-header"><span class="item-type note">Note</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Personal reflection on growth</div>
+                                <div class="item-preview">The pattern of seeking external validation comes from earlier experiences. Worth exploring more.</div>
+                                <div class="item-meta"><span>Nov 25</span><span class="item-tag">Self</span></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('note-4')">
+                                <div class="item-header"><span class="item-type note">Note</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Things that energize me vs drain me</div>
+                                <div class="item-preview">Energize: Creative problem solving, helping others, learning. Drain: Meetings, politics, waiting.</div>
+                                <div class="item-meta"><span>Nov 20</span><span class="item-tag">Self</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Turning Points -->
+                    <section class="section">
+                        <div class="section-header">
+                            <span class="section-title">Turning Points <span class="section-count">2</span></span>
+                        </div>
+                        <div class="items-grid">
+                            <div class="item-card" onclick="openItem('tp-1')">
+                                <div class="item-header"><span class="item-type turning-point">Turning Point</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Realized I've been waiting for permission</div>
+                                <div class="item-preview">The moment when "waiting for permission" shifted to "I can act on my own terms."</div>
+                                <div class="item-meta"><span>Nov 22</span></div>
+                            </div>
+                            <div class="item-card" onclick="openItem('tp-2')">
+                                <div class="item-header"><span class="item-type turning-point">Turning Point</span><button class="item-star" onclick="event.stopPropagation(); toggleStar(this)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button></div>
+                                <div class="item-title">Understanding why I overthink</div>
+                                <div class="item-preview">Connected overthinking to fear of making wrong choices. Now see it as data, not destiny.</div>
+                                <div class="item-meta"><span>Nov 15</span></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function showToast(message) { const toast = document.getElementById('toast'); document.getElementById('toastMessage').textContent = message; toast.classList.add('visible'); setTimeout(() => toast.classList.remove('visible'), 2500); }
+        function openModal(id) { document.getElementById(id).classList.add('visible'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('visible'); }
+        function saveNote() { const content = document.getElementById('noteContent').value.trim(); if (!content) return; closeModal('noteModal'); showToast('Note saved to Library'); document.getElementById('noteTitle').value = ''; document.getElementById('noteContent').value = ''; document.getElementById('noteCategory').value = ''; }
+        function filterType(btn, type) { document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active')); btn.classList.add('active'); showToast('Filtered by: ' + type); }
+        function filterByTag(tag) { showToast('Filtered by: ' + tag); }
+        function toggleStar(btn) { btn.classList.toggle('active'); showToast(btn.classList.contains('active') ? 'Added to starred' : 'Removed from starred'); }
+        function openItem(id) { showToast('Opening item...'); }
+        function viewAll(type) { showToast('Viewing all ' + type); }
+        function exploreInsight() { window.location.href = 'orivya-app-v10.html'; }
+        function createCard() { showToast('Creating shareable card...'); }
+        function viewBrief() { showToast('Opening decision brief...'); }
+        function continueDecision() { window.location.href = 'orivya-app-v10.html'; }
+        function reopenDecision() { showToast('Decision reopened'); }
+        function explorePattern() { window.location.href = 'orivya-explore-v5.html'; }
+        function startDecision() { window.location.href = 'orivya-app-v10.html'; }
+        function goToChat() { window.location.href = 'orivya-app-v10.html'; }
+        function goToExplore() { window.location.href = 'orivya-explore-v5.html'; }
+        
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal.id); });
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.visible').forEach(m => closeModal(m.id)); });
+    </script>
+</body>
+</html>

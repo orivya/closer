@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Form Validation States</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --success: #4ade80;
+      --success-subtle: rgba(74, 222, 128, 0.1);
+      --error: #f87171;
+      --error-subtle: rgba(248, 113, 113, 0.1);
+      --warning: #fbbf24;
+      --warning-subtle: rgba(251, 191, 36, 0.1);
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      padding: var(--space-8);
+    }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea, select { font-family: inherit; }
+    
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .subtitle {
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-10);
+    }
+    
+    .section {
+      margin-bottom: var(--space-10);
+    }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-4);
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-6);
+    }
+    
+    .demo-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    
+    .demo-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    
+    /* ==========================================
+       FORM FIELD BASE
+    ========================================== */
+    
+    .form-field {
+      margin-bottom: var(--space-5);
+    }
+    .form-field:last-child { margin-bottom: 0; }
+    
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .form-label-required {
+      color: var(--error);
+    }
+    
+    .form-label-optional {
+      font-size: var(--text-xs);
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+    
+    /* ==========================================
+       TEXT INPUT STATES
+    ========================================== */
+    
+    .input {
+      width: 100%;
+      height: 44px;
+      padding: 0 var(--space-4);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background-color: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .input::placeholder { color: var(--text-muted); }
+    .input:hover:not(:disabled) { border-color: var(--border-default); }
+    .input:focus {
+      outline: none;
+      border-color: var(--sage);
+      background-color: var(--bg-hover);
+    }
+    .input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Success State */
+    .input--success {
+      border-color: var(--success);
+      background-color: var(--success-subtle);
+    }
+    .input--success:focus {
+      border-color: var(--success);
+      box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.15);
+    }
+    
+    /* Error State */
+    .input--error {
+      border-color: var(--error);
+      background-color: var(--error-subtle);
+    }
+    .input--error:focus {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15);
+    }
+    
+    /* Warning State */
+    .input--warning {
+      border-color: var(--warning);
+      background-color: var(--warning-subtle);
+    }
+    .input--warning:focus {
+      border-color: var(--warning);
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15);
+    }
+    
+    /* ==========================================
+       INPUT WITH ICON
+    ========================================== */
+    
+    .input-icon-wrap {
+      position: relative;
+    }
+    .input-icon-wrap .input {
+      padding-left: 44px;
+    }
+    .input-icon-wrap .input--has-right {
+      padding-right: 44px;
+    }
+    .input-icon-left {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .input-icon-left svg { width: 18px; height: 18px; }
+    
+    .input-icon-right {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .input-icon-right svg { width: 18px; height: 18px; }
+    .input-icon-right--success { color: var(--success); }
+    .input-icon-right--error { color: var(--error); }
+    
+    .input-clear-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background-color: var(--bg-surface);
+      border: none;
+      border-radius: var(--radius-full);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .input-clear-btn:hover { background-color: var(--bg-hover); color: var(--text-secondary); }
+    .input-clear-btn svg { width: 12px; height: 12px; }
+    
+    /* ==========================================
+       HELPER TEXT
+    ========================================== */
+    
+    .form-helper {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .form-helper svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+    
+    .form-helper--success { color: var(--success); }
+    .form-helper--error { color: var(--error); }
+    .form-helper--warning { color: var(--warning); }
+    
+    /* ==========================================
+       TEXTAREA
+    ========================================== */
+    
+    .textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: var(--space-4);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--text-primary);
+      background-color: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      resize: vertical;
+      transition: all var(--transition-fast);
+    }
+    .textarea::placeholder { color: var(--text-muted); }
+    .textarea:focus {
+      outline: none;
+      border-color: var(--sage);
+      background-color: var(--bg-hover);
+    }
+    .textarea--error {
+      border-color: var(--error);
+      background-color: var(--error-subtle);
+    }
+    
+    .textarea-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--space-2);
+    }
+    
+    .char-count {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .char-count--warning { color: var(--warning); }
+    .char-count--error { color: var(--error); }
+    
+    /* ==========================================
+       SELECT
+    ========================================== */
+    
+    .select-wrap {
+      position: relative;
+    }
+    
+    .select {
+      width: 100%;
+      height: 44px;
+      padding: 0 40px 0 var(--space-4);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background-color: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: all var(--transition-fast);
+    }
+    .select:focus {
+      outline: none;
+      border-color: var(--sage);
+    }
+    .select--error { border-color: var(--error); }
+    
+    .select-arrow {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-muted);
+    }
+    .select-arrow svg { width: 18px; height: 18px; }
+    
+    /* ==========================================
+       CHECKBOX & RADIO
+    ========================================== */
+    
+    .checkbox-field {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      cursor: pointer;
+    }
+    
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all var(--transition-fast);
+    }
+    .checkbox svg { width: 12px; height: 12px; color: white; opacity: 0; transition: opacity var(--transition-fast); }
+    
+    .checkbox-field:hover .checkbox { border-color: var(--sage); }
+    .checkbox--checked {
+      background-color: var(--sage);
+      border-color: var(--sage);
+    }
+    .checkbox--checked svg { opacity: 1; }
+    .checkbox--error { border-color: var(--error); }
+    .checkbox--indeterminate {
+      background-color: var(--sage);
+      border-color: var(--sage);
+    }
+    .checkbox--indeterminate::after {
+      content: '';
+      width: 10px;
+      height: 2px;
+      background-color: white;
+      border-radius: 1px;
+    }
+    
+    .checkbox-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .checkbox-label a { color: var(--sage); text-decoration: underline; }
+    
+    .radio {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all var(--transition-fast);
+    }
+    .radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: var(--radius-full);
+      opacity: 0;
+      transform: scale(0);
+      transition: all var(--transition-fast);
+    }
+    .checkbox-field:hover .radio { border-color: var(--sage); }
+    .radio--checked {
+      background-color: var(--sage);
+      border-color: var(--sage);
+    }
+    .radio--checked::after { opacity: 1; transform: scale(1); }
+    
+    /* ==========================================
+       PASSWORD STRENGTH
+    ========================================== */
+    
+    .password-strength {
+      display: flex;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+    }
+    
+    .strength-bar {
+      flex: 1;
+      height: 4px;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      transition: background-color var(--transition-fast);
+    }
+    
+    .password-strength[data-strength="1"] .strength-bar:nth-child(1) { background-color: var(--error); }
+    .password-strength[data-strength="2"] .strength-bar:nth-child(-n+2) { background-color: var(--warning); }
+    .password-strength[data-strength="3"] .strength-bar:nth-child(-n+3) { background-color: var(--sage); }
+    .password-strength[data-strength="4"] .strength-bar { background-color: var(--success); }
+    
+    .strength-label {
+      font-size: var(--text-xs);
+      margin-top: var(--space-1);
+    }
+    .strength-label--weak { color: var(--error); }
+    .strength-label--fair { color: var(--warning); }
+    .strength-label--good { color: var(--sage); }
+    .strength-label--strong { color: var(--success); }
+    
+    /* ==========================================
+       INLINE VALIDATION
+    ========================================== */
+    
+    .validation-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+    
+    .validation-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      transition: color var(--transition-fast);
+    }
+    .validation-item svg { width: 14px; height: 14px; }
+    .validation-item--valid { color: var(--success); }
+    .validation-item--invalid { color: var(--text-muted); }
+    
+    /* ==========================================
+       FORM ACTIONS
+    ========================================== */
+    
+    .form-actions {
+      display: flex;
+      gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      height: 44px;
+      padding: 0 var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .btn svg { width: 18px; height: 18px; }
+    
+    .btn--primary {
+      color: white;
+      background-color: var(--sage);
+    }
+    .btn--primary:hover { background-color: var(--sage-dark); }
+    .btn--primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn--secondary {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface-2);
+    }
+    .btn--secondary:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    
+    /* ==========================================
+       ERROR SUMMARY
+    ========================================== */
+    
+    .error-summary {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background-color: var(--error-subtle);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-6);
+    }
+    
+    .error-summary-icon {
+      flex-shrink: 0;
+      color: var(--error);
+    }
+    .error-summary-icon svg { width: 20px; height: 20px; }
+    
+    .error-summary-content { }
+    .error-summary-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--error);
+      margin-bottom: var(--space-2);
+    }
+    .error-summary-list {
+      list-style: none;
+    }
+    .error-summary-list li {
+      font-size: var(--text-xs);
+      color: var(--text-secondary);
+      padding: 2px 0;
+    }
+    .error-summary-list li::before {
+      content: '•';
+      color: var(--error);
+      margin-right: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>Form Validation States</h1>
+  <p class="subtitle">Input states, validation feedback, and form patterns</p>
+  
+  <!-- Text Input States -->
+  <section class="section">
+    <h2 class="section-title">Text Input States</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Default → Focus → Filled</div>
+        <div class="form-field">
+          <label class="form-label">Email address <span class="form-label-required">*</span></label>
+          <input type="email" class="input" placeholder="you@example.com">
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Success State</div>
+        <div class="form-field">
+          <label class="form-label">Email address</label>
+          <div class="input-icon-wrap">
+            <input type="email" class="input input--success input--has-right" value="jordan@example.com">
+            <span class="input-icon-right input-icon-right--success">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
+          <div class="form-helper form-helper--success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Email is available</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Error State</div>
+        <div class="form-field">
+          <label class="form-label">Email address</label>
+          <div class="input-icon-wrap">
+            <input type="email" class="input input--error input--has-right" value="not-an-email">
+            <span class="input-icon-right input-icon-right--error">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </span>
+          </div>
+          <div class="form-helper form-helper--error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Please enter a valid email address</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Warning State</div>
+        <div class="form-field">
+          <label class="form-label">Display name</label>
+          <input type="text" class="input input--warning" value="admin">
+          <div class="form-helper form-helper--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>This name may be confused with a system account</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">With Icon + Clear Button</div>
+        <div class="form-field">
+          <label class="form-label">Search</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="text" class="input input--has-right" value="career decisions" style="padding-left: 44px;">
+            <span class="input-icon-right">
+              <button class="input-clear-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Disabled State</div>
+        <div class="form-field">
+          <label class="form-label">Account ID</label>
+          <input type="text" class="input" value="usr_12345abc" disabled>
+          <div class="form-helper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>This cannot be changed</span>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Password -->
+  <section class="section">
+    <h2 class="section-title">Password Field</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Password with Strength Indicator</div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <input type="password" class="input" value="strongpass123">
+          <div class="password-strength" data-strength="3">
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+          </div>
+          <div class="strength-label strength-label--good">Good password</div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Password with Validation List</div>
+        <div class="form-field">
+          <label class="form-label">Create password</label>
+          <input type="password" class="input" value="Pass1234">
+          <div class="validation-list">
+            <div class="validation-item validation-item--valid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>At least 8 characters</span>
+            </div>
+            <div class="validation-item validation-item--valid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Contains uppercase letter</span>
+            </div>
+            <div class="validation-item validation-item--valid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Contains number</span>
+            </div>
+            <div class="validation-item validation-item--invalid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+              <span>Contains special character</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Textarea -->
+  <section class="section">
+    <h2 class="section-title">Textarea</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">With Character Count</div>
+        <div class="form-field">
+          <label class="form-label">Bio <span class="form-label-optional">(optional)</span></label>
+          <textarea class="textarea" placeholder="Tell us about yourself...">I'm a designer who loves to explore new ideas through writing.</textarea>
+          <div class="textarea-footer">
+            <div class="form-helper">Supports markdown</div>
+            <span class="char-count">58/200</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Near Limit Warning</div>
+        <div class="form-field">
+          <label class="form-label">Note</label>
+          <textarea class="textarea">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</textarea>
+          <div class="textarea-footer">
+            <span></span>
+            <span class="char-count char-count--warning">180/200</span>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Select & Checkbox -->
+  <section class="section">
+    <h2 class="section-title">Select, Checkbox & Radio</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Select Dropdown</div>
+        <div class="form-field">
+          <label class="form-label">Timezone</label>
+          <div class="select-wrap">
+            <select class="select">
+              <option>America/New_York (EST)</option>
+              <option>America/Los_Angeles (PST)</option>
+              <option>Europe/London (GMT)</option>
+            </select>
+            <span class="select-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Checkbox States</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <label class="checkbox-field">
+            <div class="checkbox checkbox--checked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">Checked</span>
+          </label>
+          <label class="checkbox-field">
+            <div class="checkbox"></div>
+            <span class="checkbox-label">Unchecked</span>
+          </label>
+          <label class="checkbox-field">
+            <div class="checkbox checkbox--indeterminate"></div>
+            <span class="checkbox-label">Indeterminate</span>
+          </label>
+          <label class="checkbox-field">
+            <div class="checkbox checkbox--error"></div>
+            <span class="checkbox-label">I agree to the <a href="#">Terms of Service</a></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="demo-card">
+        <div class="demo-label">Radio Buttons</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <label class="checkbox-field">
+            <div class="radio radio--checked"></div>
+            <span class="checkbox-label">Morning (8am - 12pm)</span>
+          </label>
+          <label class="checkbox-field">
+            <div class="radio"></div>
+            <span class="checkbox-label">Afternoon (12pm - 5pm)</span>
+          </label>
+          <label class="checkbox-field">
+            <div class="radio"></div>
+            <span class="checkbox-label">Evening (5pm - 9pm)</span>
+          </label>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Error Summary -->
+  <section class="section">
+    <h2 class="section-title">Error Summary</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card">
+        <div class="demo-label">Form Error Summary</div>
+        <div class="error-summary">
+          <div class="error-summary-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="error-summary-content">
+            <div class="error-summary-title">Please fix the following errors:</div>
+            <ul class="error-summary-list">
+              <li>Email address is invalid</li>
+              <li>Password must contain a special character</li>
+              <li>You must agree to the Terms of Service</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Complete Form Example -->
+  <section class="section">
+    <h2 class="section-title">Complete Form Example</h2>
+    <div class="demo-grid">
+      
+      <div class="demo-card" style="max-width: 400px;">
+        <div class="demo-label">Sign Up Form</div>
+        
+        <div class="form-field">
+          <label class="form-label">Name <span class="form-label-required">*</span></label>
+          <input type="text" class="input" placeholder="Your name">
+        </div>
+        
+        <div class="form-field">
+          <label class="form-label">Email <span class="form-label-required">*</span></label>
+          <div class="input-icon-wrap">
+            <input type="email" class="input input--success input--has-right" value="jordan@example.com">
+            <span class="input-icon-right input-icon-right--success">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </span>
+          </div>
+        </div>
+        
+        <div class="form-field">
+          <label class="form-label">Password <span class="form-label-required">*</span></label>
+          <input type="password" class="input" value="mypassword">
+          <div class="password-strength" data-strength="2">
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+            <div class="strength-bar"></div>
+          </div>
+          <div class="strength-label strength-label--fair">Fair - add special characters</div>
+        </div>
+        
+        <div class="form-field">
+          <label class="checkbox-field">
+            <div class="checkbox checkbox--checked">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span class="checkbox-label">I agree to the <a href="#">Terms of Service</a></span>
+          </label>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn btn--primary" style="flex: 1;">Create account</button>
+        </div>
+        
+      </div>
+      
+    </div>
+  </section>
+  
+</body>
+</html>

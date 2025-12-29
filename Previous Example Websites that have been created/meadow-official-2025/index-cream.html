@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meadow — Warm Cream Theme Preview</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              /* ===== WARM CREAM LIGHT THEME ===== */
+              /* Warm, inviting backgrounds */
+              cream: {
+                base: '#FAF9F6',
+                DEFAULT: '#F5F3EF',
+                surface: '#FFFEFA',
+                card: '#FFFFFF',
+                elevated: '#FFFFFF',
+                hover: '#F0EDE8',
+                border: 'rgba(0, 0, 0, 0.08)',
+                'border-subtle': 'rgba(0, 0, 0, 0.04)',
+                'border-strong': 'rgba(0, 0, 0, 0.12)',
+              },
+              /* Sage accent - same brand color, adapted for light */
+              sage: {
+                DEFAULT: '#6B8F7A',
+                light: '#7FA08D',
+                dark: '#5A7A68',
+                subtle: 'rgba(107, 143, 122, 0.08)',
+                muted: 'rgba(107, 143, 122, 0.15)',
+                glow: 'rgba(107, 143, 122, 0.25)',
+                'glow-strong': 'rgba(107, 143, 122, 0.35)',
+                border: 'rgba(107, 143, 122, 0.25)',
+              },
+              clay: {
+                DEFAULT: '#B87160',
+                light: '#D4847A',
+                subtle: 'rgba(184, 113, 96, 0.1)',
+                glow: 'rgba(184, 113, 96, 0.2)',
+              },
+              lavender: {
+                DEFAULT: '#9B8FC4',
+                subtle: 'rgba(155, 143, 196, 0.12)',
+                glow: 'rgba(155, 143, 196, 0.2)',
+              },
+              stone: {
+                50: '#faf9f7',
+                100: '#f5f3f0',
+                200: '#e8e6e3',
+                300: '#d6d3d0',
+                400: '#a8a29e',
+                500: '#78716c',
+                600: '#57534e',
+                700: '#44403c',
+                800: '#292524',
+                900: '#1c1917',
+              },
+              /* Light theme text hierarchy */
+              text: {
+                primary: '#1a1a1a',
+                secondary: '#4a4a4a',
+                tertiary: '#737373',
+                muted: '#9ca3af',
+              },
+            },
+            boxShadow: {
+              soft: '0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)',
+              elevated: '0 4px 16px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06)',
+              card: '0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06)',
+              'card-hover': '0 8px 24px rgba(0,0,0,0.08), 0 16px 48px rgba(0,0,0,0.08)',
+              'glow': '0 0 20px rgba(107, 143, 122, 0.2)',
+              'glow-lg': '0 0 40px rgba(107, 143, 122, 0.25)',
+              'glow-clay': '0 0 20px rgba(184, 113, 96, 0.15)',
+              'glow-lavender': '0 0 20px rgba(155, 143, 196, 0.15)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['Fraunces', 'serif'],
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            },
+            animation: {
+              'fade-up': 'fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'fade-in': 'fadeIn 1.2s ease-out forwards',
+              'scale-in': 'scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'pulse-slow': 'pulseSlow 8s ease-in-out infinite',
+              'float': 'float 10s ease-in-out infinite',
+            },
+            keyframes: {
+              fadeUp: {
+                '0%': { opacity: '0', transform: 'translateY(40px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              scaleIn: {
+                '0%': { transform: 'scale(0.95)', opacity: '0' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+              },
+              pulseSlow: {
+                '0%, 100%': { opacity: '0.3', transform: 'scale(1)' },
+                '50%': { opacity: '0.6', transform: 'scale(1.1)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
+              },
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* ===== WARM CREAM LIGHT THEME BASE ===== */
+      body {
+        background-color: #FAF9F6;
+        color: #1a1a1a;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+      }
+
+      /* Glass card variants for cream theme */
+      .glass-card-cream {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+      }
+
+      .glass-card-cream-elevated {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      }
+
+      .glass-card-cream-glow {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(107, 143, 122, 0.2);
+        box-shadow: 0 0 24px rgba(107, 143, 122, 0.1), 0 4px 16px rgba(0,0,0,0.04);
+      }
+
+      .glass-nav-cream {
+        background: rgba(250, 249, 246, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .glass-sidebar-cream {
+        background: rgba(255, 255, 254, 0.98);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      /* Custom scrollbar - cream theme */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(107, 143, 122, 0.2);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(107, 143, 122, 0.35);
+      }
+
+      /* Focus visible for accessibility */
+      *:focus-visible {
+        outline: 2px solid #6B8F7A;
+        outline-offset: 2px;
+      }
+
+      /* Selection color */
+      ::selection {
+        background: rgba(107, 143, 122, 0.2);
+        color: #1a1a1a;
+      }
+    </style>
+</head>
+  <body>
+    <div id="root"></div>
+    <p style="text-align: center; padding: 40px; font-family: Inter, sans-serif; color: #737373;">
+      This is just a color reference file. See views/HomeCream.tsx for the actual component preview.
+    </p>
+  </body>
+</html>

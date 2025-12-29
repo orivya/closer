@@ -1,0 +1,36 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes blink {
+      0%, 96%, 100% { transform: scaleY(1); }
+      98% { transform: scaleY(0.1); }
+    }
+    .stack { animation: float 4s ease-in-out infinite; }
+    .eyes { transform-origin: center; animation: blink 4s infinite; }
+  </style>
+
+  <g class="stack">
+    <!-- Bottom Stone -->
+    <ellipse cx="100" cy="160" rx="60" ry="25" fill="#8B8C7A" />
+    <path d="M100 135 C 140 135, 160 150, 160 160 C 160 175, 130 185, 100 185 C 70 185, 40 175, 40 160 C 40 150, 60 135, 100 135" fill="black" fill-opacity="0.1"/>
+
+    <!-- Middle Stone -->
+    <ellipse cx="105" cy="130" rx="45" ry="20" fill="#A4A694" />
+
+    <!-- Top Stone (Head) -->
+    <ellipse cx="98" cy="100" rx="35" ry="25" fill="#D3D9C5" />
+
+    <!-- Face -->
+    <g class="eyes">
+      <circle cx="88" cy="100" r="3" fill="#2C2C2C" />
+      <circle cx="108" cy="100" r="3" fill="#2C2C2C" />
+    </g>
+    <path d="M96 108 Q 98 110 100 108" stroke="#2C2C2C" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Shadow -->
+  <ellipse cx="100" cy="190" rx="50" ry="8" fill="black" opacity="0.1" />
+</svg>

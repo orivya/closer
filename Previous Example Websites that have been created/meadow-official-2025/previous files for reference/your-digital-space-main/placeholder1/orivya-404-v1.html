@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — Page Not Found</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a; --sage-light: #9bb3a4; --sage-dark: #6a8577;
+            --sage-glow: rgba(125, 155, 138, 0.5);
+            --sage-subtle: rgba(125, 155, 138, 0.08);
+            --bg-base: #08080a; --bg-elevated: #0e0e11; --bg-surface: #141417;
+            --border-subtle: rgba(255, 255, 255, 0.04); --border-default: rgba(255, 255, 255, 0.07);
+            --text-primary: #fafafa; --text-secondary: #a1a1aa; --text-tertiary: #71717a; --text-muted: #52525b;
+            --radius-sm: 6px; --radius-md: 10px;
+            --transition-fast: 0.15s ease;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus { outline: none; }
+        :focus-visible { outline: 2px solid rgba(125, 155, 138, 0.65); outline-offset: 3px; border-radius: var(--radius-sm); }
+        ::selection { background: var(--sage); color: white; }
+        html, body { height: 100%; overflow: hidden; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-base); color: var(--text-primary); -webkit-font-smoothing: antialiased; }
+
+        /* Ambient Background */
+        .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+        .ambient-orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.06; }
+        .ambient-orb-1 { width: 600px; height: 600px; background: var(--sage); top: -200px; left: -200px; animation: drift-1 30s ease-in-out infinite; }
+        .ambient-orb-2 { width: 400px; height: 400px; background: var(--sage-dark); bottom: -100px; right: -100px; animation: drift-2 35s ease-in-out infinite; }
+        @keyframes drift-1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(60px, 40px); } }
+        @keyframes drift-2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-40px, -50px); } }
+
+        .container { position: relative; z-index: 1; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+
+        /* Confused Avatar */
+        .avatar-container { position: relative; width: 120px; height: 105px; margin-bottom: 40px; }
+        .avatar-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 160px; height: 140px; background: radial-gradient(ellipse, var(--sage-glow) 0%, transparent 70%); filter: blur(40px); opacity: 0.4; animation: glow-pulse 3s ease-in-out infinite; }
+        @keyframes glow-pulse { 0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); } }
+        .avatar-body { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100px; height: 88px; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; box-shadow: 0 12px 40px rgba(125, 155, 138, 0.3); animation: confused-sway 4s ease-in-out infinite; }
+        @keyframes confused-sway { 0%, 100% { transform: translate(-50%, -50%) rotate(0deg); } 25% { transform: translate(-50%, -50%) rotate(8deg); } 50% { transform: translate(-50%, -50%) rotate(0deg); } 75% { transform: translate(-50%, -50%) rotate(-8deg); } }
+        .avatar-eyes { position: absolute; top: 40%; left: 42%; transform: translateX(-50%); display: flex; gap: 20px; }
+        .avatar-eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; box-shadow: 0 0 8px rgba(255, 255, 255, 0.3); animation: confused-blink 3s ease-in-out infinite; }
+        .avatar-eye.left { width: 8px; height: 8px; }
+        .avatar-eye.right { width: 6px; height: 6px; opacity: 0.9; }
+        @keyframes confused-blink { 0%, 30%, 50%, 100% { transform: scaleY(1); } 40% { transform: scaleY(0.1); } }
+        /* Question marks floating */
+        .question-mark { position: absolute; font-size: 24px; color: var(--sage); opacity: 0; animation: float-up 2s ease-out infinite; }
+        .question-mark:nth-child(1) { right: -20px; top: 10px; animation-delay: 0s; }
+        .question-mark:nth-child(2) { right: -30px; top: 30px; animation-delay: 0.7s; }
+        .question-mark:nth-child(3) { right: -10px; top: 50px; animation-delay: 1.4s; }
+        @keyframes float-up { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 0.6; } 100% { opacity: 0; transform: translateY(-30px); } }
+
+        .error-code { font-family: 'JetBrains Mono', monospace; font-size: 80px; font-weight: 700; color: var(--sage); letter-spacing: -4px; margin-bottom: 16px; opacity: 0.15; }
+
+        .error-title { font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+
+        .error-message { font-size: 16px; color: var(--text-secondary); max-width: 400px; line-height: 1.6; margin-bottom: 40px; }
+
+        .actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+
+        .btn { padding: 14px 28px; border-radius: var(--radius-md); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.2s ease; }
+        .btn-primary { background: var(--sage); border: none; color: white; }
+        .btn-primary:hover { background: var(--sage-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(125, 155, 138, 0.3); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-secondary { background: transparent; border: 1px solid var(--border-default); color: var(--text-secondary); }
+        .btn-secondary:hover { background: var(--bg-surface); color: var(--text-primary); }
+        .btn-secondary:active { transform: scale(0.98); }
+
+        .footer-note { position: absolute; bottom: 32px; font-size: 13px; color: var(--text-muted); }
+        .footer-note a { color: var(--sage); text-decoration: none; }
+        .footer-note a:hover { text-decoration: underline; }
+
+        @media (max-width: 500px) {
+            .error-code { font-size: 60px; }
+            .error-title { font-size: 24px; }
+            .actions { flex-direction: column; width: 100%; max-width: 280px; }
+            .btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+    </div>
+
+    <div class="container">
+        <div class="avatar-container">
+            <div class="avatar-glow"></div>
+            <div class="avatar-body">
+                <div class="avatar-eyes">
+                    <div class="avatar-eye left"></div>
+                    <div class="avatar-eye right"></div>
+                </div>
+            </div>
+            <span class="question-mark">?</span>
+            <span class="question-mark">?</span>
+            <span class="question-mark">?</span>
+        </div>
+
+        <div class="error-code">404</div>
+        <h1 class="error-title">This path doesn't exist</h1>
+        <p class="error-message">The page you're looking for seems to have wandered off. Let's get you back to clarity.</p>
+
+        <div class="actions">
+            <a href="orivya-app-v10.html" class="btn btn-primary">Go to Chat</a>
+            <a href="orivya-iconic-v6.html" class="btn btn-secondary">Back to Home</a>
+        </div>
+
+        <p class="footer-note">Need help? <a href="mailto:support@orivya.com">Contact support</a></p>
+    </main>
+</body>
+</html>

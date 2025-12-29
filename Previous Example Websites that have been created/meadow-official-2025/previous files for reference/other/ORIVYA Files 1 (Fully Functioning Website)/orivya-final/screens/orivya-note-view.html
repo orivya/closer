@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Note View</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===========================================
+       CSS VARIABLES
+       =========================================== */
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.3);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.12);
+      
+      --success: #81c995;
+      --error: #f87171;
+      --warning: #fbbf24;
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      --transition-slow: 300ms ease-out;
+      
+      --header-height: 56px;
+      --content-max-width: 680px;
+      --safe-area-top: env(safe-area-inset-top, 0px);
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    /* ===========================================
+       RESET & BASE
+       =========================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    
+    button {
+      font-family: inherit;
+      font-size: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+    }
+    
+    input {
+      font-family: inherit;
+      background: none;
+      border: none;
+      color: inherit;
+    }
+    
+    input:focus, button:focus {
+      outline: none;
+    }
+    
+    :focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
+    }
+    
+    /* ===========================================
+       LAYOUT
+       =========================================== */
+    .note-view {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* ===========================================
+       HEADER
+       =========================================== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      padding-top: var(--safe-area-top);
+      background-color: rgba(8, 8, 10, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--text-secondary);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .back-btn:hover {
+      color: var(--text-primary);
+      background-color: var(--border-subtle);
+    }
+    
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .header-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--text-tertiary);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .header-btn:hover {
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+    }
+    
+    .header-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .edit-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .edit-btn:hover {
+      background-color: var(--sage-subtle);
+    }
+    
+    .edit-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    /* ===========================================
+       CONTENT
+       =========================================== */
+    .content {
+      flex: 1;
+      padding: var(--space-6) var(--space-5);
+      padding-bottom: var(--space-16);
+    }
+    
+    @media (min-width: 768px) {
+      .content {
+        padding: var(--space-10) var(--space-8);
+      }
+    }
+    
+    .content-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    /* ===========================================
+       TITLE — Inline Editable
+       =========================================== */
+    .note-title-wrapper {
+      position: relative;
+      margin-bottom: var(--space-4);
+    }
+    
+    .note-title {
+      width: 100%;
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.3;
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transition-fast);
+    }
+    
+    .note-title:hover {
+      border-bottom-color: var(--border-default);
+    }
+    
+    .note-title:focus {
+      border-bottom-color: var(--sage);
+    }
+    
+    .note-title::placeholder {
+      color: var(--text-muted);
+    }
+    
+    @media (min-width: 768px) {
+      .note-title {
+        font-size: var(--text-3xl);
+      }
+    }
+    
+    /* ===========================================
+       METADATA — Inline Editable
+       =========================================== */
+    .note-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    
+    .meta-item svg {
+      width: 14px;
+      height: 14px;
+    }
+    
+    .meta-divider {
+      width: 3px;
+      height: 3px;
+      border-radius: var(--radius-full);
+      background-color: var(--text-muted);
+    }
+    
+    /* Category Pill — Clickable */
+    .category-pill {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    
+    .category-pill:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-strong);
+    }
+    
+    .category-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+    }
+    
+    .category-dot--work { background-color: #60a5fa; }
+    .category-dot--relationships { background-color: #fb7185; }
+    .category-dot--self { background-color: #a78bfa; }
+    .category-dot--personal { background-color: var(--sage); }
+    .category-dot--decisions { background-color: #fbbf24; }
+    .category-dot--change { background-color: #fb923c; }
+    .category-dot--past-future { background-color: #67e8f9; }
+    
+    /* Thread Pill — Clickable */
+    .thread-pill {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    
+    .thread-pill:hover {
+      background-color: var(--sage-muted);
+    }
+    
+    .thread-pill svg {
+      width: 12px;
+      height: 12px;
+    }
+    
+    /* Add Thread Button */
+    .add-thread-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .add-thread-btn:hover {
+      color: var(--text-tertiary);
+      background-color: var(--border-subtle);
+    }
+    
+    .add-thread-btn svg {
+      width: 12px;
+      height: 12px;
+    }
+    
+    /* ===========================================
+       BODY — Read Only (Click Edit to modify)
+       =========================================== */
+    .note-body {
+      font-size: var(--text-lg);
+      line-height: 1.85;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    
+    @media (min-width: 768px) {
+      .note-body {
+        font-size: 1.0625rem;
+        line-height: 1.9;
+      }
+    }
+    
+    .note-body p {
+      margin-bottom: 1.5em;
+    }
+    
+    .note-body p:last-child {
+      margin-bottom: 0;
+    }
+    
+    /* ===========================================
+       THREAD CONTEXT CARD
+       =========================================== */
+    .thread-context {
+      margin-top: var(--space-10);
+      padding-top: var(--space-6);
+      border-top: 1px solid var(--border-subtle);
+    }
+    
+    .thread-context-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+    
+    .thread-context-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    
+    .thread-context-card:hover {
+      background-color: var(--bg-hover);
+      border-color: var(--border-strong);
+    }
+    
+    .thread-context-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+      color: var(--sage);
+      flex-shrink: 0;
+    }
+    
+    .thread-context-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .thread-context-content {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .thread-context-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .thread-context-meta {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+    }
+    
+    .thread-context-arrow {
+      width: 20px;
+      height: 20px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    
+    /* ===========================================
+       GOAL LINK
+       =========================================== */
+    .goal-link {
+      margin-top: var(--space-4);
+    }
+    
+    .goal-link-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    
+    .goal-link-card:hover {
+      background-color: var(--bg-hover);
+    }
+    
+    .goal-link-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--sage);
+    }
+    
+    .goal-link-text {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    
+    .goal-link-title {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    
+    /* ===========================================
+       EDIT PROMPT — Bottom CTA
+       =========================================== */
+    .edit-prompt {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-4);
+      padding-bottom: calc(var(--space-4) + var(--safe-area-bottom));
+      background: linear-gradient(to top, var(--bg-base) 60%, transparent);
+    }
+    
+    .edit-prompt-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: var(--space-4);
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    
+    .edit-prompt-btn:hover {
+      background-color: var(--sage-dark);
+      box-shadow: 0 0 20px var(--sage-glow);
+    }
+    
+    .edit-prompt-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    @media (min-width: 768px) {
+      .edit-prompt {
+        display: none;
+      }
+    }
+    
+    /* ===========================================
+       MORE MENU
+       =========================================== */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background-color: rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-normal);
+    }
+    
+    .menu-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .menu-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 201;
+      background-color: var(--bg-elevated);
+      border-top-left-radius: var(--radius-xl);
+      border-top-right-radius: var(--radius-xl);
+      padding-bottom: var(--safe-area-bottom);
+      transform: translateY(100%);
+      transition: transform var(--transition-slow);
+    }
+    
+    .menu-overlay.is-open .menu-sheet {
+      transform: translateY(0);
+    }
+    
+    .menu-handle {
+      display: flex;
+      justify-content: center;
+      padding: var(--space-3);
+    }
+    
+    .menu-handle-bar {
+      width: 36px;
+      height: 4px;
+      background-color: var(--text-muted);
+      border-radius: var(--radius-full);
+    }
+    
+    .menu-list {
+      padding: var(--space-2) var(--space-3);
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      width: 100%;
+      padding: var(--space-4) var(--space-3);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      text-align: left;
+      border-radius: var(--radius-md);
+      transition: background-color var(--transition-fast);
+    }
+    
+    .menu-item:hover {
+      background-color: var(--border-subtle);
+    }
+    
+    .menu-item svg {
+      width: 20px;
+      height: 20px;
+      color: var(--text-tertiary);
+    }
+    
+    .menu-item--danger {
+      color: var(--error);
+    }
+    
+    .menu-item--danger svg {
+      color: var(--error);
+    }
+    
+    .menu-divider {
+      height: 1px;
+      background-color: var(--border-subtle);
+      margin: var(--space-2) var(--space-3);
+    }
+    
+    .menu-cancel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: var(--space-4);
+      margin-top: var(--space-2);
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-md);
+      margin: var(--space-2) var(--space-3);
+    }
+    
+    .menu-cancel:hover {
+      background-color: var(--bg-hover);
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="note-view">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="back-btn" onclick="goBack()" aria-label="Go back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="header-right">
+        <button class="edit-btn" onclick="openEditor()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Edit
+        </button>
+        <button class="header-btn" onclick="openMenu()" aria-label="More options">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="1"/>
+            <circle cx="12" cy="5" r="1"/>
+            <circle cx="12" cy="19" r="1"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+    
+    <!-- Content -->
+    <main class="content">
+      <div class="content-inner">
+        
+        <!-- Title — Inline Editable -->
+        <div class="note-title-wrapper">
+          <input 
+            type="text" 
+            class="note-title" 
+            id="noteTitle"
+            value="Thinking about what's next"
+            placeholder="Add title..."
+          >
+        </div>
+        
+        <!-- Metadata — Inline Editable -->
+        <div class="note-meta">
+          <button class="category-pill" onclick="openCategoryPicker()">
+            <span class="category-dot category-dot--personal"></span>
+            <span>Personal</span>
+          </button>
+          
+          <span class="meta-divider"></span>
+          
+          <button class="thread-pill" onclick="openThreadDetail()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="18" r="3"/>
+              <circle cx="6" cy="6" r="3"/>
+              <path d="M6 21V9a9 9 0 009 9"/>
+            </svg>
+            <span>Career Decision</span>
+          </button>
+          
+          <span class="meta-divider"></span>
+          
+          <span class="meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span>Dec 8, 2025</span>
+          </span>
+          
+          <span class="meta-divider"></span>
+          
+          <span class="meta-item">
+            <span>247 words</span>
+          </span>
+        </div>
+        
+        <!-- Body — Read Only -->
+        <div class="note-body" id="noteBody">
+          <p>I keep circling back to the same question: is staying here the right thing, or am I just afraid of what comes next?</p>
+          
+          <p>There's something about comfort that feels dangerous when I think about it too long. Not the comfort itself — comfort is fine — but the way it can become a reason not to try. I've seen people build entire lives around avoiding discomfort, and I don't want that to be me.</p>
+          
+          <p>But then again, maybe I'm being too hard on myself. Maybe staying isn't about fear at all. Maybe it's about recognizing that this is actually a good situation, and the grass isn't always greener.</p>
+          
+          <p>The truth is probably somewhere in the middle. I think I need to figure out what I actually want, separate from what I think I should want, separate from what would look good to other people. That's the hard part — untangling all those threads.</p>
+          
+          <p>What would I do if no one was watching? That's the question I keep coming back to.</p>
+        </div>
+        
+        <!-- Thread Context -->
+        <div class="thread-context">
+          <div class="thread-context-label">Part of thread</div>
+          <div class="thread-context-card" onclick="openThreadDetail()">
+            <div class="thread-context-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
+              </svg>
+            </div>
+            <div class="thread-context-content">
+              <h3 class="thread-context-title">Career Decision</h3>
+              <p class="thread-context-meta">Note 5 of 8 · Updated today</p>
+            </div>
+            <svg class="thread-context-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Goal Link -->
+        <div class="goal-link">
+          <div class="goal-link-card" onclick="openGoal()">
+            <svg class="goal-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+            <span class="goal-link-text">Linked to goal: <span class="goal-link-title">Make a decision about my career by January</span></span>
+          </div>
+        </div>
+        
+      </div>
+    </main>
+    
+    <!-- Mobile Edit Button -->
+    <div class="edit-prompt">
+      <button class="edit-prompt-btn" onclick="openEditor()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Edit in editor
+      </button>
+    </div>
+    
+  </div>
+  
+  <!-- More Menu -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()">
+    <div class="menu-sheet" onclick="event.stopPropagation()">
+      <div class="menu-handle">
+        <div class="menu-handle-bar"></div>
+      </div>
+      <div class="menu-list">
+        <button class="menu-item" onclick="addToThread()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="18" r="3"/>
+            <circle cx="6" cy="6" r="3"/>
+            <path d="M6 21V9a9 9 0 009 9"/>
+          </svg>
+          <span>Add to different thread</span>
+        </button>
+        <button class="menu-item" onclick="linkToGoal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+          <span>Link to goal</span>
+        </button>
+        <button class="menu-item" onclick="shareNote()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+          <span>Share</span>
+        </button>
+        <div class="menu-divider"></div>
+        <button class="menu-item" onclick="archiveNote()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="21 8 21 21 3 21 3 8"/>
+            <rect x="1" y="3" width="22" height="5"/>
+            <line x1="10" y1="12" x2="14" y2="12"/>
+          </svg>
+          <span>Archive</span>
+        </button>
+        <button class="menu-item menu-item--danger" onclick="deleteNote()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            <line x1="10" y1="11" x2="10" y2="17"/>
+            <line x1="14" y1="11" x2="14" y2="17"/>
+          </svg>
+          <span>Delete</span>
+        </button>
+      </div>
+      <button class="menu-cancel" onclick="closeMenu()">Cancel</button>
+    </div>
+  </div>
+  
+  <script>
+    // Title inline editing
+    const titleInput = document.getElementById('noteTitle');
+    
+    titleInput.addEventListener('blur', () => {
+      // Save title change
+      console.log('Title saved:', titleInput.value);
+    });
+    
+    titleInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        titleInput.blur();
+      }
+    });
+    
+    // Navigation
+    function goBack() {
+      alert('Navigate back to Notes List');
+    }
+    
+    function openEditor() {
+      alert('Open Note Editor with this note loaded');
+    }
+    
+    function openThreadDetail() {
+      alert('Navigate to Thread Detail');
+    }
+    
+    function openGoal() {
+      alert('Navigate to Goal Detail');
+    }
+    
+    // Category picker
+    function openCategoryPicker() {
+      alert('Open category picker');
+    }
+    
+    // Menu
+    function openMenu() {
+      document.getElementById('menuOverlay').classList.add('is-open');
+    }
+    
+    function closeMenu() {
+      document.getElementById('menuOverlay').classList.remove('is-open');
+    }
+    
+    function addToThread() {
+      closeMenu();
+      alert('Open thread picker');
+    }
+    
+    function linkToGoal() {
+      closeMenu();
+      alert('Open goal picker');
+    }
+    
+    function shareNote() {
+      closeMenu();
+      alert('Share note');
+    }
+    
+    function archiveNote() {
+      closeMenu();
+      alert('Note archived');
+    }
+    
+    function deleteNote() {
+      closeMenu();
+      if (confirm('Delete this note?')) {
+        alert('Note deleted');
+      }
+    }
+  </script>
+  
+</body>
+</html>

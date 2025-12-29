@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "description": "Editor emotional microcopy for Orivya sanctuary experience",
+    "usage": {
+      "arrivalLines": "Show ONE randomly on first entry to new/blank note (per session)",
+      "placeholders": "Set randomly when editor loads",
+      "pauseMessages": "Show ONE after 8+ sec pause, only if 50+ chars written, once per session",
+      "returnMessages": "Show instead of arrival line when returning to unfinished note same day",
+      "closureMessages": "Show briefly (2 sec) when user presses Done"
+    }
+  },
+  
+  "arrivalLines": [
+    "Take a breath. You're here now.",
+    "Begin anywhere. The page will catch up.",
+    "There's nothing you have to prove here.",
+    "Let your thoughts wander a bit.",
+    "No structure needed — just honesty.",
+    "This space is yours. Use it however you need.",
+    "Start wherever feels right.",
+    "The page is patient. Take your time.",
+    "What's present for you right now?",
+    "You don't need to have it figured out.",
+    "Just you and your thoughts here.",
+    "Write what comes. Edit later, if ever.",
+    "This is just for you.",
+    "No one's watching. No one's judging.",
+    "Begin with what's true.",
+    "The first word is always the hardest. Then it flows.",
+    "What would you say if no one was listening?",
+    "Your thoughts deserve this space.",
+    "Settle in. There's no rush.",
+    "Write freely. Think out loud.",
+    "This moment is already enough.",
+    "Let the words find their way.",
+    "You're allowed to be uncertain here.",
+    "Start messy. Clarity comes later.",
+    "What's been waiting to be said?"
+  ],
+  
+  "placeholders": [
+    "What's on your mind?",
+    "What feels heavy or light today?",
+    "What's looping in your mind lately?",
+    "Where does your attention keep drifting?",
+    "What needs space right now?",
+    "What's been circling?",
+    "What would help to get out of your head?",
+    "What's present for you?",
+    "What do you notice today?",
+    "Where are your thoughts?"
+  ],
+  
+  "pauseMessages": [
+    "Your thoughts take their time. That's okay.",
+    "Stillness is part of the process.",
+    "No rush. The page isn't going anywhere.",
+    "Pausing is thinking too.",
+    "Take whatever time you need.",
+    "The space between words matters.",
+    "Some thoughts need a moment to surface.",
+    "It's okay to sit with this.",
+    "Silence is part of the conversation.",
+    "You're allowed to pause here.",
+    "Not every thought comes quickly.",
+    "The quiet is part of it.",
+    "There's no timer here.",
+    "Some things take time to find words.",
+    "The pause is part of the writing.",
+    "Your pace is the right pace.",
+    "It's okay not to know yet.",
+    "No need to fill the silence.",
+    "This space holds whatever you bring.",
+    "Even the pauses are part of the story.",
+    "Sometimes clarity needs quiet.",
+    "You're doing this right.",
+    "The words will come.",
+    "This is exactly where you should be.",
+    "The page can wait.",
+    "Some truths arrive gently.",
+    "You don't have to rush through this.",
+    "Thinking looks like this sometimes.",
+    "The silence here is friendly.",
+    "Nothing to force. Nothing to fix.",
+    "Some thoughts prefer to arrive slowly.",
+    "This is also writing.",
+    "Wherever you are is fine.",
+    "The moment is patient."
+  ],
+  
+  "returnMessages": [
+    "Welcome back. Pick up anywhere.",
+    "You left something here. It's been waiting.",
+    "Right where you left off.",
+    "This thought was holding space for you.",
+    "Ready when you are."
+  ],
+  
+  "closureMessages": [
+    "Saved. This moment is yours.",
+    "Held. Return whenever you need.",
+    "Captured. Take what you found.",
+    "Safe now. The page remembers.",
+    "Saved. Take a breath.",
+    "This is held for you.",
+    "Kept safe. Come back anytime.",
+    "Your words are here. Rest easy.",
+    "Saved. Until next time.",
+    "Held gently. It's not going anywhere.",
+    "This moment is captured.",
+    "Safe. The space will be here.",
+    "Saved. Let it settle.",
+    "Your thoughts are kept.",
+    "Done for now. Return when ready."
+  ],
+  
+  "timings": {
+    "arrivalLineFadeIn": {
+      "delay": "600ms",
+      "duration": "800ms",
+      "easing": "ease"
+    },
+    "pauseMessageTrigger": {
+      "delay": "8000ms",
+      "minCharacters": 50,
+      "showOnce": true
+    },
+    "pauseMessageDisplay": {
+      "fadeIn": "800ms",
+      "visible": "2500ms",
+      "fadeOut": "700ms",
+      "total": "4000ms"
+    },
+    "closureMoment": {
+      "fadeIn": "400ms",
+      "visible": "1200ms",
+      "fadeOut": "400ms",
+      "total": "2000ms"
+    },
+    "caretGlow": {
+      "duration": "1500ms",
+      "easing": "ease"
+    }
+  },
+  
+  "rules": {
+    "arrivalLine": {
+      "when": "First entry to new or blank note in a session",
+      "frequency": "Once per session per note",
+      "hideOn": "User starts typing (any character)",
+      "alternativeWhen": "Use returnMessages if returning to same unfinished note same day"
+    },
+    "pauseMessage": {
+      "when": "User stops typing for 8+ seconds AND has written 50+ characters",
+      "frequency": "Once per writing session (never repeat even if they pause again)",
+      "position": "Below textarea, centered",
+      "behavior": "Fades in, stays 2.5s, fades out automatically"
+    },
+    "closureMoment": {
+      "when": "User presses Done button (not discard)",
+      "frequency": "Every successful save/exit",
+      "behavior": "Overlay fades in, message animates, then navigates away"
+    }
+  }
+}

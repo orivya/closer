@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Orivya — Note Editor (Sanctuary)</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===========================================
+       CSS VARIABLES — SANCTUARY THEME
+       =========================================== */
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.25);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #111114;
+      --bg-sanctuary: #0a0a0c;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      --text-disabled: #3f3f46;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --success: #81c995;
+      --error: #f87171;
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 250ms ease;
+      --transition-slow: 350ms ease-out;
+      --transition-sanctuary: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      
+      --header-height: 56px;
+      --toolbar-height: 52px;
+      --editor-max-width: 640px;
+      --editor-padding-mobile: 24px;
+      --editor-padding-desktop: 48px;
+      --safe-area-top: env(safe-area-inset-top, 0px);
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    /* ===========================================
+       RESET & BASE
+       =========================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+    
+    button {
+      font-family: inherit;
+      font-size: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+    }
+    
+    textarea {
+      font-family: inherit;
+      background: none;
+      border: none;
+      color: inherit;
+      resize: none;
+    }
+    
+    textarea:focus {
+      outline: none;
+    }
+    
+    /* Hidden Scrollbar — Sanctuary aesthetic */
+    .editor-content::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+    }
+    
+    .editor-content {
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    
+    :focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
+    }
+    
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* ===========================================
+       SANCTUARY CONTAINER
+       =========================================== */
+    .sanctuary {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--bg-sanctuary);
+      opacity: 0;
+      animation: sanctuaryEnter var(--transition-sanctuary) forwards;
+    }
+    
+    @keyframes sanctuaryEnter {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
+    /* Subtle vignette effect - barely perceptible */
+    .sanctuary::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        transparent 60%,
+        rgba(0, 0, 0, 0.15) 100%
+      );
+      z-index: 0;
+    }
+    
+    /* Desktop: Additional ambient dimming */
+    @media (min-width: 768px) {
+      .sanctuary::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.1) 0%,
+          transparent 15%,
+          transparent 85%,
+          rgba(0, 0, 0, 0.1) 100%
+        );
+        z-index: 0;
+      }
+    }
+    
+    /* ===========================================
+       PAUSE MESSAGE — Subtle acknowledgment
+       =========================================== */
+    .pause-message {
+      position: fixed;
+      bottom: calc(var(--toolbar-height) + var(--safe-area-bottom) + var(--space-16));
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 20;
+      text-align: center;
+      max-width: 280px;
+      transition: opacity 800ms ease;
+    }
+    
+    .pause-message.is-visible {
+      opacity: 1;
+      animation: pauseMessageFade 4s ease forwards;
+    }
+    
+    @keyframes pauseMessageFade {
+      0% { opacity: 0; }
+      15% { opacity: 1; }
+      75% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    
+    /* ===========================================
+       CLOSURE MOMENT — Gentle exit
+       =========================================== */
+    .closure-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-sanctuary);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 400ms ease;
+    }
+    
+    .closure-overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .closure-message {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: closureTextFade 2s ease 200ms forwards;
+    }
+    
+    @keyframes closureTextFade {
+      0% { opacity: 0; transform: translateY(8px); }
+      30% { opacity: 1; transform: translateY(0); }
+      70% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-4px); }
+    }
+    
+    /* ===========================================
+       CARET GLOW — Single subtle pulse
+       =========================================== */
+    @keyframes caretGlow {
+      0% { box-shadow: 0 0 0 0 var(--sage-glow); }
+      50% { box-shadow: 0 0 8px 2px var(--sage-glow); }
+      100% { box-shadow: 0 0 0 0 var(--sage-glow); }
+    }
+    
+    .editor-textarea.caret-glow {
+      animation: caretGlow 1.5s ease;
+    }
+    
+    /* ===========================================
+       HEADER — Minimal, Quiet
+       =========================================== */
+    .editor-header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      padding-top: var(--safe-area-top);
+      flex-shrink: 0;
+    }
+    
+    @media (min-width: 768px) {
+      .editor-header {
+        padding: 0 var(--space-8);
+      }
+    }
+    
+    .editor-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    
+    .editor-header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    /* Close Button */
+    .close-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      color: var(--text-tertiary);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .close-btn:hover {
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+    }
+    
+    .close-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    /* Done Button */
+    .done-btn {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .done-btn:hover {
+      background-color: var(--sage-subtle);
+    }
+    
+    /* ===========================================
+       PROMPT DISPLAY — When writing from a prompt
+       =========================================== */
+    .prompt-banner {
+      position: relative;
+      z-index: 5;
+      max-width: var(--editor-max-width);
+      margin: 0 auto;
+      padding: 0 var(--editor-padding-mobile);
+      margin-bottom: var(--space-6);
+      display: none;
+    }
+    
+    .prompt-banner.is-visible {
+      display: block;
+    }
+    
+    @media (min-width: 768px) {
+      .prompt-banner {
+        padding: 0 var(--editor-padding-desktop);
+        margin-bottom: var(--space-8);
+      }
+    }
+    
+    .prompt-banner-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background-color: var(--sage-subtle);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-lg);
+    }
+    
+    .prompt-banner-text {
+      flex: 1;
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    
+    .prompt-banner-dismiss {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .prompt-banner-dismiss:hover {
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+    }
+    
+    .prompt-banner-dismiss svg {
+      width: 14px;
+      height: 14px;
+    }
+    
+    /* ===========================================
+       EDITOR CONTENT — The Sanctuary Space
+       =========================================== */
+    .editor-content {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding-bottom: calc(var(--toolbar-height) + var(--safe-area-bottom) + var(--space-8));
+    }
+    
+    .editor-inner {
+      flex: 1;
+      width: 100%;
+      max-width: var(--editor-max-width);
+      margin: 0 auto;
+      padding: 0 var(--editor-padding-mobile);
+    }
+    
+    @media (min-width: 768px) {
+      .editor-inner {
+        padding: 0 var(--editor-padding-desktop);
+        padding-top: var(--space-8);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .editor-inner {
+        padding-top: var(--space-12);
+      }
+    }
+    
+    /* Title Input — Optional */
+    .editor-title {
+      width: 100%;
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.3;
+      margin-bottom: var(--space-4);
+      background: transparent;
+      border: none;
+      outline: none;
+    }
+    
+    .editor-title::placeholder {
+      color: var(--text-muted);
+    }
+    
+    @media (min-width: 768px) {
+      .editor-title {
+        font-size: 1.75rem;
+        margin-bottom: var(--space-6);
+      }
+    }
+    
+    /* Main Textarea — The Heart */
+    .editor-textarea {
+      width: 100%;
+      min-height: 50vh;
+      font-size: var(--text-lg);
+      line-height: 1.8;
+      color: var(--text-primary);
+      background: transparent;
+      caret-color: var(--sage);
+    }
+    
+    .editor-textarea::placeholder {
+      color: var(--text-muted);
+    }
+    
+    @media (min-width: 768px) {
+      .editor-textarea {
+        font-size: 1.125rem;
+        line-height: 1.9;
+        min-height: 60vh;
+      }
+    }
+    
+    /* Arrival Line — Gentle greeting */
+    .arrival-line {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--space-6);
+      opacity: 0;
+      animation: arrivalFadeIn 800ms ease 600ms forwards;
+    }
+    
+    .arrival-line.is-hidden {
+      display: none;
+    }
+    
+    @keyframes arrivalFadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* ===========================================
+       BOTTOM TOOLBAR — Quiet, Minimal
+       =========================================== */
+    .editor-toolbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--toolbar-height);
+      padding: 0 var(--space-4);
+      padding-bottom: var(--safe-area-bottom);
+      background-color: var(--bg-sanctuary);
+      border-top: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .editor-toolbar {
+        padding: 0 var(--space-8);
+        padding-bottom: var(--safe-area-bottom);
+      }
+    }
+    
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    
+    /* Toolbar Buttons */
+    .toolbar-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .toolbar-btn:hover {
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+    }
+    
+    .toolbar-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    /* Category Pill */
+    .category-pill {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+    }
+    
+    .category-pill:hover {
+      background-color: var(--border-default);
+    }
+    
+    .category-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+    }
+    
+    /* Prompt Link — Subtle way to get a prompt */
+    .prompt-link {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+    
+    .prompt-link:hover {
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+    }
+    
+    /* Word Count — Tiny, Unobtrusive */
+    .word-count {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+    
+    /* ===========================================
+       CATEGORY PICKER — Bottom Sheet
+       =========================================== */
+    .picker-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background-color: rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-normal);
+    }
+    
+    .picker-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .picker-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 101;
+      background-color: var(--bg-elevated);
+      border-top-left-radius: var(--radius-xl);
+      border-top-right-radius: var(--radius-xl);
+      padding-bottom: var(--safe-area-bottom);
+      transform: translateY(100%);
+      transition: transform var(--transition-slow);
+    }
+    
+    .picker-overlay.is-open .picker-sheet {
+      transform: translateY(0);
+    }
+    
+    @media (min-width: 640px) {
+      .picker-sheet {
+        max-width: 400px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100%);
+        border-radius: var(--radius-xl);
+        margin-bottom: var(--space-4);
+      }
+      
+      .picker-overlay.is-open .picker-sheet {
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    
+    .picker-handle {
+      display: flex;
+      justify-content: center;
+      padding: var(--space-3);
+    }
+    
+    .picker-handle-bar {
+      width: 36px;
+      height: 4px;
+      background-color: var(--text-muted);
+      border-radius: var(--radius-full);
+    }
+    
+    @media (min-width: 640px) {
+      .picker-handle { display: none; }
+    }
+    
+    .picker-header {
+      padding: var(--space-2) var(--space-5);
+      padding-top: 0;
+    }
+    
+    .picker-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    
+    .picker-list {
+      padding: var(--space-2) var(--space-3);
+    }
+    
+    .picker-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-3);
+      border-radius: var(--radius-md);
+      transition: background-color var(--transition-fast);
+      cursor: pointer;
+    }
+    
+    .picker-item:hover {
+      background-color: var(--border-subtle);
+    }
+    
+    .picker-item.is-selected {
+      background-color: var(--sage-subtle);
+    }
+    
+    .picker-item-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: var(--radius-full);
+      background-color: var(--sage);
+    }
+    
+    .picker-item-label {
+      flex: 1;
+      font-size: var(--text-sm);
+      color: var(--text-primary);
+    }
+    
+    .picker-item-cat-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    
+    .picker-item.is-selected .picker-item-cat-icon {
+      color: var(--sage);
+    }
+    
+    .picker-item-check {
+      width: 18px;
+      height: 18px;
+      color: var(--sage);
+      opacity: 0;
+    }
+    
+    .picker-item.is-selected .picker-item-check {
+      opacity: 1;
+    }
+    
+    .picker-divider {
+      height: 1px;
+      background-color: var(--border-subtle);
+      margin: var(--space-2) 0;
+    }
+    
+    .picker-item--create {
+      color: var(--sage);
+    }
+    
+    .picker-item--create:hover {
+      background-color: var(--sage-subtle);
+    }
+    
+    .picker-item-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    
+    /* Dialog Input */
+    .dialog-input {
+      width: 100%;
+      padding: var(--space-3);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      margin-top: var(--space-3);
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+    
+    .dialog-input:focus {
+      border-color: var(--sage);
+    }
+    
+    .dialog-input::placeholder {
+      color: var(--text-muted);
+    }
+    
+    /* Category Dialog */
+    .dialog--category {
+      max-width: 360px;
+    }
+    
+    .picker-label {
+      display: block;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-2);
+    }
+    
+    /* Icon Picker */
+    .icon-picker {
+      margin-top: var(--space-4);
+    }
+    
+    .icon-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    
+    .icon-option {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-surface);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    .icon-option svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-tertiary);
+    }
+    
+    .icon-option:hover {
+      border-color: var(--border-default);
+      background-color: var(--bg-hover);
+    }
+    
+    .icon-option:hover svg {
+      color: var(--text-secondary);
+    }
+    
+    .icon-option.is-selected {
+      border-color: var(--sage);
+      background-color: var(--sage-subtle);
+    }
+    
+    .icon-option.is-selected svg {
+      color: var(--sage);
+    }
+    
+    .dialog-btn--primary {
+      background-color: var(--sage);
+      color: var(--bg-base);
+    }
+    
+    .dialog-btn--primary:hover {
+      background-color: var(--sage-light);
+    }
+    
+    /* ===========================================
+       THREAD PICKER — Similar to Category
+       =========================================== */
+    .thread-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    
+    .thread-btn:hover {
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+    }
+    
+    .thread-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+    
+    .thread-btn.has-thread {
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+    }
+    
+    .thread-btn.has-thread:hover {
+      background-color: var(--sage-muted);
+    }
+    
+    /* ===========================================
+       DISCARD CONFIRMATION
+       =========================================== */
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-fast);
+    }
+    
+    .dialog-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    .dialog {
+      width: 100%;
+      max-width: 320px;
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform var(--transition-normal);
+    }
+    
+    .dialog-overlay.is-open .dialog {
+      transform: scale(1);
+    }
+    
+    .dialog-body {
+      padding: var(--space-6);
+      text-align: center;
+    }
+    
+    .dialog-title {
+      font-size: var(--text-lg);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .dialog-message {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+    }
+    
+    .dialog-actions {
+      display: flex;
+      border-top: 1px solid var(--border-subtle);
+    }
+    
+    .dialog-btn {
+      flex: 1;
+      padding: var(--space-4);
+      font-size: var(--text-base);
+      font-weight: 500;
+      transition: background-color var(--transition-fast);
+    }
+    
+    .dialog-btn:hover {
+      background-color: var(--border-subtle);
+    }
+    
+    .dialog-btn--cancel {
+      color: var(--text-secondary);
+      border-right: 1px solid var(--border-subtle);
+    }
+    
+    .dialog-btn--danger {
+      color: var(--error);
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Sanctuary Container -->
+  <div class="sanctuary" id="sanctuary">
+    
+    <!-- Pause Message — Appears once per session after 8+ sec pause -->
+    <div class="pause-message" id="pauseMessage"></div>
+    
+    <!-- Header — Minimal -->
+    <header class="editor-header">
+      <div class="editor-header-left">
+        <button class="close-btn" onclick="handleClose()" aria-label="Close editor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="editor-header-right">
+        <button class="done-btn" onclick="handleDone()">Done</button>
+      </div>
+    </header>
+    
+    <!-- Prompt Banner — Shows when writing from a prompt -->
+    <div class="prompt-banner is-visible" id="promptBanner">
+      <div class="prompt-banner-inner">
+        <p class="prompt-banner-text">What's been on your mind lately?</p>
+        <button class="prompt-banner-dismiss" onclick="dismissPrompt()" aria-label="Dismiss prompt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Editor Content — The Sanctuary Space -->
+    <div class="editor-content">
+      <div class="editor-inner">
+        <!-- Arrival Line — Gentle greeting when no prompt -->
+        <p class="arrival-line" id="arrivalLine">Take a breath. You're here now.</p>
+        
+        <input 
+          type="text" 
+          class="editor-title" 
+          id="noteTitle" 
+          placeholder="Title (optional)"
+          maxlength="200"
+        >
+        <textarea 
+          class="editor-textarea" 
+          id="noteTextarea" 
+          placeholder="What's on your mind?"
+        ></textarea>
+      </div>
+    </div>
+    
+    <!-- Bottom Toolbar — Quiet, Minimal -->
+    <div class="editor-toolbar">
+      <div class="toolbar-left">
+        <button class="category-pill" onclick="openCategoryPicker()" id="categoryBtn">
+          <span>Personal</span>
+        </button>
+        
+        <button class="thread-btn" onclick="openThreadPicker()" id="threadBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="18" r="3"/>
+            <circle cx="6" cy="6" r="3"/>
+            <path d="M6 21V9a9 9 0 009 9"/>
+          </svg>
+          <span>Connect to a thread</span>
+        </button>
+      </div>
+      
+      <div class="toolbar-right">
+        <button class="prompt-link" onclick="openPromptSheet()">Need a prompt?</button>
+        <span class="word-count" id="wordCount"></span>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- Category Picker -->
+  <div class="picker-overlay" id="categoryPicker" onclick="closeCategoryPicker(event)">
+    <div class="picker-sheet" onclick="event.stopPropagation()">
+      <div class="picker-handle">
+        <div class="picker-handle-bar"></div>
+      </div>
+      <div class="picker-header">
+        <h3 class="picker-title">Category</h3>
+      </div>
+      <div class="picker-list">
+        <div class="picker-item" onclick="selectCategory('work', 'Work')">
+          <svg class="picker-item-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+            <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>
+          </svg>
+          <span class="picker-item-label">Work</span>
+          <svg class="picker-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="picker-item" onclick="selectCategory('relationships', 'Relationships')">
+          <svg class="picker-item-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+          <span class="picker-item-label">Relationships</span>
+          <svg class="picker-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="picker-item" onclick="selectCategory('self', 'Self')">
+          <svg class="picker-item-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span class="picker-item-label">Self</span>
+          <svg class="picker-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="picker-item is-selected" onclick="selectCategory('personal', 'Personal')">
+          <svg class="picker-item-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+          </svg>
+          <span class="picker-item-label">Personal</span>
+          <svg class="picker-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="picker-item" onclick="selectCategory('decisions', 'Decisions')">
+          <svg class="picker-item-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 12l2 2 4-4"/>
+          </svg>
+          <span class="picker-item-label">Decisions</span>
+          <svg class="picker-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="picker-item" onclick="selectCategory('change', 'Change')">
+          <svg class="picker-item-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 4v6h-6"/>
+            <path d="M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          <span class="picker-item-label">Change</span>
+          <svg class="picker-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="picker-item" onclick="selectCategory('past-future', 'Past & Future')">
+          <svg class="picker-item-cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span class="picker-item-label">Past & Future</span>
+          <svg class="picker-item-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="picker-divider"></div>
+        <div class="picker-item picker-item--create" onclick="openCreateCategory()">
+          <svg class="picker-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span class="picker-item-label">Create new category</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Create Category Modal -->
+  <div class="dialog-overlay" id="createCategoryDialog">
+    <div class="dialog dialog--category">
+      <div class="dialog-body">
+        <h3 class="dialog-title">New category</h3>
+        <input type="text" class="dialog-input" id="newCategoryInput" placeholder="Category name" maxlength="30">
+        
+        <div class="icon-picker">
+          <span class="picker-label">Icon</span>
+          <div class="icon-options">
+            <button class="icon-option is-selected" data-icon="star" onclick="selectCategoryIcon(this, 'star')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="heart" onclick="selectCategoryIcon(this, 'heart')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="lightbulb" onclick="selectCategoryIcon(this, 'lightbulb')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="9" y1="18" x2="15" y2="18"/>
+                <line x1="10" y1="22" x2="14" y2="22"/>
+                <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 018.91 14"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="compass" onclick="selectCategoryIcon(this, 'compass')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="flag" onclick="selectCategoryIcon(this, 'flag')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                <line x1="4" y1="22" x2="4" y2="15"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="sun" onclick="selectCategoryIcon(this, 'sun')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="moon" onclick="selectCategoryIcon(this, 'moon')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="cloud" onclick="selectCategoryIcon(this, 'cloud')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="feather" onclick="selectCategoryIcon(this, 'feather')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.24 12.24a6 6 0 00-8.49-8.49L5 10.5V19h8.5z"/>
+                <line x1="16" y1="8" x2="2" y2="22"/>
+                <line x1="17.5" y1="15" x2="9" y2="15"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="bookmark" onclick="selectCategoryIcon(this, 'bookmark')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="zap" onclick="selectCategoryIcon(this, 'zap')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </button>
+            <button class="icon-option" data-icon="coffee" onclick="selectCategoryIcon(this, 'coffee')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8h1a4 4 0 010 8h-1"/>
+                <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/>
+                <line x1="6" y1="1" x2="6" y2="4"/>
+                <line x1="10" y1="1" x2="10" y2="4"/>
+                <line x1="14" y1="1" x2="14" y2="4"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="dialog-actions">
+        <button class="dialog-btn dialog-btn--cancel" onclick="closeCreateCategory()">Cancel</button>
+        <button class="dialog-btn dialog-btn--primary" onclick="createCategory()">Create</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Discard Confirmation -->
+  <div class="dialog-overlay" id="discardDialog">
+    <div class="dialog">
+      <div class="dialog-body">
+        <h3 class="dialog-title">Discard changes?</h3>
+        <p class="dialog-message">Your unsaved changes will be lost.</p>
+      </div>
+      <div class="dialog-actions">
+        <button class="dialog-btn dialog-btn--cancel" onclick="closeDiscardDialog()">Keep writing</button>
+        <button class="dialog-btn dialog-btn--danger" onclick="confirmDiscard()">Discard</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Closure Overlay — Gentle exit moment -->
+  <div class="closure-overlay" id="closureOverlay">
+    <p class="closure-message" id="closureMessage"></p>
+  </div>
+  
+  <script>
+    // ===========================================
+    // MICROCOPY ARRAYS — Emotional warmth content
+    // ===========================================
+    
+    // 25 Arrival Lines — Shown on first entry to new/blank note
+    const arrivalLines = [
+      "Take a breath. You're here now.",
+      "Begin anywhere. The page will catch up.",
+      "There's nothing you have to prove here.",
+      "Let your thoughts wander a bit.",
+      "No structure needed — just honesty.",
+      "This space is yours. Use it however you need.",
+      "Start wherever feels right.",
+      "The page is patient. Take your time.",
+      "What's present for you right now?",
+      "You don't need to have it figured out.",
+      "Just you and your thoughts here.",
+      "Write what comes. Edit later, if ever.",
+      "This is just for you.",
+      "No one's watching. No one's judging.",
+      "Begin with what's true.",
+      "The first word is always the hardest. Then it flows.",
+      "What would you say if no one was listening?",
+      "Your thoughts deserve this space.",
+      "Settle in. There's no rush.",
+      "Write freely. Think out loud.",
+      "This moment is already enough.",
+      "Let the words find their way.",
+      "You're allowed to be uncertain here.",
+      "Start messy. Clarity comes later.",
+      "What's been waiting to be said?"
+    ];
+    
+    // 10 Placeholder Variations — Rotate in textarea
+    const placeholders = [
+      "What's on your mind?",
+      "What feels heavy or light today?",
+      "What's looping in your mind lately?",
+      "Where does your attention keep drifting?",
+      "What needs space right now?",
+      "What's been circling?",
+      "What would help to get out of your head?",
+      "What's present for you?",
+      "What do you notice today?",
+      "Where are your thoughts?"
+    ];
+    
+    // 35 Pause Messages — Shown once per session after 8+ sec pause
+    const pauseMessages = [
+      "Your thoughts take their time. That's okay.",
+      "Stillness is part of the process.",
+      "No rush. The page isn't going anywhere.",
+      "Pausing is thinking too.",
+      "Take whatever time you need.",
+      "The space between words matters.",
+      "Some thoughts need a moment to surface.",
+      "It's okay to sit with this.",
+      "Silence is part of the conversation.",
+      "You're allowed to pause here.",
+      "Not every thought comes quickly.",
+      "The quiet is part of it.",
+      "There's no timer here.",
+      "Some things take time to find words.",
+      "The pause is part of the writing.",
+      "Your pace is the right pace.",
+      "It's okay not to know yet.",
+      "No need to fill the silence.",
+      "This space holds whatever you bring.",
+      "Even the pauses are part of the story.",
+      "Sometimes clarity needs quiet.",
+      "You're doing this right.",
+      "The words will come.",
+      "This is exactly where you should be.",
+      "The page can wait.",
+      "Some truths arrive gently.",
+      "You don't have to rush through this.",
+      "Thinking looks like this sometimes.",
+      "The silence here is friendly.",
+      "Nothing to force. Nothing to fix.",
+      "Some thoughts prefer to arrive slowly.",
+      "This is also writing.",
+      "Wherever you are is fine.",
+      "The moment is patient."
+    ];
+    
+    // 5 Return Messages — When returning to same unfinished note same day
+    const returnMessages = [
+      "Welcome back. Pick up anywhere.",
+      "You left something here. It's been waiting.",
+      "Right where you left off.",
+      "This thought was holding space for you.",
+      "Ready when you are."
+    ];
+    
+    // 15 Closure Messages — Shown on exit
+    const closureMessages = [
+      "Saved. This moment is yours.",
+      "Held. Return whenever you need.",
+      "Captured. Take what you found.",
+      "Safe now. The page remembers.",
+      "Saved. Take a breath.",
+      "This is held for you.",
+      "Kept safe. Come back anytime.",
+      "Your words are here. Rest easy.",
+      "Saved. Until next time.",
+      "Held gently. It's not going anywhere.",
+      "This moment is captured.",
+      "Safe. The space will be here.",
+      "Saved. Let it settle.",
+      "Your thoughts are kept.",
+      "Done for now. Return when ready."
+    ];
+    
+    // ===========================================
+    // STATE
+    // ===========================================
+    let hasChanges = false;
+    let currentCategory = 'personal';
+    let saveTimeout = null;
+    let pauseTimeout = null;
+    let pauseMessageShown = false; // Only show once per session
+    let lastTypingTime = Date.now();
+    let sessionStartTime = Date.now();
+    let isReturningToNote = false; // Set based on session storage
+    
+    // ===========================================
+    // ELEMENTS
+    // ===========================================
+    const textarea = document.getElementById('noteTextarea');
+    const titleInput = document.getElementById('noteTitle');
+    const wordCountEl = document.getElementById('wordCount');
+    const categoryBtn = document.getElementById('categoryBtn');
+    const categoryPicker = document.getElementById('categoryPicker');
+    const discardDialog = document.getElementById('discardDialog');
+    const promptBanner = document.getElementById('promptBanner');
+    const arrivalLine = document.getElementById('arrivalLine');
+    const pauseMessage = document.getElementById('pauseMessage');
+    const closureOverlay = document.getElementById('closureOverlay');
+    const closureMessage = document.getElementById('closureMessage');
+    
+    // ===========================================
+    // ARRIVAL LINE — Random selection
+    // ===========================================
+    function setArrivalLine() {
+      if (isReturningToNote) {
+        // Use return message instead
+        const randomReturn = returnMessages[Math.floor(Math.random() * returnMessages.length)];
+        arrivalLine.textContent = randomReturn;
+      } else {
+        // Use random arrival line
+        const randomArrival = arrivalLines[Math.floor(Math.random() * arrivalLines.length)];
+        arrivalLine.textContent = randomArrival;
+      }
+    }
+    
+    // ===========================================
+    // PLACEHOLDER — Random selection
+    // ===========================================
+    function setRandomPlaceholder() {
+      const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
+      textarea.placeholder = randomPlaceholder;
+    }
+    
+    // ===========================================
+    // PAUSE MESSAGE SYSTEM
+    // ===========================================
+    function checkForPause() {
+      if (pauseMessageShown) return; // Only show once per session
+      
+      const text = textarea.value.trim();
+      const charCount = text.length;
+      
+      // Only trigger if user has written at least 50 characters
+      if (charCount < 50) return;
+      
+      const timeSinceLastType = Date.now() - lastTypingTime;
+      
+      // 8 seconds = 8000ms
+      if (timeSinceLastType >= 8000) {
+        showPauseMessage();
+      }
+    }
+    
+    function showPauseMessage() {
+      pauseMessageShown = true;
+      const randomMessage = pauseMessages[Math.floor(Math.random() * pauseMessages.length)];
+      pauseMessage.textContent = randomMessage;
+      pauseMessage.classList.add('is-visible');
+      
+      // Also trigger subtle caret glow
+      textarea.classList.add('caret-glow');
+      
+      // Remove classes after animation completes
+      setTimeout(() => {
+        pauseMessage.classList.remove('is-visible');
+        textarea.classList.remove('caret-glow');
+      }, 4000);
+    }
+    
+    function resetPauseTimer() {
+      lastTypingTime = Date.now();
+      clearTimeout(pauseTimeout);
+      
+      // Check again in 8.5 seconds
+      pauseTimeout = setTimeout(checkForPause, 8500);
+    }
+    
+    // ===========================================
+    // CLOSURE MOMENT
+    // ===========================================
+    function showClosureMoment() {
+      return new Promise((resolve) => {
+        const randomClosure = closureMessages[Math.floor(Math.random() * closureMessages.length)];
+        closureMessage.textContent = randomClosure;
+        closureOverlay.classList.add('is-visible');
+        
+        // Wait for animation, then resolve
+        setTimeout(() => {
+          closureOverlay.classList.remove('is-visible');
+          resolve();
+        }, 2000);
+      });
+    }
+    
+    // ===========================================
+    // AUTO-RESIZE
+    // ===========================================
+    function autoResize() {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+    
+    // Word count — only shows after user starts typing
+    function updateWordCount() {
+      const text = textarea.value.trim();
+      const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+      
+      if (words === 0) {
+        wordCountEl.textContent = '';
+      } else {
+        wordCountEl.textContent = words === 1 ? '1 word' : `${words} words`;
+      }
+      
+      // Hide arrival line once user starts typing
+      if (words > 0) {
+        const arrivalLine = document.getElementById('arrivalLine');
+        if (arrivalLine) arrivalLine.classList.add('is-hidden');
+      }
+    }
+    
+    // Silent autosave — saves every 2 seconds, no visual indicator
+    function triggerAutosave() {
+      if (saveTimeout) clearTimeout(saveTimeout);
+      
+      saveTimeout = setTimeout(() => {
+        // Silent save in background — no visual feedback
+        // In production, this would call the API
+        console.log('Autosaved silently');
+      }, 2000); // 2 second debounce
+    }
+    
+    // Handle input
+    textarea.addEventListener('input', () => {
+      hasChanges = true;
+      autoResize();
+      updateWordCount();
+      triggerAutosave();
+    });
+    
+    titleInput.addEventListener('input', () => {
+      hasChanges = true;
+      triggerAutosave();
+      
+      // Hide arrival line when title is typed
+      if (titleInput.value.trim().length > 0) {
+        arrivalLine.classList.add('is-hidden');
+      }
+    });
+    
+    // Category picker
+    function openCategoryPicker() {
+      categoryPicker.classList.add('is-open');
+    }
+    
+    function closeCategoryPicker(e) {
+      if (e && e.target !== categoryPicker) return;
+      categoryPicker.classList.remove('is-open');
+    }
+    
+    function selectCategory(category, label) {
+      currentCategory = category;
+      
+      // Update button text
+      categoryBtn.querySelector('span').textContent = label;
+      
+      // Update picker selection
+      document.querySelectorAll('.picker-item:not(.picker-item--create)').forEach(item => {
+        item.classList.remove('is-selected');
+      });
+      event.currentTarget.classList.add('is-selected');
+      
+      // Close picker
+      categoryPicker.classList.remove('is-open');
+      
+      // Trigger save
+      hasChanges = true;
+      triggerAutosave();
+    }
+    
+    // Create category
+    let selectedCategoryIcon = 'star';
+    const createCategoryDialog = document.getElementById('createCategoryDialog');
+    const newCategoryInput = document.getElementById('newCategoryInput');
+    
+    function openCreateCategory() {
+      categoryPicker.classList.remove('is-open');
+      createCategoryDialog.classList.add('is-open');
+      setTimeout(() => newCategoryInput.focus(), 100);
+    }
+    
+    function closeCreateCategory() {
+      createCategoryDialog.classList.remove('is-open');
+      newCategoryInput.value = '';
+      selectedCategoryIcon = 'star';
+      // Reset icon selection
+      document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('is-selected'));
+      document.querySelector('.icon-option[data-icon="star"]').classList.add('is-selected');
+    }
+    
+    function selectCategoryIcon(element, icon) {
+      selectedCategoryIcon = icon;
+      document.querySelectorAll('.icon-option').forEach(opt => opt.classList.remove('is-selected'));
+      element.classList.add('is-selected');
+    }
+    
+    function createCategory() {
+      const name = newCategoryInput.value.trim();
+      if (!name) {
+        newCategoryInput.focus();
+        return;
+      }
+      
+      // In production, this would save to the database with icon
+      // For now, just select the new category and close
+      currentCategory = name.toLowerCase().replace(/\s+/g, '-');
+      categoryBtn.querySelector('span').textContent = name;
+      
+      closeCreateCategory();
+      
+      hasChanges = true;
+      triggerAutosave();
+    }
+    
+    // Handle enter key in category input
+    newCategoryInput?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        createCategory();
+      }
+      if (e.key === 'Escape') {
+        closeCreateCategory();
+      }
+    });
+    
+    // Thread picker (placeholder)
+    function openThreadPicker() {
+      alert('Thread picker would open here');
+    }
+    
+    // Prompt banner
+    function dismissPrompt() {
+      promptBanner.classList.remove('is-visible');
+    }
+    
+    // Close / Done handlers
+    function handleClose() {
+      if (hasChanges && textarea.value.trim()) {
+        discardDialog.classList.add('is-open');
+      } else {
+        exitEditor();
+      }
+    }
+    
+    async function handleDone() {
+      // Silent save before exit
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Show closure moment
+      await showClosureMoment();
+      
+      // Then exit
+      exitEditor();
+    }
+    
+    function closeDiscardDialog() {
+      discardDialog.classList.remove('is-open');
+    }
+    
+    function confirmDiscard() {
+      discardDialog.classList.remove('is-open');
+      exitEditor();
+    }
+    
+    function exitEditor() {
+      // In real app, navigate back
+      document.querySelector('.sanctuary').style.opacity = '0';
+      setTimeout(() => {
+        console.log('Editor closed — would navigate back');
+        // window.history.back(); // Uncomment in production
+      }, 300);
+    }
+    
+    // Open prompt sheet (bottom sheet with prompts)
+    function openPromptSheet() {
+      // In production, this opens a bottom sheet with a subset of prompts
+      console.log('Opening prompt sheet');
+      alert('Opens a bottom sheet with quick prompts to help you start writing');
+    }
+    
+    // ===========================================
+    // INITIALIZATION
+    // ===========================================
+    
+    // Set random arrival line
+    setArrivalLine();
+    
+    // Set random placeholder
+    setRandomPlaceholder();
+    
+    // Auto-resize textarea
+    autoResize();
+    updateWordCount();
+    
+    // Textarea input listener — for pause detection
+    textarea.addEventListener('input', () => {
+      resetPauseTimer();
+    });
+    
+    // Focus textarea on load
+    setTimeout(() => {
+      textarea.focus();
+    }, 400);
+  </script>
+  
+</body>
+</html>

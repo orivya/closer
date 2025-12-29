@@ -1,0 +1,435 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ORIVYA Design System */
+
+@layer base {
+  :root {
+    /* Background Colors */
+    --background: 240 6% 4%; /* #08080a */
+    --background-elevated: 240 8% 6%; /* #0e0e11 */
+    --background-surface: 240 6% 8%; /* #141417 */
+    --background-hover: 240 4% 10%; /* #1a1a1d */
+    --background-card: 240 7% 5%; /* #101013 */
+    
+    /* Primary Accent - Sage Green */
+    --primary: 148 12% 55%; /* #7d9b8a */
+    --primary-foreground: 0 0% 100%;
+    --sage-light: 148 16% 65%; /* #9bb3a4 */
+    --sage-dark: 148 12% 47%; /* #6a8577 */
+    --sage-glow: 148 12% 55% / 0.5;
+    --sage-subtle: 148 12% 55% / 0.08;
+    --sage-muted: 148 12% 55% / 0.15;
+    
+    /* Text Colors */
+    --foreground: 0 0% 98%; /* #fafafa */
+    --muted-foreground: 240 4% 66%; /* #a1a1aa */
+    --tertiary-foreground: 240 4% 46%; /* #71717a */
+    --text-muted: 240 4% 36%; /* #52525b */
+    
+    /* Border Colors */
+    --border: 0 0% 100% / 0.07;
+    --border-subtle: 0 0% 100% / 0.04;
+    --border-active: 148 12% 55% / 0.3;
+    
+    /* Semantic Colors */
+    --gold: 30 50% 60%; /* #d4a574 */
+    --gold-subtle: 30 50% 60% / 0.12;
+    --constraint: 6 51% 62%; /* #d4847a */
+    --constraint-subtle: 6 51% 62% / 0.12;
+    --resource: 135 45% 64%; /* #81c995 */
+    --resource-subtle: 135 45% 64% / 0.12;
+    --unknown: 38 42% 60%; /* #c4a77d */
+    --unknown-subtle: 38 42% 60% / 0.12;
+    --blindspot: 40 35% 55%; /* #c4a77d */
+    --blindspot-subtle: 40 35% 55% / 0.12;
+    --shift: 260 55% 70%; /* #a78bfa */
+    --shift-subtle: 260 55% 70% / 0.12;
+    
+    /* Card & Popover */
+    --card: 240 8% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 8% 6%;
+    --popover-foreground: 0 0% 98%;
+    
+    /* Secondary */
+    --secondary: 240 6% 8%;
+    --secondary-foreground: 0 0% 98%;
+    
+    /* Muted */
+    --muted: 240 6% 8%;
+    
+    /* Accent */
+    --accent: 148 12% 55%;
+    --accent-foreground: 0 0% 98%;
+    
+    /* Destructive / Danger */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --danger: 0 84% 60%;
+    --danger-subtle: 0 84% 60% / 0.12;
+    
+    /* Input & Ring */
+    --input: 0 0% 100% / 0.1;
+    --ring: 148 12% 55%;
+    
+    /* Border Radius */
+    --radius: 0.625rem; /* 10px medium */
+    --radius-sm: 0.375rem; /* 6px small */
+    --radius-lg: 0.875rem; /* 14px large */
+    --radius-lg-plus: 1rem; /* 16px for inputs */
+    
+    /* Layout dimensions */
+    --sidebar-width: 72px;
+    --sidebar-expanded: 200px;
+    --drawer-width: 280px;
+    --rail-width: 320px;
+    --header-height: 56px;
+    
+    /* Tertiary foreground for continuity cards */
+    --tertiary-foreground: 240 4% 46%;
+    
+    /* Sidebar */
+    --sidebar-background: 240 6% 4%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 148 12% 55%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 6% 8%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 100% / 0.06;
+    --sidebar-ring: 148 12% 55%;
+  }
+
+  .dark {
+    /* Same as root - ORIVYA is dark-first */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 14px;
+  }
+  
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .bg-elevated {
+    background-color: hsl(var(--background-elevated));
+  }
+  
+  .bg-surface {
+    background-color: hsl(var(--background-surface));
+  }
+  
+  .bg-hover {
+    background-color: hsl(var(--background-hover));
+  }
+  
+  .bg-card-custom {
+    background-color: hsl(var(--background-card));
+  }
+  
+  .text-secondary {
+    color: hsl(var(--muted-foreground));
+  }
+  
+  .text-tertiary {
+    color: hsl(var(--tertiary-foreground));
+  }
+  
+  .text-muted-custom {
+    color: hsl(var(--text-muted));
+  }
+  
+  .border-subtle {
+    border-color: hsl(var(--border-subtle));
+  }
+  
+  .text-sage {
+    color: hsl(var(--primary));
+  }
+  
+  .text-sage-light {
+    color: hsl(var(--sage-light));
+  }
+  
+  .bg-sage {
+    background-color: hsl(var(--primary));
+  }
+  
+  .bg-sage-dark {
+    background-color: hsl(var(--sage-dark));
+  }
+  
+  .bg-sage-subtle {
+    background-color: hsl(var(--sage-subtle));
+  }
+  
+  .border-sage-muted {
+    border-color: hsl(var(--sage-muted));
+  }
+  
+  .text-text-muted {
+    color: hsl(var(--text-muted));
+  }
+  
+  .border-border-subtle {
+    border-color: hsl(var(--border-subtle));
+  }
+  
+  .rounded-lg-plus {
+    border-radius: var(--radius-lg-plus);
+  }
+  
+  .tertiary-foreground {
+    color: hsl(var(--tertiary-foreground));
+  }
+  
+  /* Pattern colors */
+  .text-constraint {
+    color: hsl(var(--constraint));
+  }
+  
+  .bg-constraint {
+    background-color: hsl(var(--constraint));
+  }
+  
+  .bg-constraint-subtle {
+    background-color: hsl(var(--constraint-subtle));
+  }
+  
+  .border-constraint {
+    border-color: hsl(var(--constraint));
+  }
+  
+  .text-resource {
+    color: hsl(var(--resource));
+  }
+  
+  .bg-resource {
+    background-color: hsl(var(--resource));
+  }
+  
+  .bg-resource-subtle {
+    background-color: hsl(var(--resource-subtle));
+  }
+  
+  .border-resource {
+    border-color: hsl(var(--resource));
+  }
+  
+  .text-unknown {
+    color: hsl(var(--unknown));
+  }
+  
+  .bg-unknown {
+    background-color: hsl(var(--unknown));
+  }
+  
+  .bg-unknown-subtle {
+    background-color: hsl(var(--unknown-subtle));
+  }
+  
+  .border-unknown {
+    border-color: hsl(var(--unknown));
+  }
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 100% / 0.1);
+  border-radius: 3px;
+}
+
+/* Selection styles */
+::selection {
+  background: hsl(var(--primary));
+  color: white;
+}
+
+/* Focus visible styling */
+:focus-visible {
+  outline: 2px solid hsl(148 12% 55% / 0.65);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* ========================================
+   HERO AVATAR ANIMATIONS - CSS Only (no JS)
+   Matches HTML reference exactly
+   ======================================== */
+
+/* Hero Avatar Body - Idle breathing animation */
+.hero-avatar-body {
+  animation: hero-idle-breathe 5s ease-in-out infinite;
+  transform: translate(-50%, -50%) translateZ(0);
+}
+
+/* Hero Eyes - Idle blink animation */
+.hero-eye {
+  animation: hero-idle-blink 5s ease-in-out infinite;
+  transition: width 0.3s ease, height 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Eye sizes - default (mobile) */
+.hero-eye-left {
+  width: 9px;
+  height: 9px;
+}
+
+.hero-eye-right {
+  width: 7px;
+  height: 7px;
+}
+
+/* Eye sizes - desktop (md breakpoint: 768px) */
+@media (min-width: 768px) {
+  .hero-eye-left {
+    width: 11px;
+    height: 11px;
+  }
+
+  .hero-eye-right {
+    width: 9px;
+    height: 9px;
+  }
+}
+
+/* Breathing animation - matches HTML reference keyframes exactly */
+@keyframes hero-idle-breathe {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateZ(0) translateY(0) rotate(0deg);
+    border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%;
+  }
+  33% {
+    transform: translate(-50%, -50%) translateZ(0) translateY(-10px) rotate(-2deg);
+    border-radius: 72% 28% 62% 38% / 58% 42% 58% 42%;
+  }
+  66% {
+    transform: translate(-50%, -50%) translateZ(0) translateY(-6px) rotate(1deg);
+    border-radius: 74% 26% 66% 34% / 62% 38% 62% 38%;
+  }
+}
+
+/* Blink animation - matches HTML reference: 5s with brief blink at 50% */
+@keyframes hero-idle-blink {
+  0%, 44%, 56%, 100% {
+    transform: scaleY(1) translateZ(0);
+  }
+  50% {
+    transform: scaleY(0.1) translateZ(0);
+  }
+}
+
+/* Hover state - CSS only, switches to listening pulse */
+.hero-avatar-wrapper:hover .hero-avatar-body {
+  animation: hero-listening-pulse 2.5s ease-in-out infinite;
+}
+
+/* Hover state - eyes grow larger */
+.hero-avatar-wrapper:hover .hero-eye-left {
+  width: 11px;
+  height: 11px;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.45);
+}
+
+.hero-avatar-wrapper:hover .hero-eye-right {
+  width: 9px;
+  height: 9px;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.4);
+}
+
+/* Desktop hover sizes */
+@media (min-width: 768px) {
+  .hero-avatar-wrapper:hover .hero-eye-left {
+    width: 13px;
+    height: 13px;
+  }
+
+  .hero-avatar-wrapper:hover .hero-eye-right {
+    width: 11px;
+    height: 11px;
+  }
+}
+
+/* Hover glow scale */
+.hero-avatar-wrapper:hover .absolute.rounded-full.bg-sage {
+  opacity: 0.55;
+  transform: translate(-50%, -50%) translateZ(0) scale(1.1);
+}
+
+/* Listening pulse animation for hover */
+@keyframes hero-listening-pulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateZ(0) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateZ(0) scale(1.05);
+  }
+}
+
+/* Safari-specific fixes for hero avatar */
+.hero-avatar,
+.hero-avatar *,
+.hero-avatar *::before,
+.hero-avatar *::after {
+  pointer-events: none;
+}
+
+.hero-avatar::before,
+.hero-avatar::after {
+  display: none !important;
+}
+
+/* ========================================
+   INSIGHT CARD ANIMATIONS
+   ======================================== */
+
+@keyframes insight-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes insight-fade-out {
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+.animate-insight-fade-in {
+  animation: insight-fade-in 0.5s ease-out;
+}
+
+.animate-insight-fade-out {
+  animation: insight-fade-out 0.3s ease-out forwards;
+}

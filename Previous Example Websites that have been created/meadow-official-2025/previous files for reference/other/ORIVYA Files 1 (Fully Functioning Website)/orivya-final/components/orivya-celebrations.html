@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Celebrations</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.4);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --gold: #fbbf24;
+      --gold-subtle: rgba(251, 191, 36, 0.15);
+      --gold-glow: rgba(251, 191, 36, 0.3);
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      --text-4xl: 2.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-2xl: 28px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      padding: var(--space-8);
+    }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    
+    /* Page Layout */
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+      text-align: center;
+    }
+    
+    .page-desc {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    
+    .celebrations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: var(--space-6);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    /* Modal Container */
+    .modal-preview {
+      position: relative;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      min-height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-label {
+      position: absolute;
+      top: var(--space-4);
+      left: var(--space-4);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background-color: var(--bg-surface);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+    }
+    
+    /* Celebration Modal */
+    .celebration-modal {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      text-align: center;
+    }
+    
+    /* Confetti */
+    .confetti-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      animation: confettiFall 3s ease-out infinite;
+    }
+    
+    @keyframes confettiFall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(120px) rotate(360deg); opacity: 0; }
+    }
+    
+    .confetti:nth-child(1) { left: 10%; background-color: var(--sage); animation-delay: 0s; }
+    .confetti:nth-child(2) { left: 25%; background-color: var(--gold); animation-delay: 0.3s; }
+    .confetti:nth-child(3) { left: 40%; background-color: #f87171; animation-delay: 0.1s; }
+    .confetti:nth-child(4) { left: 55%; background-color: var(--sage-light); animation-delay: 0.5s; }
+    .confetti:nth-child(5) { left: 70%; background-color: var(--gold); animation-delay: 0.2s; }
+    .confetti:nth-child(6) { left: 85%; background-color: #a78bfa; animation-delay: 0.4s; }
+    
+    /* Glow Effect */
+    .celebration-glow {
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200%;
+      height: 200px;
+      background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    
+    .celebration-glow--sage {
+      background: radial-gradient(circle, var(--sage-glow) 0%, transparent 70%);
+    }
+    
+    /* Modal Content */
+    .celebration-content {
+      position: relative;
+      padding: var(--space-8) var(--space-6);
+    }
+    
+    .celebration-icon {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-5);
+      font-size: 48px;
+      line-height: 1;
+    }
+    
+    .celebration-badge {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-5);
+      background: linear-gradient(135deg, var(--gold-subtle) 0%, transparent 100%);
+      border: 2px solid var(--gold);
+      border-radius: var(--radius-full);
+    }
+    .celebration-badge svg { width: 36px; height: 36px; color: var(--gold); }
+    
+    .celebration-badge--sage {
+      background: linear-gradient(135deg, var(--sage-subtle) 0%, transparent 100%);
+      border-color: var(--sage);
+    }
+    .celebration-badge--sage svg { color: var(--sage); }
+    
+    .celebration-number {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      font-weight: 600;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: var(--space-2);
+    }
+    
+    .celebration-number--sage { color: var(--sage); }
+    
+    .celebration-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .celebration-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      margin-bottom: var(--space-6);
+    }
+    
+    .celebration-quote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      padding: var(--space-4);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-6);
+      line-height: 1.5;
+    }
+    
+    .celebration-stats {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+      margin-bottom: var(--space-6);
+      padding: var(--space-4);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-lg);
+    }
+    
+    .celebration-stat {
+      text-align: center;
+    }
+    .celebration-stat-value {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .celebration-stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .celebration-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      width: 100%;
+      height: 48px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: white;
+      background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .celebration-btn:hover { transform: translateY(-1px); }
+    
+    .celebration-btn--gold {
+      background: linear-gradient(135deg, var(--gold) 0%, #f59e0b 100%);
+      color: var(--bg-base);
+    }
+    
+    .celebration-dismiss {
+      display: block;
+      width: 100%;
+      padding: var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .celebration-dismiss:hover { color: var(--text-secondary); }
+    
+    /* Share Section */
+    .share-section {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-3);
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border-subtle);
+    }
+    
+    .share-btn {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      transition: all var(--transition-fast);
+    }
+    .share-btn:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .share-btn svg { width: 20px; height: 20px; }
+    
+    /* Progress Ring */
+    .progress-ring {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto var(--space-4);
+      position: relative;
+    }
+    
+    .progress-ring svg {
+      transform: rotate(-90deg);
+    }
+    
+    .progress-ring-bg {
+      fill: none;
+      stroke: var(--bg-surface-2);
+      stroke-width: 8;
+    }
+    
+    .progress-ring-fill {
+      fill: none;
+      stroke: var(--sage);
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 251.2;
+      stroke-dashoffset: 62.8; /* 75% filled */
+      transition: stroke-dashoffset 1s ease;
+    }
+    
+    .progress-ring-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .progress-ring-value {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    
+    .progress-ring-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  
+  <h1 class="page-title">Celebrations & Milestones</h1>
+  <p class="page-desc">Modal components for achievements and progress milestones</p>
+  
+  <div class="celebrations-grid">
+    
+    <!-- First Note -->
+    <div class="modal-preview">
+      <span class="modal-label">First Note</span>
+      <div class="celebration-modal">
+        <div class="confetti-container">
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+        </div>
+        <div class="celebration-glow celebration-glow--sage"></div>
+        <div class="celebration-content">
+          <div class="celebration-icon">🌱</div>
+          <h2 class="celebration-title">You've planted a seed</h2>
+          <p class="celebration-desc">Your first reflection is the start of something meaningful. Every insight begins with a single thought.</p>
+          <button class="celebration-btn">Keep going</button>
+          <button class="celebration-dismiss">Maybe later</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Streak Milestone -->
+    <div class="modal-preview">
+      <span class="modal-label">7-Day Streak</span>
+      <div class="celebration-modal">
+        <div class="confetti-container">
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+        </div>
+        <div class="celebration-glow"></div>
+        <div class="celebration-content">
+          <div class="celebration-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z"/>
+            </svg>
+          </div>
+          <div class="celebration-number">7</div>
+          <h2 class="celebration-title">Day streak!</h2>
+          <p class="celebration-desc">A full week of reflection. You're building a powerful habit.</p>
+          <div class="celebration-stats">
+            <div class="celebration-stat">
+              <div class="celebration-stat-value">2,340</div>
+              <div class="celebration-stat-label">words written</div>
+            </div>
+            <div class="celebration-stat">
+              <div class="celebration-stat-value">12</div>
+              <div class="celebration-stat-label">notes</div>
+            </div>
+          </div>
+          <button class="celebration-btn celebration-btn--gold">Share achievement</button>
+          <button class="celebration-dismiss">Continue writing</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 30-Day Streak -->
+    <div class="modal-preview">
+      <span class="modal-label">30-Day Streak</span>
+      <div class="celebration-modal">
+        <div class="confetti-container">
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+        </div>
+        <div class="celebration-glow"></div>
+        <div class="celebration-content">
+          <div class="celebration-icon">🔥</div>
+          <div class="celebration-number">30</div>
+          <h2 class="celebration-title">Day streak!</h2>
+          <p class="celebration-desc">An entire month of daily reflection. This is remarkable dedication to self-understanding.</p>
+          <div class="celebration-quote">"The unexamined life is not worth living." — Socrates</div>
+          <button class="celebration-btn celebration-btn--gold">Share achievement</button>
+          <button class="celebration-dismiss">Continue writing</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Goal Completed -->
+    <div class="modal-preview">
+      <span class="modal-label">Goal Achieved</span>
+      <div class="celebration-modal">
+        <div class="confetti-container">
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+          <div class="confetti"></div>
+        </div>
+        <div class="celebration-glow celebration-glow--sage"></div>
+        <div class="celebration-content">
+          <div class="celebration-badge celebration-badge--sage">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="16 12 12 8 8 12"/>
+              <line x1="12" y1="16" x2="12" y2="8"/>
+            </svg>
+          </div>
+          <h2 class="celebration-title">Goal achieved!</h2>
+          <p class="celebration-desc" style="font-weight: 500; color: var(--text-secondary);">"Decide on my career direction"</p>
+          <p class="celebration-desc">After 8 reflections over 3 weeks, you've found your clarity. That's what Orivya is all about.</p>
+          <div class="celebration-stats">
+            <div class="celebration-stat">
+              <div class="celebration-stat-value">8</div>
+              <div class="celebration-stat-label">notes linked</div>
+            </div>
+            <div class="celebration-stat">
+              <div class="celebration-stat-value">23</div>
+              <div class="celebration-stat-label">days</div>
+            </div>
+          </div>
+          <button class="celebration-btn">View journey</button>
+          <button class="celebration-dismiss">Close</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Notes Milestone -->
+    <div class="modal-preview">
+      <span class="modal-label">Note Milestone</span>
+      <div class="celebration-modal">
+        <div class="celebration-glow celebration-glow--sage"></div>
+        <div class="celebration-content">
+          <div class="celebration-icon">📝</div>
+          <div class="celebration-number celebration-number--sage">50</div>
+          <h2 class="celebration-title">Notes written</h2>
+          <p class="celebration-desc">Half a hundred reflections. That's a lot of self-discovery. Keep going—you're doing amazing.</p>
+          <button class="celebration-btn">View all notes</button>
+          <button class="celebration-dismiss">Keep writing</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Weekly Summary -->
+    <div class="modal-preview">
+      <span class="modal-label">Weekly Summary</span>
+      <div class="celebration-modal">
+        <div class="celebration-content">
+          <div class="progress-ring">
+            <svg width="100" height="100">
+              <circle class="progress-ring-bg" cx="50" cy="50" r="40"/>
+              <circle class="progress-ring-fill" cx="50" cy="50" r="40"/>
+            </svg>
+            <div class="progress-ring-text">
+              <span class="progress-ring-value">5/7</span>
+              <span class="progress-ring-label">days</span>
+            </div>
+          </div>
+          <h2 class="celebration-title">Your week in reflection</h2>
+          <div class="celebration-stats">
+            <div class="celebration-stat">
+              <div class="celebration-stat-value">1,847</div>
+              <div class="celebration-stat-label">words</div>
+            </div>
+            <div class="celebration-stat">
+              <div class="celebration-stat-value">5</div>
+              <div class="celebration-stat-label">notes</div>
+            </div>
+            <div class="celebration-stat">
+              <div class="celebration-stat-value">2</div>
+              <div class="celebration-stat-label">insights</div>
+            </div>
+          </div>
+          <p class="celebration-desc">You reflected on 5 of 7 days. Keep it up to maintain your streak!</p>
+          <button class="celebration-btn">Start today's reflection</button>
+          <div class="share-section">
+            <button class="share-btn" aria-label="Share to Twitter">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </button>
+            <button class="share-btn" aria-label="Share to Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+              </svg>
+            </button>
+            <button class="share-btn" aria-label="Copy link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</body>
+</html>

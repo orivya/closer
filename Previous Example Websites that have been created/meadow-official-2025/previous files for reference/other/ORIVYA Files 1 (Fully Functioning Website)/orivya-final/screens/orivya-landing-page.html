@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — See Yourself Clearly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           CSS VARIABLES
+           ======================================== */
+        :root {
+            --sage: #7d9b8a;
+            --sage-light: #9bb3a7;
+            --sage-dark: #5f8170;
+            --sage-glow: rgba(125, 155, 138, 0.5);
+            --sage-subtle: rgba(125, 155, 138, 0.08);
+            --sage-muted: rgba(125, 155, 138, 0.15);
+
+            --tan: #c4a77d;
+            --tan-light: #d4be9a;
+            --tan-subtle: rgba(196, 167, 125, 0.1);
+
+            --bg-base: #08080a;
+            --bg-elevated: #0e0e11;
+            --bg-surface: #141417;
+            --bg-card: #18181b;
+
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            --text-muted: #52525b;
+
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --border-default: rgba(255, 255, 255, 0.08);
+
+            --font-display: 'Fraunces', Georgia, serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+        }
+
+        /* ========================================
+           BASE RESET
+           ======================================== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *:focus { outline: none; }
+        :focus-visible {
+            outline: 2px solid rgba(125, 155, 138, 0.6);
+            outline-offset: 3px;
+            border-radius: 8px;
+        }
+
+        ::selection { background: var(--sage); color: white; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-base);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           NAVIGATION
+           ======================================== */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(8, 8, 10, 0);
+            backdrop-filter: blur(0px);
+            border-bottom: 1px solid transparent;
+            transition: all 0.4s ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(8, 8, 10, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom-color: var(--border-subtle);
+        }
+
+        @media (min-width: 768px) {
+            .nav { padding: 16px 48px; }
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo svg {
+            width: 28px;
+            height: 28px;
+            opacity: 0;
+            transform: rotate(-90deg);
+            animation: logoReveal 1.5s ease 0.5s forwards;
+        }
+
+        @keyframes logoReveal {
+            to { opacity: 1; transform: rotate(0deg); }
+        }
+
+        .nav-wordmark {
+            font-family: var(--font-display);
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.8s forwards;
+        }
+
+        .nav-links {
+            display: none;
+            align-items: center;
+            gap: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links { display: flex; }
+        }
+
+        .nav-link {
+            font-size: 14px;
+            font-weight: 450;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .nav-link:nth-child(1) { animation-delay: 1s; }
+        .nav-link:nth-child(2) { animation-delay: 1.1s; }
+        .nav-link:nth-child(3) { animation-delay: 1.2s; }
+
+        .nav-link:hover { color: var(--text-primary); }
+
+        .nav-cta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-tertiary);
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .btn-ghost { display: block; }
+        }
+
+        .btn-ghost:hover { color: var(--text-primary); }
+
+        .btn-primary {
+            background: var(--sage);
+            color: white;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 1.3s forwards;
+        }
+
+        .btn-primary:hover {
+            background: var(--sage-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(125, 155, 138, 0.3);
+        }
+
+        /* ========================================
+           HERO SECTION
+           ======================================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-ambient {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero-ambient::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(125, 155, 138, 0.08) 0%, transparent 70%);
+            animation: ambientPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes ambientPulse {
+            0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .hero-lens {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 48px;
+        }
+
+        @media (min-width: 768px) {
+            .hero-lens { width: 160px; height: 160px; margin-bottom: 56px; }
+        }
+
+        .hero-lens-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: var(--sage);
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0;
+            animation: lensGlowIn 2s ease 0.3s forwards;
+        }
+
+        @keyframes lensGlowIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 0.35; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .hero-lens svg {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-lens-ring {
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            animation: lensReveal 2s ease 0.5s forwards;
+        }
+
+        @keyframes lensReveal {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .hero-tagline {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 8vw, 68px);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: heroTextIn 1s ease 1.8s forwards;
+        }
+
+        .hero-tagline em {
+            font-style: normal;
+            color: var(--sage-light);
+        }
+
+        @keyframes heroTextIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-subtitle {
+            font-size: clamp(17px, 2.5vw, 20px);
+            font-weight: 400;
+            color: var(--text-secondary);
+            max-width: 480px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: heroTextIn 1s ease 2.1s forwards;
+        }
+
+        .hero-cta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            opacity: 0;
+            animation: fadeIn 1s ease 2.4s forwards;
+        }
+
+        @media (min-width: 480px) {
+            .hero-cta { flex-direction: row; justify-content: center; }
+        }
+
+        .hero-cta .btn-primary {
+            opacity: 1;
+            padding: 14px 32px;
+            font-size: 15px;
+        }
+
+        .hero-cta .btn-secondary {
+            padding: 14px 32px;
+            font-size: 15px;
+            background: transparent;
+            border: 1px solid var(--border-default);
+            color: var(--text-secondary);
+        }
+
+        .hero-cta .btn-secondary:hover {
+            background: var(--bg-surface);
+            border-color: var(--sage-muted);
+            color: var(--text-primary);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            animation: fadeIn 1s ease 3s forwards;
+        }
+
+        .hero-scroll span {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .hero-scroll-indicator {
+            width: 24px;
+            height: 40px;
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .hero-scroll-indicator::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: var(--sage);
+            border-radius: 2px;
+            animation: scrollBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { top: 8px; opacity: 1; }
+            50% { top: 20px; opacity: 0.5; }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* ========================================
+           PHILOSOPHY SECTION
+           ======================================== */
+        .philosophy {
+            padding: 100px 24px 120px;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .philosophy { padding: 140px 48px 160px; }
+        }
+
+        .philosophy-content {
+            max-width: 680px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .philosophy-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 32px;
+        }
+
+        .philosophy-label::before,
+        .philosophy-label::after {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--sage-muted);
+        }
+
+        .philosophy-statement {
+            font-family: var(--font-display);
+            font-size: clamp(26px, 5vw, 42px);
+            font-weight: 400;
+            line-height: 1.35;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 28px;
+        }
+
+        .philosophy-statement em {
+            font-style: normal;
+            color: var(--sage-light);
+        }
+
+        .philosophy-body {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* ========================================
+           FEATURE SHOWCASE SECTIONS
+           ======================================== */
+        .feature-section {
+            padding: 80px 24px;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .feature-section { padding: 120px 48px; }
+        }
+
+        .feature-section:nth-child(even) {
+            background: var(--bg-elevated);
+        }
+
+        .feature-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        @media (min-width: 900px) {
+            .feature-container { grid-template-columns: 1fr 1fr; gap: 80px; }
+            .feature-container.reverse { direction: rtl; }
+            .feature-container.reverse > * { direction: ltr; }
+        }
+
+        .feature-content {
+            max-width: 480px;
+        }
+
+        @media (min-width: 900px) {
+            .feature-section:nth-child(odd) .feature-content { margin-left: auto; }
+        }
+
+        .feature-label {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 38px);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .feature-description {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* Feature Mockups */
+        .feature-mockup {
+            position: relative;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+        }
+
+        @media (min-width: 768px) {
+            .feature-mockup { padding: 32px; }
+        }
+
+        .feature-mockup::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--sage-muted), transparent);
+        }
+
+        /* Note Card */
+        .mock-note {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .mock-note-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mock-note-date {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .mock-note-voice {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: var(--sage);
+            background: var(--sage-subtle);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .mock-note-voice svg {
+            width: 12px;
+            height: 12px;
+            stroke: var(--sage);
+            fill: none;
+        }
+
+        .mock-note-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .mock-note-text em {
+            font-style: normal;
+            color: var(--text-primary);
+        }
+
+        /* Insight Card */
+        .mock-insight {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            background: var(--sage-subtle);
+            border: 1px solid var(--sage-muted);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .mock-insight-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--sage);
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .mock-insight-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .mock-insight-content h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--sage-light);
+            margin-bottom: 4px;
+        }
+
+        .mock-insight-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Thread Visualization */
+        .mock-thread {
+            position: relative;
+        }
+
+        .mock-thread-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--sage) 0%, var(--sage-muted) 100%);
+            border-radius: 1px;
+        }
+
+        .mock-thread-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .mock-thread-item:last-child { margin-bottom: 0; }
+
+        .mock-thread-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--sage);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+            margin-left: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mock-thread-dot.faded {
+            background: var(--sage-muted);
+        }
+
+        .mock-thread-card {
+            flex: 1;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .mock-thread-card.active {
+            border-color: var(--sage-muted);
+            background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--sage-subtle) 100%);
+        }
+
+        .mock-thread-date {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .mock-thread-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .mock-thread-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--sage);
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: var(--sage-subtle);
+            border-radius: 6px;
+        }
+
+        .mock-thread-label svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--sage);
+            fill: none;
+        }
+
+        /* Weekly Summary */
+        .mock-summary {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .mock-summary-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 20px;
+            background: var(--sage-subtle);
+            border-bottom: 1px solid var(--sage-muted);
+        }
+
+        .mock-summary-header svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--sage);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .mock-summary-header span {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--sage-light);
+        }
+
+        .mock-summary-date {
+            margin-left: auto;
+            font-weight: 400 !important;
+            color: var(--text-tertiary) !important;
+            font-size: 12px !important;
+        }
+
+        .mock-summary-body {
+            padding: 20px;
+        }
+
+        .mock-summary-intro {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .mock-summary-themes {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .mock-summary-theme {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .mock-summary-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--sage);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .mock-summary-note {
+            font-size: 14px;
+            color: var(--sage-light);
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        /* App Window Mockup */
+        .mock-app-window {
+            padding: 0;
+            overflow: hidden;
+            background: var(--bg-base);
+        }
+
+        .mock-app-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .mock-app-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .mock-app-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+        }
+
+        .mock-app-title {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            margin-right: 34px;
+        }
+
+        /* Note View */
+        .mock-note-view {
+            padding: 24px;
+        }
+
+        @media (min-width: 640px) {
+            .mock-note-view { padding: 32px; }
+        }
+
+        .mock-note-view-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .mock-note-view-date {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .mock-note-view-category {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--sage);
+            background: var(--sage-subtle);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .mock-note-view-thread {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .mock-note-view-thread svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--sage);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .mock-note-view-thread-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--sage-light);
+        }
+
+        .mock-note-view-thread-sep {
+            color: var(--text-muted);
+        }
+
+        .mock-note-view-thread-count {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .mock-note-view-body {
+            margin-bottom: 28px;
+        }
+
+        .mock-note-view-body p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .mock-note-view-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .mock-note-view-concepts {
+            padding-top: 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .mock-note-view-concepts-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .mock-note-view-concepts-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mock-note-view-concept {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sage);
+            background: var(--sage-subtle);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        /* ========================================
+           HOW IT WORKS SECTION
+           ======================================== */
+        .how-it-works {
+            padding: 100px 24px 120px;
+            background: var(--bg-base);
+        }
+
+        @media (min-width: 768px) {
+            .how-it-works { padding: 140px 48px 160px; }
+        }
+
+        .how-header {
+            text-align: center;
+            max-width: 560px;
+            margin: 0 auto 72px;
+        }
+
+        .how-label {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 20px;
+        }
+
+        .how-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .how-subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .how-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 640px) {
+            .how-grid { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        }
+
+        .how-step {
+            text-align: center;
+        }
+
+        .how-step-number {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--sage-subtle);
+            border: 1px solid var(--sage-muted);
+            border-radius: 50%;
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--sage);
+            margin: 0 auto 20px;
+        }
+
+        .how-step-title {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .how-step-desc {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           WHAT MAKES ORIVYA DIFFERENT
+           ======================================== */
+        .difference {
+            padding: 100px 24px 120px;
+            background: var(--bg-elevated);
+        }
+
+        @media (min-width: 768px) {
+            .difference { padding: 140px 48px 160px; }
+        }
+
+        .difference-header {
+            text-align: center;
+            max-width: 560px;
+            margin: 0 auto 64px;
+        }
+
+        .difference-label {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 20px;
+        }
+
+        .difference-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .difference-subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .difference-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 600px) {
+            .difference-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .difference-card {
+            padding: 32px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .difference-card:hover {
+            border-color: var(--sage-muted);
+            transform: translateY(-2px);
+        }
+
+        .difference-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--sage-subtle);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .difference-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--sage);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .difference-card h3 {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .difference-card p {
+            font-size: 15px;
+            color: var(--text-tertiary);
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           FINAL CTA SECTION
+           ======================================== */
+        .final-cta {
+            padding: 120px 24px 160px;
+            text-align: center;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .final-cta { padding: 160px 48px 200px; }
+        }
+
+        .final-cta-ambient {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(125, 155, 138, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .final-cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .final-cta-lens {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 40px;
+        }
+
+        .final-cta-lens svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .final-cta-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 5vw, 44px);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .final-cta-title em {
+            font-style: normal;
+            color: var(--sage-light);
+        }
+
+        .final-cta-subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        .final-cta .btn-primary {
+            padding: 16px 40px;
+            font-size: 16px;
+            opacity: 1;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .footer {
+            padding: 48px 24px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        @media (min-width: 768px) {
+            .footer { padding: 48px; }
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .footer-logo span {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px 24px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-links {
+                gap: 32px;
+            }
+        }
+
+        .footer-link {
+            font-size: 14px;
+            color: var(--text-tertiary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            padding: 4px 0;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-link:hover { color: var(--text-primary); }
+
+        .footer-copy {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- =============================================
+         NAVIGATION
+         ============================================= -->
+    <nav class="nav" id="nav">
+        <a href="/" class="nav-logo">
+            <svg viewBox="0 0 64 64" fill="none">
+                <path d="M 38 8.5 A 24 24 0 1 1 26 8.5" stroke="#7d9b8a" stroke-width="4" stroke-linecap="round" fill="none"/>
+            </svg>
+            <span class="nav-wordmark">Orivya</span>
+        </a>
+        
+        <div class="nav-links">
+            <a href="#philosophy" class="nav-link">Philosophy</a>
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#how" class="nav-link">How it works</a>
+        </div>
+        
+        <div class="nav-cta">
+            <a href="orivya-login.html" class="btn btn-ghost">Sign in</a>
+            <a href="orivya-onboarding-v11.html" class="btn btn-primary">Start writing</a>
+        </div>
+    </nav>
+    
+    <!-- =============================================
+         HERO SECTION
+         ============================================= -->
+    <section class="hero">
+        <div class="hero-ambient"></div>
+        
+        <div class="hero-content">
+            <div class="hero-lens">
+                <div class="hero-lens-glow"></div>
+                <svg viewBox="0 0 64 64" fill="none">
+                    <path 
+                        class="hero-lens-ring"
+                        d="M 38 8.5 A 24 24 0 1 1 26 8.5" 
+                        stroke="#7d9b8a" 
+                        stroke-width="3" 
+                        stroke-linecap="round" 
+                        fill="none"
+                    />
+                </svg>
+            </div>
+            
+            <h1 class="hero-tagline">See yourself <em>clearly</em>.</h1>
+            
+            <p class="hero-subtitle">
+                A private space to think through what matters most. 
+                Write freely, find clarity, and trust your own mind again.
+            </p>
+            
+            <div class="hero-cta">
+                <a href="orivya-onboarding-v11.html" class="btn btn-primary">Start writing</a>
+                <a href="#philosophy" class="btn btn-secondary">Learn more</a>
+            </div>
+        </div>
+        
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="hero-scroll-indicator"></div>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         PHILOSOPHY SECTION
+         ============================================= -->
+    <section class="philosophy" id="philosophy">
+        <div class="philosophy-content">
+            <span class="philosophy-label">Our Philosophy</span>
+            
+            <h2 class="philosophy-statement">
+                You already have the answers. Sometimes you just need 
+                <em>space to find them</em>.
+            </h2>
+            
+            <p class="philosophy-body">
+                Orivya is a quiet place to think — a notebook that gently 
+                helps you understand yourself, without ever telling you what to feel 
+                or who to be. Your thoughts. Your pace. Your clarity.
+            </p>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         FEATURE 1: WEEKLY SUMMARY
+         ============================================= -->
+    <section class="feature-section" id="features">
+        <div class="feature-container">
+            <div class="feature-content">
+                <p class="feature-label">Weekly Summary</p>
+                <h2 class="feature-title">See what's been on your mind</h2>
+                <p class="feature-description">
+                    Life moves fast. It's easy to forget what you were worried about last Tuesday, 
+                    or the idea that felt important at 2am. Each week, Orivya gently reflects back 
+                    what you've been thinking about — so you don't lose track of yourself.
+                </p>
+            </div>
+            
+            <div class="feature-mockup">
+                <div class="mock-summary">
+                    <div class="mock-summary-header">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span>This Week</span>
+                        <span class="mock-summary-date">Nov 18 – 24</span>
+                    </div>
+                    <div class="mock-summary-body">
+                        <p class="mock-summary-intro">You wrote 5 notes this week. Here's what came up:</p>
+                        <div class="mock-summary-themes">
+                            <div class="mock-summary-theme">
+                                <span class="mock-summary-dot"></span>
+                                <span>The conversation with your sister you've been avoiding</span>
+                            </div>
+                            <div class="mock-summary-theme">
+                                <span class="mock-summary-dot"></span>
+                                <span>Feeling torn between rest and productivity</span>
+                            </div>
+                            <div class="mock-summary-theme">
+                                <span class="mock-summary-dot"></span>
+                                <span>What "enough" actually means to you</span>
+                            </div>
+                        </div>
+                        <p class="mock-summary-note">One note stood out — would you like to revisit it?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         FEATURE 2: THREADS
+         ============================================= -->
+    <section class="feature-section">
+        <div class="feature-container reverse">
+            <div class="feature-content">
+                <p class="feature-label">Threads</p>
+                <h2 class="feature-title">Watch your thoughts connect</h2>
+                <p class="feature-description">
+                    Over time, you'll notice certain themes keep coming back. 
+                    Orivya gently weaves related notes together — not to analyze you, 
+                    but to help you see what you've been circling around. 
+                    Sometimes the thing you've written about three times is the thing worth paying attention to.
+                </p>
+            </div>
+            
+            <div class="feature-mockup">
+                <div class="mock-thread">
+                    <div class="mock-thread-line"></div>
+                    
+                    <div class="mock-thread-item">
+                        <div class="mock-thread-dot faded"></div>
+                        <div class="mock-thread-card">
+                            <p class="mock-thread-date">3 weeks ago</p>
+                            <p class="mock-thread-text">"I keep taking on extra work because I'm afraid they'll think I'm not committed..."</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mock-thread-item">
+                        <div class="mock-thread-dot faded"></div>
+                        <div class="mock-thread-card">
+                            <p class="mock-thread-date">Last week</p>
+                            <p class="mock-thread-text">"Said yes to leading the presentation even though I'm drowning. Why can't I just say no?"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mock-thread-item">
+                        <div class="mock-thread-dot"></div>
+                        <div class="mock-thread-card active">
+                            <p class="mock-thread-date">Today</p>
+                            <p class="mock-thread-text">"I think I'm afraid that if I set boundaries, people will see I'm not as capable as they think I am."</p>
+                            <div class="mock-thread-label">
+                                <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                3 notes in this thread
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         FEATURE 3: THE NOTES INTERFACE
+         ============================================= -->
+    <section class="feature-section">
+        <div class="feature-container">
+            <div class="feature-content">
+                <p class="feature-label">Your Notes</p>
+                <h2 class="feature-title">A clean space to think</h2>
+                <p class="feature-description">
+                    No clutter. No distractions. Just a simple place to write whatever's on your mind. 
+                    See related threads, key concepts, and how your thinking evolves — 
+                    all without losing the simplicity of a blank page.
+                </p>
+            </div>
+            
+            <div class="feature-mockup mock-app-window">
+                <div class="mock-app-header">
+                    <div class="mock-app-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="mock-app-title">Orivya</span>
+                </div>
+                <div class="mock-note-view">
+                    <div class="mock-note-view-meta">
+                        <span class="mock-note-view-date">November 24, 2025 at 9:47 PM</span>
+                        <span class="mock-note-view-category">Personal</span>
+                    </div>
+                    
+                    <div class="mock-note-view-thread">
+                        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        <span class="mock-note-view-thread-name">What I actually want</span>
+                        <span class="mock-note-view-thread-sep">·</span>
+                        <span class="mock-note-view-thread-count">3 of 3</span>
+                    </div>
+                    
+                    <div class="mock-note-view-body">
+                        <p>I've been thinking about what I actually want from this next chapter. Not what I think I should want, or what would look impressive, but what would actually make me feel alive.</p>
+                        <p>Maybe that's the wrong question. Maybe it's not about figuring it out in advance — maybe it's about giving myself permission to try things and see what fits.</p>
+                        <p>I keep waiting for certainty, but what if it never comes?</p>
+                    </div>
+                    
+                    <div class="mock-note-view-concepts">
+                        <span class="mock-note-view-concepts-label">Key Concepts</span>
+                        <div class="mock-note-view-concepts-list">
+                            <span class="mock-note-view-concept">permission</span>
+                            <span class="mock-note-view-concept">uncertainty</span>
+                            <span class="mock-note-view-concept">self-trust</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         FEATURE 4: VOICE NOTES
+         ============================================= -->
+    <section class="feature-section">
+        <div class="feature-container reverse">
+            <div class="feature-content">
+                <p class="feature-label">Voice Notes</p>
+                <h2 class="feature-title">Speak when words are easier said</h2>
+                <p class="feature-description">
+                    Sometimes you need to think out loud. Record your thoughts 
+                    and Orivya will capture them, so nothing gets lost in the 
+                    moment. Perfect for when you're driving, walking, or just 
+                    need to let it flow without typing.
+                </p>
+            </div>
+            
+            <div class="feature-mockup">
+                <div class="mock-note">
+                    <div class="mock-note-header">
+                        <span class="mock-note-date">Yesterday, 7:14 AM</span>
+                        <span class="mock-note-voice">
+                            <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+                            Voice note · 2:34
+                        </span>
+                    </div>
+                    <p class="mock-note-text">
+                        "Sitting in the parking lot before going in and I realized I've been on autopilot for weeks. 
+                        Just doing the next thing, then the next thing. I haven't actually asked myself what I want in... 
+                        I don't even know how long. <em>When did I stop checking in with myself?</em>"
+                    </p>
+                </div>
+                
+                <div class="mock-insight">
+                    <div class="mock-insight-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                        </svg>
+                    </div>
+                    <div class="mock-insight-content">
+                        <h4>Go deeper?</h4>
+                        <p>This sounds like something worth exploring. Would you like to reflect on it?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         HOW IT WORKS SECTION
+         ============================================= -->
+    <section class="how-it-works" id="how">
+        <div class="how-header">
+            <p class="how-label">How it works</p>
+            <h2 class="how-title">Simple by design</h2>
+            <p class="how-subtitle">
+                No learning curve. No complicated setup. Just you and your thoughts.
+            </p>
+        </div>
+        
+        <div class="how-grid">
+            <div class="how-step">
+                <div class="how-step-number">1</div>
+                <h3 class="how-step-title">Write anything</h3>
+                <p class="how-step-desc">
+                    A decision, a feeling, a rambling thought. There's no wrong way to start.
+                </p>
+            </div>
+            
+            <div class="how-step">
+                <div class="how-step-number">2</div>
+                <h3 class="how-step-title">Notice what matters</h3>
+                <p class="how-step-desc">
+                    Over time, connections and reflections surface — gently, and only when helpful.
+                </p>
+            </div>
+            
+            <div class="how-step">
+                <div class="how-step-number">3</div>
+                <h3 class="how-step-title">Understand yourself</h3>
+                <p class="how-step-desc">
+                    See what you've been thinking about. Trust your own wisdom again.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         WHAT MAKES ORIVYA DIFFERENT
+         ============================================= -->
+    <section class="difference">
+        <div class="difference-header">
+            <p class="difference-label">What Makes This Different</p>
+            <h2 class="difference-title">Not another productivity tool</h2>
+            <p class="difference-subtitle">
+                Most apps want to optimize you. Orivya just wants to help you understand yourself.
+            </p>
+        </div>
+        
+        <div class="difference-grid">
+            <div class="difference-card">
+                <div class="difference-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>Private by design</h3>
+                <p>Your notes are encrypted. We can't read them, and we never will. This is your space — not our data.</p>
+            </div>
+            
+            <div class="difference-card">
+                <div class="difference-icon">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                </div>
+                <h3>No streaks, no guilt</h3>
+                <p>Write when you want to. Skip a week. Come back when you're ready. Orivya doesn't shame you for living your life.</p>
+            </div>
+            
+            <div class="difference-card">
+                <div class="difference-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                </div>
+                <h3>No metrics to chase</h3>
+                <p>No word counts. No mood charts. No gamification. Just a clean space to think, without turning your inner life into a dashboard.</p>
+            </div>
+            
+            <div class="difference-card">
+                <div class="difference-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+                </div>
+                <h3>AI that knows its place</h3>
+                <p>Every intelligent feature is optional and can be turned off completely. You're in control of how much — or how little — help you want.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         FINAL CTA SECTION
+         ============================================= -->
+    <section class="final-cta">
+        <div class="final-cta-ambient"></div>
+        
+        <div class="final-cta-content">
+            <div class="final-cta-lens">
+                <svg viewBox="0 0 64 64" fill="none">
+                    <path d="M 38 8.5 A 24 24 0 1 1 26 8.5" stroke="#7d9b8a" stroke-width="3" stroke-linecap="round" fill="none"/>
+                </svg>
+            </div>
+            
+            <h2 class="final-cta-title">Your thoughts are <em>worth understanding</em>.</h2>
+            
+            <p class="final-cta-subtitle">
+                Start with one note. Just get something out of your head. 
+                The clarity you're looking for might be closer than you think.
+            </p>
+            
+            <a href="orivya-onboarding-v11.html" class="btn btn-primary">Start writing for free</a>
+        </div>
+    </section>
+    
+    <!-- =============================================
+         FOOTER
+         ============================================= -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <svg viewBox="0 0 64 64" fill="none">
+                    <path d="M 38 8.5 A 24 24 0 1 1 26 8.5" stroke="#7d9b8a" stroke-width="4" stroke-linecap="round" fill="none"/>
+                </svg>
+                <span>Orivya</span>
+            </div>
+            
+            <div class="footer-links">
+                <a href="orivya-privacy-policy.html" class="footer-link">Privacy</a>
+                <a href="orivya-terms-of-service.html" class="footer-link">Terms</a>
+                <a href="orivya-pricing.html" class="footer-link">Pricing</a>
+                <a href="mailto:support@orivya.com" class="footer-link">Support</a>
+            </div>
+            
+            <p class="footer-copy">© 2025 Orivya Inc. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Navbar scroll effect
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe feature sections
+        document.querySelectorAll('.feature-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'all 0.8s ease';
+            observer.observe(section);
+        });
+    </script>
+    
+</body>
+</html>

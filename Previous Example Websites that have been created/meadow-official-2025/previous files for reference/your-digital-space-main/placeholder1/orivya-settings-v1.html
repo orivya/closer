@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORIVYA — Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sage: #7d9b8a; --sage-light: #9bb3a4; --sage-dark: #6a8577;
+            --sage-subtle: rgba(125, 155, 138, 0.08); --sage-muted: rgba(125, 155, 138, 0.15);
+            --bg-base: #08080a; --bg-elevated: #0e0e11; --bg-surface: #141417; --bg-hover: #1a1a1d;
+            --border-subtle: rgba(255, 255, 255, 0.04); --border-default: rgba(255, 255, 255, 0.07);
+            --text-primary: #fafafa; --text-secondary: #a1a1aa; --text-tertiary: #71717a; --text-muted: #52525b;
+            --danger: #ef4444; --danger-subtle: rgba(239, 68, 68, 0.12);
+            --nav-width: 72px;
+            --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 20px; --space-xl: 24px; --space-2xl: 32px;
+            --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+            --transition-fast: 0.15s ease; --transition-smooth: 0.25s ease-out;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus { outline: none; }
+        :focus-visible { outline: 2px solid rgba(125, 155, 138, 0.65); outline-offset: 3px; border-radius: var(--radius-sm); }
+        ::selection { background: var(--sage); color: white; }
+        html, body { height: 100%; }
+        body { font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; line-height: 1.5; color: var(--text-primary); background: var(--bg-base); -webkit-font-smoothing: antialiased; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+
+        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+        .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); padding: 12px 20px; background: var(--bg-elevated); border: 1px solid var(--border-default); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000; }
+        .toast.visible { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; }
+        .toast-icon { width: 18px; height: 18px; color: var(--sage); }
+        .toast-icon svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        .app { display: flex; height: 100vh; }
+
+        /* Navigation Rail */
+        .nav-rail { width: var(--nav-width); background: var(--bg-elevated); border-right: 1px solid var(--border-subtle); display: flex; flex-direction: column; align-items: center; padding: var(--space-lg) 0; flex-shrink: 0; }
+        .nav-logo { width: 40px; height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-xl); cursor: pointer; text-decoration: none; }
+        .nav-logo .body { width: 32px; height: 28px; background: linear-gradient(155deg, var(--sage-light) 0%, var(--sage) 50%, var(--sage-dark) 100%); border-radius: 75% 25% 65% 35% / 60% 40% 60% 40%; position: relative; animation: breathe 5s ease-in-out infinite; }
+        .nav-logo .eyes { position: absolute; top: 38%; left: 42%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .nav-logo .eye { background: rgba(255, 255, 255, 0.95); border-radius: 50%; }
+        .nav-logo .eye.left { width: 4px; height: 4px; }
+        .nav-logo .eye.right { width: 3px; height: 3px; opacity: 0.9; }
+        .nav-items { display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); }
+        .nav-item { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: var(--radius-md); color: var(--text-muted); cursor: pointer; transition: all var(--transition-fast); position: relative; text-decoration: none; }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item.active { background: var(--sage-subtle); color: var(--sage); }
+        .nav-item.active::before { content: ''; position: absolute; left: -14px; top: 10px; bottom: 10px; width: 3px; background: var(--sage); border-radius: 0 2px 2px 0; }
+        .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+        .nav-item::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%); padding: 6px 10px; background: var(--bg-hover); border: 1px solid var(--border-default); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; color: var(--text-primary); white-space: nowrap; opacity: 0; visibility: hidden; transition: all var(--transition-fast); pointer-events: none; }
+        .nav-item:hover::after { opacity: 1; visibility: visible; }
+        .nav-bottom { margin-top: auto; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        .page-header { padding: var(--space-lg) var(--space-2xl); border-bottom: 1px solid var(--border-subtle); background: var(--bg-elevated); }
+        .page-title { font-size: 20px; font-weight: 600; color: var(--text-primary); }
+        .page-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+        .settings-scroll { flex: 1; overflow-y: auto; padding: var(--space-2xl); }
+        .settings-container { max-width: 640px; margin: 0 auto; }
+
+        .settings-section { margin-bottom: var(--space-2xl); }
+        .section-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); margin-bottom: var(--space-md); }
+
+        .settings-card { background: var(--bg-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); overflow: hidden; }
+
+        .setting-item { display: flex; align-items: center; justify-content: space-between; padding: var(--space-lg); border-bottom: 1px solid var(--border-subtle); transition: background var(--transition-fast); }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-item:hover { background: var(--bg-surface); }
+        .setting-info { flex: 1; }
+        .setting-label { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+        .setting-description { font-size: 13px; color: var(--text-tertiary); }
+
+        /* Toggle Switch */
+        .toggle { width: 44px; height: 24px; background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: 12px; position: relative; cursor: pointer; transition: all var(--transition-fast); }
+        .toggle.active { background: var(--sage); border-color: var(--sage); }
+        .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: white; border-radius: 50%; transition: transform var(--transition-fast); }
+        .toggle.active::after { transform: translateX(20px); }
+
+        /* Select Dropdown */
+        .setting-select { padding: 8px 32px 8px 12px; background: var(--bg-surface); border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 13px; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: all var(--transition-fast); }
+        .setting-select:hover { border-color: var(--sage-muted); color: var(--text-primary); }
+
+        /* Action Button */
+        .setting-btn { padding: 8px 16px; background: transparent; border: 1px solid var(--border-default); border-radius: var(--radius-sm); color: var(--text-secondary); font-family: inherit; font-size: 13px; cursor: pointer; transition: all var(--transition-fast); }
+        .setting-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .setting-btn:active { transform: scale(0.97); }
+        .setting-btn.danger { border-color: var(--danger); color: var(--danger); }
+        .setting-btn.danger:hover { background: var(--danger-subtle); }
+        .setting-btn.primary { background: var(--sage); border-color: var(--sage); color: white; }
+        .setting-btn.primary:hover { background: var(--sage-light); }
+
+        /* Profile Section */
+        .profile-header { display: flex; align-items: center; gap: var(--space-lg); padding: var(--space-lg); }
+        .profile-avatar { width: 64px; height: 64px; background: var(--sage-subtle); border: 1px solid var(--sage-muted); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .profile-avatar svg { width: 28px; height: 28px; stroke: var(--sage); stroke-width: 1.5; fill: none; }
+        .profile-info { flex: 1; }
+        .profile-name { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+        .profile-email { font-size: 13px; color: var(--text-tertiary); }
+
+        /* Footer Links */
+        .settings-footer { margin-top: var(--space-2xl); padding-top: var(--space-lg); border-top: 1px solid var(--border-subtle); }
+        .footer-links { display: flex; flex-wrap: wrap; gap: var(--space-md); }
+        .footer-link { font-size: 13px; color: var(--text-tertiary); text-decoration: none; transition: color var(--transition-fast); }
+        .footer-link:hover { color: var(--sage); }
+
+        @media (max-width: 768px) {
+            .nav-rail { width: 56px; }
+            .nav-item::after { display: none; }
+            .page-header { padding: var(--space-md) var(--space-lg); }
+            .settings-scroll { padding: var(--space-lg); }
+        }
+        @media (max-width: 480px) {
+            .nav-rail { position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 64px; flex-direction: row; justify-content: space-around; padding: 0; border-right: none; border-top: 1px solid var(--border-subtle); z-index: 100; }
+            .nav-logo { display: none; }
+            .nav-items { flex-direction: row; width: 100%; justify-content: space-around; }
+            .nav-bottom { margin-top: 0; }
+            .main-content { padding-bottom: 64px; }
+            .settings-scroll { padding: var(--space-md); }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast"><div class="toast-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span id="toastMessage">Saved</span></div>
+
+    <div class="app">
+        <nav class="nav-rail">
+            <a href="orivya-app-v10.html" class="nav-logo"><div class="body"><div class="eyes"><div class="eye left"></div><div class="eye right"></div></div></div></a>
+            <div class="nav-items">
+                <a href="orivya-app-v10.html" class="nav-item" data-tooltip="Chat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></a>
+                <a href="orivya-explore-v5.html" class="nav-item" data-tooltip="Explore"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></a>
+                <a href="orivya-library-v7.html" class="nav-item" data-tooltip="Library"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></a>
+            </div>
+            <div class="nav-bottom">
+                <a href="orivya-profile-v1.html" class="nav-item" data-tooltip="Profile"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+                <a href="orivya-settings-v1.html" class="nav-item active" data-tooltip="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg></a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="page-header">
+                <h1 class="page-title">Settings</h1>
+                <p class="page-subtitle">Customize your Orivya experience</p>
+            </header>
+
+            <div class="settings-scroll">
+                <div class="settings-container">
+                    <!-- Profile -->
+                    <section class="settings-section">
+                        <div class="section-title">Profile</div>
+                        <div class="settings-card">
+                            <div class="profile-header">
+                                <div class="profile-avatar">
+                                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                </div>
+                                <div class="profile-info">
+                                    <div class="profile-name">Your Name</div>
+                                    <div class="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dba2b4ae9bbea3bab6abb7bef5b8b4b6">[email&#160;protected]</a></div>
+                                </div>
+                                <button class="setting-btn" onclick="showToast('Edit profile')">Edit</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Preferences -->
+                    <section class="settings-section">
+                        <div class="section-title">Preferences</div>
+                        <div class="settings-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Orivya's Tone</div>
+                                    <div class="setting-description">How Orivya communicates with you</div>
+                                </div>
+                                <select class="setting-select" onchange="showToast('Tone updated')">
+                                    <option>Warm & Direct</option>
+                                    <option>Gentle & Reflective</option>
+                                    <option>Professional</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Daily Reflection Reminder</div>
+                                    <div class="setting-description">Get a gentle nudge to check in</div>
+                                </div>
+                                <button class="toggle active" onclick="this.classList.toggle('active'); showToast('Setting updated')"></button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Weekly Pattern Report</div>
+                                    <div class="setting-description">Receive insights about your patterns</div>
+                                </div>
+                                <button class="toggle active" onclick="this.classList.toggle('active'); showToast('Setting updated')"></button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Sound Effects</div>
+                                    <div class="setting-description">Subtle audio feedback</div>
+                                </div>
+                                <button class="toggle" onclick="this.classList.toggle('active'); showToast('Setting updated')"></button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Privacy -->
+                    <section class="settings-section">
+                        <div class="section-title">Privacy & Data</div>
+                        <div class="settings-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Export Your Data</div>
+                                    <div class="setting-description">Download all your sessions and insights</div>
+                                </div>
+                                <button class="setting-btn" onclick="showToast('Preparing export...')">Export</button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Clear Conversation History</div>
+                                    <div class="setting-description">Remove all past sessions</div>
+                                </div>
+                                <button class="setting-btn danger" onclick="showToast('Are you sure?')">Clear</button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Delete Account</div>
+                                    <div class="setting-description">Permanently delete your account and data</div>
+                                </div>
+                                <button class="setting-btn danger" onclick="showToast('This action cannot be undone')">Delete</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Account -->
+                    <section class="settings-section">
+                        <div class="section-title">Account</div>
+                        <div class="settings-card">
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Change Password</div>
+                                    <div class="setting-description">Update your account password</div>
+                                </div>
+                                <button class="setting-btn" onclick="showToast('Opening password change...')">Change</button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <div class="setting-label">Sign Out</div>
+                                    <div class="setting-description">Sign out of this device</div>
+                                </div>
+                                <button class="setting-btn" onclick="showToast('Signing out...')">Sign Out</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Footer -->
+                    <div class="settings-footer">
+                        <div class="footer-links">
+                            <a href="orivya-privacy-v1.html" class="footer-link">Privacy Policy</a>
+                            <a href="orivya-terms-v1.html" class="footer-link">Terms of Service</a>
+                            <a href="#" class="footer-link">Help & Support</a>
+                            <a href="#" class="footer-link">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        function showToast(message) { 
+            const toast = document.getElementById('toast'); 
+            document.getElementById('toastMessage').textContent = message; 
+            toast.classList.add('visible'); 
+            setTimeout(() => toast.classList.remove('visible'), 2500); 
+        }
+    </script>
+</body>
+</html>

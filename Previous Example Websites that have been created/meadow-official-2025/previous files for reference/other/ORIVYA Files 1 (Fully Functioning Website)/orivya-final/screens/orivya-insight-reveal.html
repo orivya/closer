@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Insight Reveal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ===========================================
+       CSS VARIABLES
+       =========================================== */
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.4);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 1.875rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-slow: 400ms ease-out;
+      --transition-reveal: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* ===========================================
+       RESET & BASE
+       =========================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    
+    button {
+      font-family: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: inherit;
+    }
+    
+    :focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 2px;
+    }
+    
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* ===========================================
+       INSIGHT REVEAL OVERLAY
+       =========================================== */
+    .insight-reveal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-6);
+      background-color: rgba(8, 8, 10, 0);
+      backdrop-filter: blur(0px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all var(--transition-reveal);
+    }
+    
+    .insight-reveal.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      background-color: rgba(8, 8, 10, 0.95);
+      backdrop-filter: blur(20px);
+    }
+    
+    /* ===========================================
+       CLOSE BUTTON
+       =========================================== */
+    .reveal-close {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      border-radius: var(--radius-md);
+      transition: all 200ms ease;
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    
+    .insight-reveal.is-visible .reveal-close {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 800ms;
+    }
+    
+    .reveal-close:hover {
+      color: var(--text-secondary);
+      background-color: var(--border-subtle);
+    }
+    
+    .reveal-close svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    /* ===========================================
+       CONTENT CONTAINER
+       =========================================== */
+    .reveal-content {
+      width: 100%;
+      max-width: 540px;
+      text-align: center;
+      transform: translateY(20px) scale(0.98);
+      opacity: 0;
+      transition: all var(--transition-reveal);
+    }
+    
+    .insight-reveal.is-visible .reveal-content {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      transition-delay: 200ms;
+    }
+    
+    /* ===========================================
+       INSIGHT ICON
+       =========================================== */
+    .reveal-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto var(--space-8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--sage-muted) 0%, var(--sage-subtle) 100%);
+      border-radius: var(--radius-xl);
+      color: var(--sage);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all var(--transition-reveal);
+    }
+    
+    .insight-reveal.is-visible .reveal-icon {
+      opacity: 1;
+      transform: scale(1);
+      transition-delay: 400ms;
+    }
+    
+    .reveal-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+    
+    /* Gentle pulsing glow */
+    .insight-reveal.is-visible .reveal-icon::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: var(--radius-xl);
+      background: var(--sage-glow);
+      opacity: 0;
+      animation: iconGlow 3s ease-in-out infinite;
+      animation-delay: 1s;
+    }
+    
+    @keyframes iconGlow {
+      0%, 100% { opacity: 0; transform: scale(0.9); }
+      50% { opacity: 0.3; transform: scale(1.05); }
+    }
+    
+    /* ===========================================
+       LABEL
+       =========================================== */
+    .reveal-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-6);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all var(--transition-slow);
+    }
+    
+    .insight-reveal.is-visible .reveal-label {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 500ms;
+    }
+    
+    /* ===========================================
+       INSIGHT TEXT
+       =========================================== */
+    .reveal-text {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: var(--space-10);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all var(--transition-slow);
+    }
+    
+    @media (min-width: 640px) {
+      .reveal-text {
+        font-size: var(--text-3xl);
+        line-height: 1.4;
+      }
+    }
+    
+    .insight-reveal.is-visible .reveal-text {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 600ms;
+    }
+    
+    /* Highlight key phrase */
+    .reveal-text .highlight {
+      color: var(--sage-light);
+    }
+    
+    /* ===========================================
+       SOURCE CONTEXT
+       =========================================== */
+    .reveal-source {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--space-10);
+      opacity: 0;
+      transition: all var(--transition-slow);
+    }
+    
+    .insight-reveal.is-visible .reveal-source {
+      opacity: 1;
+      transition-delay: 700ms;
+    }
+    
+    .reveal-source a {
+      color: var(--text-tertiary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    
+    .reveal-source a:hover {
+      color: var(--sage);
+    }
+    
+    /* ===========================================
+       ACTIONS
+       =========================================== */
+    .reveal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all var(--transition-slow);
+    }
+    
+    @media (min-width: 480px) {
+      .reveal-actions {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+    
+    .insight-reveal.is-visible .reveal-actions {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 800ms;
+    }
+    
+    .reveal-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-6);
+      font-size: var(--text-base);
+      font-weight: 500;
+      border-radius: var(--radius-lg);
+      transition: all 200ms ease;
+    }
+    
+    .reveal-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .reveal-btn--primary {
+      background-color: var(--sage);
+      color: white;
+    }
+    
+    .reveal-btn--primary:hover {
+      background-color: var(--sage-dark);
+      box-shadow: 0 0 24px var(--sage-glow);
+    }
+    
+    .reveal-btn--secondary {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+    }
+    
+    .reveal-btn--secondary:hover {
+      background-color: var(--bg-elevated);
+      border-color: var(--border-subtle);
+      color: var(--text-primary);
+    }
+    
+    /* ===========================================
+       INSIGHT TYPE VARIATIONS
+       =========================================== */
+    
+    /* Pattern Insight */
+    .insight-reveal[data-type="pattern"] .reveal-icon {
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(96, 165, 250, 0.05) 100%);
+      color: #60a5fa;
+    }
+    
+    /* Connection Insight */
+    .insight-reveal[data-type="connection"] .reveal-icon {
+      background: linear-gradient(135deg, rgba(251, 113, 133, 0.15) 0%, rgba(251, 113, 133, 0.05) 100%);
+      color: #fb7185;
+    }
+    
+    /* Evolution Insight */
+    .insight-reveal[data-type="evolution"] .reveal-icon {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.05) 100%);
+      color: #fbbf24;
+    }
+    
+    /* ===========================================
+       DEMO PAGE STYLES
+       =========================================== */
+    .demo-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-8);
+      text-align: center;
+    }
+    
+    .demo-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+    
+    .demo-text {
+      font-size: var(--text-base);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-8);
+      max-width: 400px;
+    }
+    
+    .demo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-4) var(--space-6);
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border-radius: var(--radius-lg);
+      transition: all 200ms ease;
+    }
+    
+    .demo-btn:hover {
+      background-color: var(--sage-dark);
+    }
+    
+    .demo-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .demo-variations {
+      display: flex;
+      gap: var(--space-3);
+      margin-top: var(--space-6);
+    }
+    
+    .demo-variation {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      transition: all 200ms ease;
+    }
+    
+    .demo-variation:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Demo Page (What's behind the reveal) -->
+  <div class="demo-page">
+    <h1 class="demo-title">Insight Reveal Component</h1>
+    <p class="demo-text">This is the sacred moment when Orivya surfaces a meaningful pattern from your writing. Click below to see it in action.</p>
+    
+    <button class="demo-btn" onclick="showInsight('default')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+      </svg>
+      Show Insight Reveal
+    </button>
+    
+    <div class="demo-variations">
+      <button class="demo-variation" onclick="showInsight('pattern')">Pattern</button>
+      <button class="demo-variation" onclick="showInsight('connection')">Connection</button>
+      <button class="demo-variation" onclick="showInsight('evolution')">Evolution</button>
+    </div>
+  </div>
+  
+  <!-- Insight Reveal Overlay -->
+  <div class="insight-reveal" id="insightReveal" data-type="default">
+    
+    <!-- Close Button -->
+    <button class="reveal-close" onclick="hideInsight()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    
+    <!-- Content -->
+    <div class="reveal-content">
+      
+      <!-- Icon -->
+      <div class="reveal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+        </svg>
+      </div>
+      
+      <!-- Label -->
+      <div class="reveal-label" id="revealLabel">Something surfaced</div>
+      
+      <!-- Insight Text -->
+      <p class="reveal-text" id="revealText">
+        You've mentioned <span class="highlight">"not enough"</span> in three different contexts this month — work, relationships, and how you talk to yourself. What if the question isn't about having more, but about recognizing what's already here?
+      </p>
+      
+      <!-- Source -->
+      <p class="reveal-source" id="revealSource">
+        Based on 8 notes over 3 weeks · <a href="#">View related notes</a>
+      </p>
+      
+      <!-- Actions -->
+      <div class="reveal-actions">
+        <button class="reveal-btn reveal-btn--primary" onclick="saveInsight()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Save this insight
+        </button>
+        <button class="reveal-btn reveal-btn--secondary" onclick="hideInsight()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          Dismiss
+        </button>
+      </div>
+      
+    </div>
+    
+  </div>
+  
+  <script>
+    const insightReveal = document.getElementById('insightReveal');
+    const revealLabel = document.getElementById('revealLabel');
+    const revealText = document.getElementById('revealText');
+    const revealSource = document.getElementById('revealSource');
+    
+    const insights = {
+      default: {
+        type: 'default',
+        label: 'Something surfaced',
+        text: 'You\'ve mentioned <span class="highlight">"not enough"</span> in three different contexts this month — work, relationships, and how you talk to yourself. What if the question isn\'t about having more, but about recognizing what\'s already here?',
+        source: 'Based on 8 notes over 3 weeks'
+      },
+      pattern: {
+        type: 'pattern',
+        label: 'A pattern emerged',
+        text: 'When you write about <span class="highlight">career decisions</span>, you often circle back to what others might think. That concern shows up less when you write about personal growth. What might that difference tell you?',
+        source: 'Based on 12 notes in your Career Decision thread'
+      },
+      connection: {
+        type: 'connection',
+        label: 'Something connected',
+        text: 'Your note about <span class="highlight">feeling stuck at work</span> echoes what you wrote about your relationship three months ago. The word "permission" appears in both. Whose permission are you waiting for?',
+        source: 'Connected notes from September and December'
+      },
+      evolution: {
+        type: 'evolution',
+        label: 'Your thinking has shifted',
+        text: 'In September, you wrote about <span class="highlight">"needing to prove myself."</span> Last week, you wrote about <span class="highlight">"wanting to feel useful."</span> That\'s a subtle but meaningful shift — from external validation to internal purpose.',
+        source: 'Comparing notes 3 months apart'
+      }
+    };
+    
+    function showInsight(type) {
+      const insight = insights[type] || insights.default;
+      
+      // Update content
+      insightReveal.setAttribute('data-type', insight.type);
+      revealLabel.textContent = insight.label;
+      revealText.innerHTML = insight.text;
+      revealSource.innerHTML = insight.source + ' · <a href="#">View related notes</a>';
+      
+      // Show overlay
+      insightReveal.classList.add('is-visible');
+      
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function hideInsight() {
+      insightReveal.classList.remove('is-visible');
+      document.body.style.overflow = '';
+    }
+    
+    function saveInsight() {
+      // In real app, save to user's insights
+      alert('Insight saved!');
+      hideInsight();
+    }
+    
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && insightReveal.classList.contains('is-visible')) {
+        hideInsight();
+      }
+    });
+    
+    // Close on backdrop click
+    insightReveal.addEventListener('click', (e) => {
+      if (e.target === insightReveal) {
+        hideInsight();
+      }
+    });
+  </script>
+  
+</body>
+</html>

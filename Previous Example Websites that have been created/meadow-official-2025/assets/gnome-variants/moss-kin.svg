@@ -1,0 +1,38 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes shiver {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(2deg) scale(1.02); }
+      75% { transform: rotate(-2deg) scale(0.98); }
+    }
+    @keyframes roll {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(5px); }
+    }
+    .moss-body { transform-origin: center; animation: shiver 3s ease-in-out infinite; }
+    .feet { animation: roll 3s ease-in-out infinite; }
+  </style>
+
+  <g class="feet">
+    <ellipse cx="90" cy="155" rx="10" ry="6" fill="#33691E" />
+    <ellipse cx="110" cy="155" rx="10" ry="6" fill="#33691E" />
+  </g>
+
+  <g class="moss-body">
+    <!-- Fuzzy Edge Simulation -->
+    <circle cx="100" cy="120" r="35" fill="#558B2F" />
+    <circle cx="85" cy="110" r="15" fill="#558B2F" />
+    <circle cx="115" cy="110" r="15" fill="#558B2F" />
+    <circle cx="100" cy="95" r="15" fill="#558B2F" />
+    <circle cx="85" cy="130" r="15" fill="#558B2F" />
+    <circle cx="115" cy="130" r="15" fill="#558B2F" />
+    <circle cx="100" cy="145" r="15" fill="#558B2F" />
+
+    <!-- Core -->
+    <circle cx="100" cy="120" r="30" fill="#7CB342" />
+
+    <!-- Face (Hidden deep in moss) -->
+    <circle cx="92" cy="118" r="2" fill="#1B5E20" />
+    <circle cx="108" cy="118" r="2" fill="#1B5E20" />
+  </g>
+</svg>

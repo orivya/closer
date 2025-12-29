@@ -1,0 +1,149 @@
+{
+  "version": "1.0.0",
+  "description": "Confirmation messages, toast notifications, and action feedback",
+  "philosophy": "Brief, warm, human. Acknowledge without being excessive.",
+  
+  "toasts": {
+    "save": {
+      "default": "Saved.",
+      "first_entry": "First entry. This is the beginning.",
+      "deep_entry": "Saved. You went deep.",
+      "milestone_10": "Saved. That's 10 entries.",
+      "milestone_25": "Saved. 25 entries. You're building something.",
+      "milestone_50": "Saved. 50 entries. That's a practice.",
+      "milestone_100": "Saved. 100 entries. Something real is here."
+    },
+    
+    "autosave": {
+      "saving": "Saving...",
+      "saved": "Saved",
+      "failed": "Couldn't save. Try again."
+    },
+    
+    "delete": {
+      "note": "Deleted.",
+      "note_with_undo": "Deleted. Tap to undo.",
+      "thread": "Thread deleted.",
+      "goal": "Goal removed."
+    },
+    
+    "archive": {
+      "single": "Archived.",
+      "multiple": "Archived {COUNT} notes.",
+      "restored": "Restored."
+    },
+    
+    "thread": {
+      "created": "Thread created.",
+      "note_added": "Added to thread.",
+      "note_removed": "Removed from thread.",
+      "resolved": "Thread resolved.",
+      "reopened": "Thread reopened."
+    },
+    
+    "goal": {
+      "created": "Goal added.",
+      "resolved": "Goal resolved. That's worth acknowledging.",
+      "note_linked": "Linked to goal.",
+      "note_unlinked": "Unlinked from goal."
+    },
+    
+    "insight": {
+      "saved": "Insight saved.",
+      "dismissed": "Got it.",
+      "removed": "Insight removed."
+    },
+    
+    "copy": {
+      "copied": "Copied.",
+      "link_copied": "Link copied."
+    },
+    
+    "export": {
+      "started": "Preparing export...",
+      "ready": "Export ready.",
+      "failed": "Export failed. Try again."
+    },
+    
+    "error": {
+      "generic": "Something went wrong. Try again.",
+      "save_failed": "Couldn't save. Try again.",
+      "load_failed": "Couldn't load. Check your connection.",
+      "network": "You're offline. Changes will sync when you're back.",
+      "permission": "You don't have permission to do that."
+    }
+  },
+  
+  "confirmations": {
+    "delete_note": {
+      "title": "Delete this note?",
+      "message": "It will be moved to trash and deleted after 30 days.",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    
+    "delete_note_permanent": {
+      "title": "Permanently delete?",
+      "message": "This can't be undone.",
+      "confirm": "Delete forever",
+      "cancel": "Cancel"
+    },
+    
+    "discard_changes": {
+      "title": "Discard changes?",
+      "message": "Your changes haven't been saved.",
+      "confirm": "Discard",
+      "cancel": "Keep editing"
+    },
+    
+    "resolve_thread": {
+      "title": "Mark as resolved?",
+      "message": "You can add a closing thought if you'd like.",
+      "placeholder": "What changed? (optional)",
+      "confirm": "Resolve",
+      "cancel": "Cancel"
+    },
+    
+    "resolve_goal": {
+      "title": "Resolve this goal?",
+      "message": "Add any final thoughts or leave it blank.",
+      "placeholder": "Closing reflection (optional)",
+      "confirm": "Resolve",
+      "cancel": "Cancel"
+    },
+    
+    "delete_account": {
+      "title": "Delete your account?",
+      "message": "All your data will be permanently deleted. This can't be undone. Consider exporting first.",
+      "confirm": "Delete account",
+      "cancel": "Cancel"
+    },
+    
+    "logout": {
+      "title": "Log out?",
+      "message": "Your notes are saved. You can always come back.",
+      "confirm": "Log out",
+      "cancel": "Cancel"
+    },
+    
+    "clear_archive": {
+      "title": "Empty trash?",
+      "message": "All items in trash will be permanently deleted.",
+      "confirm": "Empty trash",
+      "cancel": "Cancel"
+    }
+  },
+  
+  "inline_feedback": {
+    "insight_dismiss": {
+      "options": ["Got it", "Not helpful", "Save for later"],
+      "saved_response": "Saved to your insights."
+    },
+    
+    "after_writing_prompt": {
+      "intro": "Would you like to reflect on what you wrote?",
+      "skip": "Not now",
+      "accept": "Sure"
+    }
+  }
+}

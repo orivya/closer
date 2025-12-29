@@ -1,0 +1,130 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { ProfileData } from '@/lib/profile-data';
+
+interface NavigationProps {
+    username?: string;
+    profile?: ProfileData;
+}
+
+export const Navbar: React.FC<NavigationProps> = ({ username, profile }) => {
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    // Use profile display name or fallback to username
+    const displayName = profile?.display_name || username?.toUpperCase() || 'ENGINEER';
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const navLinks = [
+        { name: 'Services', href: username ? `/${username}#services` : '#services' },
+        { name: 'Work', href: username ? `/${username}#demo` : '#demo' },
+        { name: 'Presets', href: username ? `/${username}#products` : '#products' },
+        { name: 'About', href: username ? `/${username}#about` : '#about' },
+    ];
+
+    // If we have a username, use it for the home link.
+    const homeLink = username ? `/${username}` : '#';
+
+    return (
+        <nav className={cn(
+            "fixed top-0 left-0 right-0 z-[60] transition-all duration-500 border-b",
+            isScrolled
+                ? "h-20 glass-nav border-[var(--border-dark)]"
+                : "h-24 bg-transparent border-transparent"
+        )}>
+            <div className="max-w-[1400px] mx-auto px-6 h-full flex items-center justify-between">
+                {/* Logo / Name */}
+                <Link href={homeLink} className="flex items-center gap-2 group relative z-50">
+                    <span className="text-xl font-bold tracking-tight text-white group-hover:text-[var(--accent)] transition-colors duration-300">{displayName}</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mb-0.5"></div>
+                </Link>
+
+                {/* Desktop Links - Minimal & Centered */}
+                <div className="hidden md:flex items-center absolute left-1/2 -translate-x-1/2">
+                    <div className="flex items-center gap-1 p-1.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] backdrop-blur-sm">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                className="px-5 py-2 text-sm font-medium text-[var(--text-gray)] hover:text-white transition-all duration-300 rounded-full hover:bg-[rgba(255,255,255,0.05)]"
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Desktop Actions */}
+                <div className="hidden md:flex items-center gap-4">
+                    <Link href="/login" className="text-sm font-semibold text-white hover:text-[var(--accent)] transition-colors">
+                        Sign In
+                    </Link>
+                    <button className="text-[var(--text-gray)] hover:text-white transition-colors" aria-label="Shopping cart">
+                        <ShoppingBag className="w-5 h-5" />
+                    </button>
+                    <Link
+                        href={username ? `/${username}/book` : '/pricing'}
+                        className="px-6 py-2.5 text-sm font-semibold text-white bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-full transition-all duration-300 backdrop-blur-sm"
+                    >
+                        Book Now
+                    </Link>
+                </div>
+
+                {/* Mobile Toggle */}
+                {/* Mobile Toggle - Hidden in favor of Bottom App Bar */}
+                <button
+                    className="hidden relative z-50 w-10 h-10 items-center justify-center text-white"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+                >
+                    {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+            </div>
+
+            {/* Mobile Menu Overlay */}
+            <div className={cn(
+                "fixed inset-0 bg-[var(--bg-base)] z-40 flex flex-col items-center justify-center transition-all duration-500",
+                mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            )}>
+                <div className="flex flex-col gap-6 text-center">
+                    {navLinks.map((link, idx) => (
+                        <Link
+                            key={link.name}
+                            href={link.href}
+                            className={cn(
+                                "text-3xl font-bold text-white hover:text-[var(--accent)] transition-all duration-300",
+                                mobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                            )}
+                            style={{ transitionDelay: `${idx * 100}ms` }}
+                            onClick={() => setMobileMenuOpen(false)}
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
+                    <Link
+                        href={username ? `/${username}/book` : '/pricing'}
+                        className={cn(
+                            "mt-4 px-8 py-4 text-lg font-bold text-[var(--bg-base)] bg-white rounded-full",
+                            mobileMenuOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+                        )}
+                        style={{ transitionDelay: '400ms' }}
+                        onClick={() => setMobileMenuOpen(false)}
+                    >
+                        Book Now
+                    </Link>
+                </div>
+            </div>
+        </nav>
+    );
+};

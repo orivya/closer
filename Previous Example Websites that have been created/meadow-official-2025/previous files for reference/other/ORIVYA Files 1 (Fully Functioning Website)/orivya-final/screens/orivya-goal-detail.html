@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — What I want from work</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.3);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 20px var(--sage-glow);
+      
+      --z-sticky: 100;
+      
+      --header-height: 56px;
+      --tab-bar-height: 64px;
+      --content-max-width: 720px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    /* Header */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    
+    @media (min-width: 768px) {
+      .page-header { padding: 0 var(--space-6); }
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .back-btn:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .back-btn svg { width: 22px; height: 22px; }
+    
+    .header-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    
+    .header-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .header-action:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .header-action svg { width: 20px; height: 20px; }
+    
+    /* Content */
+    .content {
+      padding: var(--space-6) var(--space-4);
+      padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom) + var(--space-8));
+    }
+    
+    @media (min-width: 768px) {
+      .content { padding: var(--space-8); padding-bottom: var(--space-16); }
+    }
+    
+    .content-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    /* Goal Header */
+    .goal-header {
+      margin-bottom: var(--space-8);
+    }
+    
+    .goal-icon {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-4);
+    }
+    .goal-icon svg { width: 26px; height: 26px; color: var(--sage); }
+    
+    .goal-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .goal-meta {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    
+    /* AI Observation */
+    .ai-observation {
+      background: linear-gradient(135deg, var(--sage-subtle) 0%, transparent 100%);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      margin-bottom: var(--space-8);
+    }
+    
+    .ai-observation-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-3);
+    }
+    
+    .ai-observation-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ai-observation-icon svg { width: 16px; height: 16px; color: var(--sage); }
+    
+    .ai-observation-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .ai-observation-text {
+      font-size: var(--text-base);
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    /* Progress Section */
+    .progress-section {
+      margin-bottom: var(--space-8);
+    }
+    
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-3);
+    }
+    
+    .progress-label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    
+    .progress-value {
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage-dark), var(--sage));
+      border-radius: var(--radius-full);
+      transition: width 0.5s ease;
+    }
+    
+    .progress-hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    
+    /* Section */
+    .section {
+      margin-bottom: var(--space-8);
+    }
+    .section:last-child { margin-bottom: 0; }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+    }
+    
+    .section-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .section-action {
+      font-size: var(--text-sm);
+      color: var(--sage);
+      transition: color var(--transition-fast);
+    }
+    .section-action:hover { color: var(--sage-light); }
+    
+    /* Note Cards */
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .note-card {
+      display: block;
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .note-card:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    
+    .note-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-2);
+    }
+    
+    .note-card-date {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .note-card-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .note-card-preview {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .note-card-highlight {
+      margin-top: var(--space-3);
+      padding: var(--space-3);
+      background-color: var(--sage-subtle);
+      border-left: 2px solid var(--sage);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    
+    /* Add Note Card */
+    .add-note-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-5);
+      background-color: transparent;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    .add-note-card:hover {
+      background-color: var(--sage-subtle);
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+    .add-note-card svg { width: 18px; height: 18px; }
+    
+    /* Milestones */
+    .milestones-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    
+    .milestone {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3);
+      border-radius: var(--radius-md);
+      transition: background-color var(--transition-fast);
+    }
+    .milestone:hover { background-color: var(--bg-surface); }
+    
+    .milestone-check {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface);
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      margin-top: 1px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .milestone-check:hover { border-color: var(--sage); }
+    .milestone-check.is-complete {
+      background-color: var(--sage);
+      border-color: var(--sage);
+    }
+    .milestone-check svg { width: 14px; height: 14px; color: white; opacity: 0; }
+    .milestone-check.is-complete svg { opacity: 1; }
+    
+    .milestone-content { flex: 1; }
+    .milestone-text {
+      font-size: var(--text-base);
+      color: var(--text-primary);
+    }
+    .milestone.is-complete .milestone-text {
+      color: var(--text-tertiary);
+      text-decoration: line-through;
+    }
+    .milestone-date {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-1);
+    }
+    
+    /* Resolve Section */
+    .resolve-section {
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px dashed var(--border-default);
+      border-radius: var(--radius-lg);
+      text-align: center;
+    }
+    
+    .resolve-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .resolve-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-4);
+    }
+    
+    .resolve-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .resolve-btn:hover { background-color: var(--sage-muted); }
+    .resolve-btn svg { width: 16px; height: 16px; }
+    
+    /* Tab Bar (Mobile) */
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--tab-bar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background-color: var(--bg-elevated);
+      border-top: 1px solid var(--border-subtle);
+      padding-bottom: var(--safe-area-bottom);
+      z-index: var(--z-sticky);
+    }
+    @media (min-width: 1024px) { .tab-bar { display: none; } }
+    .tab-bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-2);
+      color: var(--text-tertiary);
+      min-width: 64px;
+    }
+    .tab-bar-item.is-active { color: var(--sage); }
+    .tab-bar-item svg { width: 24px; height: 24px; }
+    .tab-bar-item span { font-size: var(--text-xs); font-weight: 500; }
+    .tab-bar-create { position: relative; top: -12px; }
+    .tab-bar-create-btn {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage);
+      border-radius: var(--radius-full);
+      color: white;
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+    .tab-bar-create-btn svg { width: 24px; height: 24px; stroke-width: 2.5; }
+  </style>
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="back-btn" onclick="goBack()" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <span class="header-title">Goal</span>
+    </div>
+    <div class="header-right">
+      <button class="header-action" onclick="editGoal()" aria-label="Edit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
+      <button class="header-action" onclick="showMore()" aria-label="More options">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="1"/>
+          <circle cx="12" cy="5" r="1"/>
+          <circle cx="12" cy="19" r="1"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+  
+  <!-- Content -->
+  <main class="content">
+    <div class="content-inner">
+      
+      <!-- Goal Header -->
+      <div class="goal-header">
+        <div class="goal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+        <h1 class="goal-title">What I want from work</h1>
+        <div class="goal-meta">Created Nov 15 · 4 related notes</div>
+      </div>
+      
+      <!-- AI Observation -->
+      <section class="ai-observation">
+        <div class="ai-observation-header">
+          <div class="ai-observation-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+            </svg>
+          </div>
+          <span class="ai-observation-label">AI Observation</span>
+        </div>
+        <p class="ai-observation-text">Your recent entries suggest you're getting clearer on this. Autonomy and impact keep coming up as non-negotiables. You seem less focused on title or salary and more interested in whether the work itself feels meaningful. The tension between security and growth appears here too.</p>
+      </section>
+      
+      <!-- Progress -->
+      <section class="progress-section">
+        <div class="progress-header">
+          <span class="progress-label">Clarity progress</span>
+          <span class="progress-value">2 of 4 milestones</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 50%"></div>
+        </div>
+        <p class="progress-hint">Based on your milestones and writing activity</p>
+      </section>
+      
+      <!-- Milestones -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Milestones</h2>
+          <button class="section-action" onclick="addMilestone()">+ Add</button>
+        </div>
+        <div class="milestones-list">
+          <div class="milestone is-complete">
+            <button class="milestone-check is-complete" onclick="toggleMilestone(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+            <div class="milestone-content">
+              <p class="milestone-text">Define my non-negotiables</p>
+              <span class="milestone-date">Completed Nov 22</span>
+            </div>
+          </div>
+          
+          <div class="milestone is-complete">
+            <button class="milestone-check is-complete" onclick="toggleMilestone(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+            <div class="milestone-content">
+              <p class="milestone-text">Talk to Sarah about her career transition</p>
+              <span class="milestone-date">Completed Nov 28</span>
+            </div>
+          </div>
+          
+          <div class="milestone">
+            <button class="milestone-check" onclick="toggleMilestone(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+            <div class="milestone-content">
+              <p class="milestone-text">Research companies that align with my values</p>
+            </div>
+          </div>
+          
+          <div class="milestone">
+            <button class="milestone-check" onclick="toggleMilestone(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+            <div class="milestone-content">
+              <p class="milestone-text">Make a decision by end of December</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Related Notes -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Related Notes</h2>
+          <button class="section-action" onclick="linkNote()">+ Link note</button>
+        </div>
+        <div class="notes-list">
+          <a href="#" class="note-card" onclick="openNote('note-1')">
+            <div class="note-card-header">
+              <span class="note-card-date">Today</span>
+            </div>
+            <h3 class="note-card-title">Should I take the new role?</h3>
+            <p class="note-card-preview">I've been thinking about whether I should take the new role. More money, more responsibility, but I'd have to leave my team behind...</p>
+            <div class="note-card-highlight">"What I really want is to feel like my work matters."</div>
+          </a>
+          
+          <a href="#" class="note-card" onclick="openNote('note-2')">
+            <div class="note-card-header">
+              <span class="note-card-date">Dec 4</span>
+            </div>
+            <h3 class="note-card-title">The pros and cons list that doesn't help</h3>
+            <p class="note-card-preview">Made another pros and cons list. It's perfectly balanced, which tells me the decision isn't about logic...</p>
+          </a>
+          
+          <a href="#" class="note-card" onclick="openNote('note-3')">
+            <div class="note-card-header">
+              <span class="note-card-date">Nov 22</span>
+            </div>
+            <h3 class="note-card-title">What Sarah said</h3>
+            <p class="note-card-preview">"Every transition feels uncomfortable at first. The discomfort isn't a sign you're making the wrong choice—it's a sign you're growing."</p>
+          </a>
+          
+          <a href="#" class="note-card" onclick="openNote('note-4')">
+            <div class="note-card-header">
+              <span class="note-card-date">Nov 15</span>
+            </div>
+            <h3 class="note-card-title">What do I actually value?</h3>
+            <p class="note-card-preview">Started thinking about what I actually want from my career. Not what I'm supposed to want. Not what looks impressive...</p>
+            <div class="note-card-highlight">"Autonomy. Impact. Growth. These aren't negotiable."</div>
+          </a>
+          
+          <button class="add-note-card" onclick="linkNote()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Link another note
+          </button>
+        </div>
+      </section>
+      
+      <!-- Resolve Section -->
+      <section class="resolve-section">
+        <h3 class="resolve-title">Achieved this goal?</h3>
+        <p class="resolve-desc">When you've reached clarity, you can mark this goal as achieved and add a closing reflection.</p>
+        <button class="resolve-btn" onclick="resolveGoal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Mark as achieved
+        </button>
+      </section>
+      
+    </div>
+  </main>
+  
+  <!-- Tab Bar (Mobile) -->
+  <nav class="tab-bar">
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+      <span>Notes</span>
+    </a>
+    <div class="tab-bar-create">
+      <button class="tab-bar-create-btn" aria-label="New note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+    <a href="#" class="tab-bar-item is-active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+      <span>Insights</span>
+    </a>
+    <a href="#" class="tab-bar-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+  
+  <script>
+    function goBack() { console.log('Going back'); }
+    function editGoal() { console.log('Edit goal'); }
+    function showMore() { console.log('Show more options'); }
+    function addMilestone() { console.log('Add milestone'); }
+    function toggleMilestone(el) {
+      el.classList.toggle('is-complete');
+      el.closest('.milestone').classList.toggle('is-complete');
+    }
+    function linkNote() { console.log('Link note to goal'); }
+    function openNote(id) { console.log('Open note:', id); }
+    function resolveGoal() { console.log('Resolve goal'); }
+  </script>
+</body>
+</html>

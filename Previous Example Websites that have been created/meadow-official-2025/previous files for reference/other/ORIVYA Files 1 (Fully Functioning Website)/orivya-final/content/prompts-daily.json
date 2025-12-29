@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "description": "Daily prompts for the Home screen 'Today's Prompt' card. Open-ended, inviting, and universal — designed to help anyone start writing.",
+  "total_prompts": 25,
+  "usage": "Rotate daily on home dashboard. Show one prompt per day, cycling through the list.",
+  "prompts": [
+    {
+      "id": "daily-01",
+      "text": "What's been on your mind lately?"
+    },
+    {
+      "id": "daily-02",
+      "text": "What are you looking forward to?"
+    },
+    {
+      "id": "daily-03",
+      "text": "What's something you noticed today that you might usually overlook?"
+    },
+    {
+      "id": "daily-04",
+      "text": "What's a thought you haven't fully explored yet?"
+    },
+    {
+      "id": "daily-05",
+      "text": "What's something you're curious about right now?"
+    },
+    {
+      "id": "daily-06",
+      "text": "What would make today feel meaningful?"
+    },
+    {
+      "id": "daily-07",
+      "text": "What's been going well lately?"
+    },
+    {
+      "id": "daily-08",
+      "text": "What's on your mind that you haven't said out loud?"
+    },
+    {
+      "id": "daily-09",
+      "text": "What are you learning about yourself these days?"
+    },
+    {
+      "id": "daily-10",
+      "text": "What's something small that brought you joy recently?"
+    },
+    {
+      "id": "daily-11",
+      "text": "Where do your thoughts keep wandering?"
+    },
+    {
+      "id": "daily-12",
+      "text": "What's a question you've been sitting with?"
+    },
+    {
+      "id": "daily-13",
+      "text": "What would you like to remember about this time in your life?"
+    },
+    {
+      "id": "daily-14",
+      "text": "What's something you're proud of, even if it seems small?"
+    },
+    {
+      "id": "daily-15",
+      "text": "What feels important to you right now?"
+    },
+    {
+      "id": "daily-16",
+      "text": "What's a memory that came up recently?"
+    },
+    {
+      "id": "daily-17",
+      "text": "What's something you'd like to explore further?"
+    },
+    {
+      "id": "daily-18",
+      "text": "What's been inspiring you lately?"
+    },
+    {
+      "id": "daily-19",
+      "text": "What's a thought that keeps coming back?"
+    },
+    {
+      "id": "daily-20",
+      "text": "What does a good day look like for you?"
+    },
+    {
+      "id": "daily-21",
+      "text": "What are you grateful for today?"
+    },
+    {
+      "id": "daily-22",
+      "text": "What's something you've been thinking about but haven't written down?"
+    },
+    {
+      "id": "daily-23",
+      "text": "What do you want more of in your life?"
+    },
+    {
+      "id": "daily-24",
+      "text": "What's a conversation you'd like to have with yourself?"
+    },
+    {
+      "id": "daily-25",
+      "text": "What's here for you right now, in this moment?"
+    }
+  ]
+}

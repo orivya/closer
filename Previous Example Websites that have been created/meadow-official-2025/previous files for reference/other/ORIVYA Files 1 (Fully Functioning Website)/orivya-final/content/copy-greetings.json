@@ -1,0 +1,106 @@
+{
+  "version": "1.0.0",
+  "description": "Contextual greetings and sublines for the homepage",
+  "usage": "Select greeting based on time of day, select subline based on user state",
+  
+  "greetings": {
+    "morning": ["Good morning", "Morning"],
+    "afternoon": ["Good afternoon", "Afternoon"],
+    "evening": ["Good evening", "Evening"],
+    "night": ["Hello", "Hey"]
+  },
+  
+  "sublines": {
+    "first_session": [
+      "This is your space. Start wherever you are.",
+      "What's on your mind?",
+      "The page is yours."
+    ],
+    
+    "day_1_after_first_entry": [
+      "You wrote something yesterday. That's a start.",
+      "Your first entry is here. Today could be your second."
+    ],
+    
+    "days_2_to_3": [
+      "You're building something. One entry at a time.",
+      "Still thinking about {DETECTED_THEME}?",
+      "Day {DAY_NUMBER}. You're showing up."
+    ],
+    
+    "days_4_to_7": [
+      "{ENTRY_COUNT} entries so far. You're showing up.",
+      "You've been exploring {DETECTED_THEME}. There might be more there.",
+      "A week of writing. Something's forming."
+    ],
+    
+    "returning_2_to_3_days": [
+      "It's been a couple of days. What's been sitting with you?",
+      "Last time you wrote about {DETECTED_THEME}. Still on your mind?",
+      "Welcome back. What's here today?"
+    ],
+    
+    "returning_4_to_7_days": [
+      "Welcome back. The page is here when you need it.",
+      "It's been a little while. No pressure — just space.",
+      "You're back. That's what matters."
+    ],
+    
+    "returning_7_plus_days": [
+      "It's been a minute. Welcome back.",
+      "The quiet is still here. So is the space.",
+      "Welcome back. Start wherever you are."
+    ],
+    
+    "after_deep_entry": [
+      "You went deep last time. Take whatever pace you need today.",
+      "Last time was a lot. Today can be lighter if you want."
+    ],
+    
+    "active_thread": [
+      "Your thread \"{THREAD_NAME}\" has been active. Want to continue?",
+      "Still thinking about {THREAD_THEME}?",
+      "{THREAD_NAME} is waiting. Or start something new."
+    ],
+    
+    "detected_theme": [
+      "You've been circling {DETECTED_THEME} lately. Something there?",
+      "{DETECTED_THEME} keeps coming up. Might be worth following.",
+      "You've mentioned {DETECTED_THEME} a few times. What's there?"
+    ],
+    
+    "default": [
+      "What's here today?",
+      "The page is ready when you are.",
+      "What needs space right now?",
+      "What's on your mind?",
+      "Ready when you are.",
+      "What wants to be written?"
+    ]
+  },
+  
+  "placeholders": {
+    "DETECTED_THEME": "A theme detected from recent notes (e.g., 'career', 'relationships')",
+    "DAY_NUMBER": "Number of days since first entry",
+    "ENTRY_COUNT": "Total number of entries",
+    "THREAD_NAME": "Name of active thread",
+    "THREAD_THEME": "Theme of active thread"
+  },
+  
+  "selection_logic": {
+    "priority_order": [
+      "first_session",
+      "returning_7_plus_days",
+      "returning_4_to_7_days", 
+      "returning_2_to_3_days",
+      "day_1_after_first_entry",
+      "after_deep_entry",
+      "active_thread",
+      "detected_theme",
+      "days_2_to_3",
+      "days_4_to_7",
+      "default"
+    ],
+    "notes": "Check conditions in priority order, use first matching category"
+  }
+}

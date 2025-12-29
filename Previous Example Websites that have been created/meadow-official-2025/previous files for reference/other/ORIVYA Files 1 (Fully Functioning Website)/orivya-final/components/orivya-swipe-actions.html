@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Orivya — Swipe Actions</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --success: #4ade80;
+      --error: #f87171;
+      --warning: #fbbf24;
+      --info: #60a5fa;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      padding: var(--space-8) var(--space-4);
+      overflow-x: hidden;
+    }
+    
+    h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      margin-bottom: var(--space-2);
+    }
+    
+    .subtitle {
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .hint {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-8);
+    }
+    .hint svg { width: 14px; height: 14px; }
+    
+    .section {
+      margin-bottom: var(--space-10);
+    }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-4);
+    }
+    
+    /* ==========================================
+       SWIPE ITEM BASE
+    ========================================== */
+    
+    .swipe-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .swipe-item {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+    
+    /* Action backgrounds */
+    .swipe-actions {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      align-items: stretch;
+    }
+    
+    .swipe-actions--left {
+      left: 0;
+      right: 100%;
+    }
+    
+    .swipe-actions--right {
+      left: 100%;
+      right: 0;
+    }
+    
+    .swipe-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+      min-width: 80px;
+      padding: 0 var(--space-4);
+      color: white;
+      transition: width 150ms ease;
+    }
+    .swipe-action svg { width: 22px; height: 22px; }
+    .swipe-action span { font-size: var(--text-xs); font-weight: 500; }
+    
+    .swipe-action--archive { background-color: var(--sage); }
+    .swipe-action--delete { background-color: var(--error); }
+    .swipe-action--thread { background-color: var(--info); }
+    .swipe-action--pin { background-color: var(--warning); }
+    
+    /* Content layer */
+    .swipe-content {
+      position: relative;
+      z-index: 2;
+      background-color: var(--bg-surface);
+      transition: transform 200ms ease;
+    }
+    
+    /* ==========================================
+       NOTE CARD CONTENT
+    ========================================== */
+    
+    .note-card {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-4);
+    }
+    
+    .note-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .note-icon svg { width: 20px; height: 20px; color: var(--sage); }
+    
+    .note-content { flex: 1; min-width: 0; }
+    
+    .note-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .note-preview {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: var(--space-2);
+    }
+    
+    .note-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .note-thread {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      color: var(--sage);
+    }
+    .note-thread svg { width: 12px; height: 12px; }
+    
+    /* ==========================================
+       SWIPE STATES - Demo Classes
+    ========================================== */
+    
+    /* Partial swipe right - showing archive */
+    .swipe-item--partial-right .swipe-content {
+      transform: translateX(-80px);
+    }
+    .swipe-item--partial-right .swipe-actions--right {
+      width: 80px;
+    }
+    
+    /* Full swipe right - delete revealed */
+    .swipe-item--full-right .swipe-content {
+      transform: translateX(-160px);
+    }
+    .swipe-item--full-right .swipe-actions--right {
+      width: 160px;
+    }
+    
+    /* Partial swipe left - showing thread */
+    .swipe-item--partial-left .swipe-content {
+      transform: translateX(80px);
+    }
+    .swipe-item--partial-left .swipe-actions--left {
+      width: 80px;
+    }
+    
+    /* Full swipe left - showing pin + thread */
+    .swipe-item--full-left .swipe-content {
+      transform: translateX(160px);
+    }
+    .swipe-item--full-left .swipe-actions--left {
+      width: 160px;
+    }
+    
+    /* ==========================================
+       INTERACTIVE SWIPE (JS-controlled)
+    ========================================== */
+    
+    .swipe-item--interactive .swipe-content {
+      transition: none;
+    }
+    
+    .swipe-item--snapping .swipe-content {
+      transition: transform 200ms ease;
+    }
+    
+    /* ==========================================
+       UNDO BAR
+    ========================================== */
+    
+    .undo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+      margin-top: var(--space-3);
+    }
+    
+    .undo-text {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+    }
+    .undo-text svg { width: 16px; height: 16px; color: var(--sage); }
+    
+    .undo-btn {
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--sage);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .undo-btn:hover { text-decoration: underline; }
+    
+    /* ==========================================
+       SWIPE HINT ANIMATION
+    ========================================== */
+    
+    .swipe-hint {
+      position: relative;
+      overflow: visible;
+    }
+    
+    .swipe-hint .swipe-content {
+      animation: swipe-hint-demo 3s ease-in-out infinite;
+    }
+    
+    @keyframes swipe-hint-demo {
+      0%, 100% { transform: translateX(0); }
+      30% { transform: translateX(-60px); }
+      40% { transform: translateX(-60px); }
+      60% { transform: translateX(0); }
+    }
+    
+    /* ==========================================
+       DELETE CONFIRMATION
+    ========================================== */
+    
+    .delete-confirm {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      padding: var(--space-5);
+      background-color: var(--error);
+      border-radius: var(--radius-lg);
+      color: white;
+    }
+    
+    .delete-confirm-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-full);
+    }
+    .delete-confirm-icon svg { width: 22px; height: 22px; }
+    
+    .delete-confirm-text {
+      text-align: left;
+    }
+    .delete-confirm-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+    .delete-confirm-sub {
+      font-size: var(--text-xs);
+      opacity: 0.8;
+    }
+    
+    /* ==========================================
+       DRAG HANDLE FOR REORDER
+    ========================================== */
+    
+    .reorder-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-2);
+      transition: all 200ms ease;
+    }
+    
+    .reorder-item--dragging {
+      background-color: var(--bg-hover);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transform: scale(1.02);
+    }
+    
+    .drag-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 44px;
+      color: var(--text-muted);
+      cursor: grab;
+      touch-action: none;
+    }
+    .drag-handle:active { cursor: grabbing; }
+    .drag-handle svg { width: 16px; height: 16px; }
+    
+    .reorder-content { flex: 1; }
+    .reorder-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .reorder-sub {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Drop zone indicator */
+    .reorder-item--drop-zone {
+      border: 2px dashed var(--sage-muted);
+      background-color: var(--sage-subtle);
+    }
+    
+    /* ==========================================
+       LONG PRESS CONTEXT MENU
+    ========================================== */
+    
+    .context-menu {
+      position: fixed;
+      min-width: 200px;
+      background-color: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      animation: context-pop 150ms ease;
+    }
+    
+    @keyframes context-pop {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .context-menu-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+    }
+    .context-menu-item:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    .context-menu-item svg { width: 18px; height: 18px; }
+    
+    .context-menu-item--danger { color: var(--error); }
+    .context-menu-item--danger:hover { background-color: rgba(248, 113, 113, 0.1); }
+    
+    .context-divider {
+      height: 1px;
+      background-color: var(--border-subtle);
+      margin: var(--space-2) 0;
+    }
+  </style>
+</head>
+<body>
+  
+  <h1>Mobile Swipe Actions</h1>
+  <p class="subtitle">Touch gestures for quick actions on list items</p>
+  <p class="hint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 01-3.46 0"/>
+    </svg>
+    On mobile, try swiping the cards below
+  </p>
+  
+  <!-- Swipe Right Demo -->
+  <section class="section">
+    <h2 class="section-title">Swipe Left → Reveal Actions</h2>
+    <div class="swipe-list">
+      
+      <!-- Default state -->
+      <div class="swipe-item swipe-hint">
+        <div class="swipe-actions swipe-actions--right">
+          <div class="swipe-action swipe-action--archive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+            <span>Archive</span>
+          </div>
+          <div class="swipe-action swipe-action--delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            <span>Delete</span>
+          </div>
+        </div>
+        <div class="swipe-content">
+          <div class="note-card">
+            <div class="note-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <div class="note-content">
+              <div class="note-title">Swipe me left ←</div>
+              <p class="note-preview">This card demonstrates the swipe-to-reveal pattern. Swipe left to see archive and delete actions.</p>
+              <div class="note-meta">
+                <span>Today, 9:30 AM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Partial swipe state -->
+      <div class="swipe-item swipe-item--partial-right">
+        <div class="swipe-actions swipe-actions--right">
+          <div class="swipe-action swipe-action--archive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+            <span>Archive</span>
+          </div>
+          <div class="swipe-action swipe-action--delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            <span>Delete</span>
+          </div>
+        </div>
+        <div class="swipe-content">
+          <div class="note-card">
+            <div class="note-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+            </div>
+            <div class="note-content">
+              <div class="note-title">Partial swipe (Archive)</div>
+              <p class="note-preview">First action is revealed. Tap to archive, or continue swiping for more options.</p>
+              <div class="note-meta">
+                <span>Yesterday</span>
+                <span class="note-thread">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+                  Career
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Full swipe state -->
+      <div class="swipe-item swipe-item--full-right">
+        <div class="swipe-actions swipe-actions--right">
+          <div class="swipe-action swipe-action--archive">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+            <span>Archive</span>
+          </div>
+          <div class="swipe-action swipe-action--delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            <span>Delete</span>
+          </div>
+        </div>
+        <div class="swipe-content">
+          <div class="note-card">
+            <div class="note-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+            </div>
+            <div class="note-content">
+              <div class="note-title">Full swipe (Delete revealed)</div>
+              <p class="note-preview">Both actions visible. Tap delete to remove, or swipe more to auto-delete.</p>
+              <div class="note-meta">
+                <span>2 days ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Swipe Left Demo -->
+  <section class="section">
+    <h2 class="section-title">Swipe Right → Quick Actions</h2>
+    <div class="swipe-list">
+      
+      <!-- Partial swipe left -->
+      <div class="swipe-item swipe-item--partial-left">
+        <div class="swipe-actions swipe-actions--left">
+          <div class="swipe-action swipe-action--pin">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+            <span>Pin</span>
+          </div>
+          <div class="swipe-action swipe-action--thread">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+            <span>Thread</span>
+          </div>
+        </div>
+        <div class="swipe-content">
+          <div class="note-card">
+            <div class="note-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+            </div>
+            <div class="note-content">
+              <div class="note-title">Swipe right for positive actions</div>
+              <p class="note-preview">Pin to keep at top, or add to a thread for organization.</p>
+              <div class="note-meta">
+                <span>3 days ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <!-- Undo Bar -->
+  <section class="section">
+    <h2 class="section-title">Undo Action</h2>
+    <div class="undo-bar">
+      <span class="undo-text">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/></svg>
+        Note archived
+      </span>
+      <button class="undo-btn">Undo</button>
+    </div>
+  </section>
+  
+  <!-- Delete Confirmation -->
+  <section class="section">
+    <h2 class="section-title">Delete Confirmation (Full Swipe)</h2>
+    <div class="delete-confirm">
+      <div class="delete-confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+      </div>
+      <div class="delete-confirm-text">
+        <div class="delete-confirm-title">Release to delete</div>
+        <div class="delete-confirm-sub">This action can be undone</div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Drag to Reorder -->
+  <section class="section">
+    <h2 class="section-title">Drag to Reorder</h2>
+    <div>
+      <div class="reorder-item">
+        <div class="drag-handle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div class="reorder-content">
+          <div class="reorder-title">Career Decisions</div>
+          <div class="reorder-sub">8 notes</div>
+        </div>
+      </div>
+      <div class="reorder-item reorder-item--dragging">
+        <div class="drag-handle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div class="reorder-content">
+          <div class="reorder-title">Family Dynamics</div>
+          <div class="reorder-sub">5 notes (dragging)</div>
+        </div>
+      </div>
+      <div class="reorder-item reorder-item--drop-zone">
+        <div class="drag-handle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div class="reorder-content">
+          <div class="reorder-title">Drop zone</div>
+          <div class="reorder-sub">Release to place here</div>
+        </div>
+      </div>
+      <div class="reorder-item">
+        <div class="drag-handle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </div>
+        <div class="reorder-content">
+          <div class="reorder-title">Personal Growth</div>
+          <div class="reorder-sub">12 notes</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Long Press Context Menu -->
+  <section class="section">
+    <h2 class="section-title">Long Press Context Menu</h2>
+    <div class="context-menu" style="position: relative; margin: 0;">
+      <button class="context-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit
+      </button>
+      <button class="context-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+        Add to thread
+      </button>
+      <button class="context-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Link to goal
+      </button>
+      <button class="context-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Share
+      </button>
+      <div class="context-divider"></div>
+      <button class="context-menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/></svg>
+        Archive
+      </button>
+      <button class="context-menu-item context-menu-item--danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Delete
+      </button>
+    </div>
+  </section>
+  
+</body>
+</html>

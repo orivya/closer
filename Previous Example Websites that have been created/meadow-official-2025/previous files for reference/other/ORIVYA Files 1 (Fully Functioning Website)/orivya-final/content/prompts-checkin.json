@@ -1,0 +1,230 @@
+{
+  "version": "1.1.0",
+  "description": "Quick check-in questions for 2-3 minute reflections",
+  "total_questions": 26,
+  "usage": "Rotate through questions, track which have been shown via prompt_usage table",
+  "questions": [
+    {
+      "id": "checkin-01",
+      "text": "How are you actually doing right now?",
+      "category": "emotional-state",
+      "followUp": "Not the polite answer — the real one."
+    },
+    {
+      "id": "checkin-02",
+      "text": "What's taking up more mental space than it deserves?",
+      "category": "mental-load",
+      "followUp": null
+    },
+    {
+      "id": "checkin-03",
+      "text": "What are you avoiding thinking about?",
+      "category": "avoidance",
+      "followUp": null
+    },
+    {
+      "id": "checkin-04",
+      "text": "What would feel like a relief to say out loud?",
+      "category": "expression",
+      "followUp": null
+    },
+    {
+      "id": "checkin-05",
+      "text": "What's one thing that went well today?",
+      "category": "gratitude",
+      "followUp": "Even something small."
+    },
+    {
+      "id": "checkin-06",
+      "text": "What do you need right now that you're not giving yourself?",
+      "category": "self-care",
+      "followUp": null
+    },
+    {
+      "id": "checkin-07",
+      "text": "What's the kindest thing you could do for yourself today?",
+      "category": "self-compassion",
+      "followUp": null
+    },
+    {
+      "id": "checkin-08",
+      "text": "What's lingering from yesterday?",
+      "category": "unfinished",
+      "followUp": null
+    },
+    {
+      "id": "checkin-09",
+      "text": "If you could clear one thing off your mind, what would it be?",
+      "category": "mental-load",
+      "followUp": null
+    },
+    {
+      "id": "checkin-10",
+      "text": "What's something you're looking forward to?",
+      "category": "anticipation",
+      "followUp": "Even something small."
+    },
+    {
+      "id": "checkin-11",
+      "text": "What emotion keeps showing up lately?",
+      "category": "emotional-pattern",
+      "followUp": null
+    },
+    {
+      "id": "checkin-12",
+      "text": "What's something you wish someone would ask you about?",
+      "category": "expression",
+      "followUp": null
+    },
+    {
+      "id": "checkin-13",
+      "text": "What's draining your energy right now?",
+      "category": "energy",
+      "followUp": null
+    },
+    {
+      "id": "checkin-14",
+      "text": "What's giving you energy right now?",
+      "category": "energy",
+      "followUp": null
+    },
+    {
+      "id": "checkin-15",
+      "text": "What's one word to describe this week?",
+      "category": "reflection",
+      "followUp": "Just one."
+    },
+    {
+      "id": "checkin-16",
+      "text": "What would make tomorrow better than today?",
+      "category": "intention",
+      "followUp": null
+    },
+    {
+      "id": "checkin-17",
+      "text": "What's something you're proud of that you haven't told anyone?",
+      "category": "self-recognition",
+      "followUp": null
+    },
+    {
+      "id": "checkin-18",
+      "text": "What's been on your mind that you haven't written down yet?",
+      "category": "unprocessed",
+      "followUp": null
+    },
+    {
+      "id": "checkin-19",
+      "text": "What's here right now?",
+      "category": "grounding",
+      "followUp": "Just notice. No need to fix anything."
+    },
+    {
+      "id": "checkin-20",
+      "text": "If today had a title, what would it be?",
+      "category": "grounding",
+      "followUp": null
+    },
+    {
+      "id": "checkin-21",
+      "text": "What fell into place today?",
+      "category": "grounding",
+      "followUp": "Even something small."
+    },
+    {
+      "id": "checkin-22",
+      "text": "What are you noticing in this moment?",
+      "category": "grounding",
+      "followUp": null
+    },
+    {
+      "id": "checkin-23",
+      "text": "What's one thing that felt easy today?",
+      "category": "grounding",
+      "followUp": null
+    },
+    {
+      "id": "checkin-24",
+      "text": "What would feel good to let go of?",
+      "category": "grounding",
+      "followUp": null
+    },
+    {
+      "id": "checkin-25",
+      "text": "What's something small that mattered today?",
+      "category": "grounding",
+      "followUp": null
+    },
+    {
+      "id": "checkin-26",
+      "text": "Where did you feel most like yourself recently?",
+      "category": "grounding",
+      "followUp": null
+    }
+  ],
+  "categories": {
+    "emotional-state": {
+      "name": "Emotional State",
+      "description": "How you're feeling right now"
+    },
+    "mental-load": {
+      "name": "Mental Load",
+      "description": "What's taking up space in your mind"
+    },
+    "avoidance": {
+      "name": "Avoidance",
+      "description": "Things you might be sidestepping"
+    },
+    "expression": {
+      "name": "Expression",
+      "description": "Things you want to say"
+    },
+    "gratitude": {
+      "name": "Gratitude",
+      "description": "Noticing the good"
+    },
+    "self-care": {
+      "name": "Self-Care",
+      "description": "What you need"
+    },
+    "self-compassion": {
+      "name": "Self-Compassion",
+      "description": "Being kind to yourself"
+    },
+    "unfinished": {
+      "name": "Unfinished",
+      "description": "Lingering thoughts"
+    },
+    "anticipation": {
+      "name": "Anticipation",
+      "description": "Looking ahead"
+    },
+    "emotional-pattern": {
+      "name": "Emotional Pattern",
+      "description": "Recurring feelings"
+    },
+    "energy": {
+      "name": "Energy",
+      "description": "What drains or fills you"
+    },
+    "reflection": {
+      "name": "Reflection",
+      "description": "Looking back"
+    },
+    "intention": {
+      "name": "Intention",
+      "description": "Setting direction"
+    },
+    "self-recognition": {
+      "name": "Self-Recognition",
+      "description": "Acknowledging yourself"
+    },
+    "unprocessed": {
+      "name": "Unprocessed",
+      "description": "Things not yet explored"
+    },
+    "grounding": {
+      "name": "Grounding",
+      "description": "Light prompts for present-moment awareness without emotional excavation"
+    }
+  }
+}

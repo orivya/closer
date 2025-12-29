@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Insights</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.3);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-md: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 20px var(--sage-glow);
+      
+      --z-sticky: 100;
+      
+      --header-height: 56px;
+      --tab-bar-height: 64px;
+      --sidebar-collapsed: 72px;
+      --sidebar-expanded: 240px;
+      --content-max-width: 860px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    .app { display: flex; min-height: 100vh; min-height: 100dvh; }
+    
+    /* Sidebar (Desktop) */
+    .sidebar { display: none; }
+    @media (min-width: 1024px) {
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0; left: 0;
+        z-index: var(--z-sticky);
+        width: var(--sidebar-collapsed);
+        height: 100vh;
+        background-color: var(--bg-elevated);
+        border-right: 1px solid var(--border-subtle);
+        transition: width var(--transition-normal);
+        overflow: hidden;
+      }
+      .sidebar:hover { width: var(--sidebar-expanded); }
+      .sidebar-header {
+        height: 72px;
+        display: flex;
+        align-items: center;
+        padding: 0 var(--space-5);
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .sidebar-logo { display: flex; align-items: center; gap: var(--space-3); }
+      .sidebar-logo-icon {
+        width: 36px; height: 36px;
+        background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+        border-radius: var(--radius-md);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+      }
+      .sidebar-logo-icon svg { width: 20px; height: 20px; color: white; }
+      .sidebar-logo-text {
+        font-family: var(--font-display);
+        font-size: var(--text-xl);
+        font-weight: 500;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity var(--transition-fast);
+      }
+      .sidebar:hover .sidebar-logo-text { opacity: 1; }
+      .sidebar-create { margin: var(--space-4) var(--space-3); }
+      .sidebar-create-btn {
+        width: 100%; height: 44px;
+        display: flex; align-items: center; justify-content: center; gap: var(--space-3);
+        background-color: var(--sage);
+        border-radius: var(--radius-md);
+        color: white; font-weight: 500;
+        transition: all var(--transition-fast);
+      }
+      .sidebar-create-btn:hover { background-color: var(--sage-dark); box-shadow: var(--shadow-glow); }
+      .sidebar-create-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+      .sidebar-create-btn span { white-space: nowrap; opacity: 0; transition: opacity var(--transition-fast); }
+      .sidebar:hover .sidebar-create-btn span { opacity: 1; }
+      .sidebar-nav { flex: 1; display: flex; flex-direction: column; padding: var(--space-2) var(--space-3); gap: var(--space-1); }
+      .sidebar-nav-item {
+        display: flex; align-items: center; gap: var(--space-3);
+        height: 44px; padding: 0 var(--space-3);
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        transition: all var(--transition-fast);
+      }
+      .sidebar-nav-item:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+      .sidebar-nav-item.is-active { background-color: var(--sage-subtle); color: var(--sage-light); }
+      .sidebar-nav-item svg { width: 22px; height: 22px; flex-shrink: 0; }
+      .sidebar-nav-item span { font-size: var(--text-base); font-weight: 500; white-space: nowrap; opacity: 0; transition: opacity var(--transition-fast); }
+      .sidebar:hover .sidebar-nav-item span { opacity: 1; }
+    }
+    
+    .main { flex: 1; display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+    @media (min-width: 1024px) {
+      .main { margin-left: var(--sidebar-collapsed); }
+      .sidebar:hover ~ .main { margin-left: var(--sidebar-expanded); }
+    }
+    
+    /* Header */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    @media (min-width: 1024px) { .page-header { padding: 0 var(--space-6); } }
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+    }
+    
+    /* Content */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-6) var(--space-4);
+      padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom) + var(--space-8));
+    }
+    @media (min-width: 768px) { .content { padding: var(--space-8); } }
+    @media (min-width: 1024px) { .content { padding: var(--space-10) var(--space-12); padding-bottom: var(--space-16); } }
+    .content-inner { max-width: var(--content-max-width); margin: 0 auto; }
+    
+    /* Section */
+    .section { margin-bottom: var(--space-10); }
+    .section:last-child { margin-bottom: 0; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-5);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .section-link {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      transition: color var(--transition-fast);
+    }
+    .section-link:hover { color: var(--sage); }
+    
+    /* Featured Insight */
+    .featured-insight {
+      background: linear-gradient(135deg, var(--sage-subtle) 0%, transparent 100%);
+      border: 1px solid var(--sage-muted);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      margin-bottom: var(--space-10);
+    }
+    .featured-insight-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .featured-insight-icon {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      background-color: var(--sage-muted);
+      border-radius: var(--radius-md);
+    }
+    .featured-insight-icon svg { width: 20px; height: 20px; color: var(--sage); }
+    .featured-insight-label {
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--sage);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .featured-insight-text {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: var(--space-5);
+    }
+    @media (min-width: 768px) { .featured-insight-text { font-size: var(--text-2xl); } }
+    .featured-insight-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .insight-action {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .insight-action svg { width: 16px; height: 16px; }
+    .insight-action--primary {
+      color: white;
+      background-color: var(--sage);
+    }
+    .insight-action--primary:hover { background-color: var(--sage-dark); }
+    .insight-action--secondary {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+    }
+    .insight-action--secondary:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    
+    /* Themes Grid */
+    .themes-grid {
+      display: grid;
+      gap: var(--space-4);
+    }
+    @media (min-width: 768px) { .themes-grid { grid-template-columns: repeat(2, 1fr); } }
+    
+    .pattern-card {
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    .pattern-card:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    .pattern-card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+    }
+    .pattern-card-icon {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+    }
+    .pattern-card-icon svg { width: 18px; height: 18px; color: var(--sage); }
+    .pattern-card-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .pattern-card-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+    .pattern-card-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Themes Over Time (behavioral patterns) */
+    .pattern-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .time-pattern-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all 150ms ease;
+      cursor: pointer;
+    }
+    
+    .time-pattern-card:hover {
+      background-color: var(--bg-hover);
+    }
+    
+    .time-pattern-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+      color: var(--sage);
+      flex-shrink: 0;
+    }
+    
+    .time-pattern-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .time-pattern-content {
+      flex: 1;
+    }
+    
+    .time-pattern-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    
+    .time-pattern-desc {
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+    
+    /* Goals Grid */
+    .goals-grid {
+      display: grid;
+      gap: var(--space-3);
+    }
+    @media (min-width: 768px) { .goals-grid { grid-template-columns: repeat(2, 1fr); } }
+    
+    .goal-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    .goal-card:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    .goal-card-icon {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .goal-card-icon svg { width: 18px; height: 18px; color: var(--sage); }
+    .goal-card-content { flex: 1; min-width: 0; }
+    .goal-card-title {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+    .goal-card-observation {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .goal-card-meta {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    
+    .add-goal-card {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-5);
+      background-color: transparent;
+      border: 1px dashed var(--border-default);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-tertiary);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+    .add-goal-card:hover {
+      background-color: var(--sage-subtle);
+      border-color: var(--sage);
+      color: var(--sage);
+    }
+    .add-goal-card svg { width: 18px; height: 18px; }
+    
+    /* Saved Insights List */
+    .saved-insights-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .saved-insight-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .saved-insight-card:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    .saved-insight-content { flex: 1; min-width: 0; }
+    .saved-insight-text {
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      line-height: 1.5;
+      margin-bottom: var(--space-2);
+    }
+    .saved-insight-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    .saved-insight-actions {
+      display: flex;
+      gap: var(--space-1);
+    }
+    .saved-insight-action {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      transition: all var(--transition-fast);
+    }
+    .saved-insight-action:hover { background-color: var(--bg-surface-2); color: var(--text-secondary); }
+    .saved-insight-action svg { width: 16px; height: 16px; }
+    
+    /* Tab Bar (Mobile) */
+    .tab-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: var(--tab-bar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background-color: var(--bg-elevated);
+      border-top: 1px solid var(--border-subtle);
+      padding-bottom: var(--safe-area-bottom);
+      z-index: var(--z-sticky);
+    }
+    @media (min-width: 1024px) { .tab-bar { display: none; } }
+    .tab-bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+      padding: var(--space-2);
+      color: var(--text-tertiary);
+      transition: color var(--transition-fast);
+      min-width: 64px;
+    }
+    .tab-bar-item:hover { color: var(--text-secondary); }
+    .tab-bar-item.is-active { color: var(--sage); }
+    .tab-bar-item svg { width: 24px; height: 24px; }
+    .tab-bar-item span { font-size: var(--text-xs); font-weight: 500; }
+    
+    /* FAB */
+    .fab {
+      position: fixed;
+      bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom) + var(--space-4));
+      right: var(--space-4);
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage);
+      border-radius: var(--radius-full);
+      color: white;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 0 20px var(--sage-glow);
+      transition: all 150ms ease;
+      z-index: 50;
+    }
+    
+    .fab:hover {
+      background-color: var(--sage-dark);
+      transform: scale(1.05);
+    }
+    
+    .fab svg {
+      width: 24px;
+      height: 24px;
+    }
+    
+    @media (min-width: 1024px) {
+      .fab {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    
+    <!-- Sidebar (abbreviated) -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="#" class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <span class="sidebar-logo-text">Orivya</span>
+        </a>
+      </div>
+      <div class="sidebar-create">
+        <button class="sidebar-create-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>New Note</span>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          <span>Home</span>
+        </a>
+        <a href="#" class="sidebar-nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+          <span>Notes</span>
+        </a>
+        <a href="#" class="sidebar-nav-item is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          <span>Insights</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <main class="main">
+      
+      <!-- Header -->
+      <header class="page-header">
+        <h1 class="page-title">Insights</h1>
+      </header>
+      
+      <!-- Content -->
+      <div class="content">
+        <div class="content-inner">
+          
+          <!-- Featured Insight -->
+          <section class="featured-insight">
+            <div class="featured-insight-header">
+              <div class="featured-insight-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                </svg>
+              </div>
+              <span class="featured-insight-label">Something's been circling</span>
+            </div>
+            <p class="featured-insight-text">You've mentioned "not being ready" in three different contexts this week—career, relationships, and a personal project. The pattern suggests this might be worth exploring. What would "ready" actually look like?</p>
+            <div class="featured-insight-footer">
+              <button class="insight-action insight-action--primary" onclick="exploreInsight()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Write about this
+              </button>
+              <button class="insight-action insight-action--secondary" onclick="saveInsight()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                Save
+              </button>
+              <button class="insight-action insight-action--secondary" onclick="dismissInsight()">
+                Not helpful
+              </button>
+            </div>
+          </section>
+          
+          <!-- Patterns Section -->
+          <section class="section">
+            <div class="section-header">
+              <h2 class="section-title">Themes</h2>
+              <a href="#" class="section-link">View all</a>
+            </div>
+            <div class="themes-grid">
+              <div class="pattern-card" onclick="openPattern('career')">
+                <div class="pattern-card-header">
+                  <div class="pattern-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+                  </div>
+                  <h3 class="pattern-card-title">Career uncertainty</h3>
+                </div>
+                <p class="pattern-card-desc">You've written about career decisions 8 times in the past month. The core tension seems to be between security and growth.</p>
+                <div class="pattern-card-meta">Based on 8 notes · Most recent: Today</div>
+              </div>
+              
+              <div class="pattern-card" onclick="openPattern('boundaries')">
+                <div class="pattern-card-header">
+                  <div class="pattern-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  </div>
+                  <h3 class="pattern-card-title">Boundaries with family</h3>
+                </div>
+                <p class="pattern-card-desc">A recurring theme around saying no and protecting your energy. You seem to be working through what healthy distance looks like.</p>
+                <div class="pattern-card-meta">Based on 5 notes · Most recent: Yesterday</div>
+              </div>
+              
+              <div class="pattern-card" onclick="openPattern('energy')">
+                <div class="pattern-card-header">
+                  <div class="pattern-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                  </div>
+                  <h3 class="pattern-card-title">Energy & rest</h3>
+                </div>
+                <p class="pattern-card-desc">Your entries often mention feeling drained. There's a pattern of pushing through without addressing the underlying need for rest.</p>
+                <div class="pattern-card-meta">Based on 6 notes · Most recent: Dec 5</div>
+              </div>
+              
+              <div class="pattern-card" onclick="openPattern('identity')">
+                <div class="pattern-card-header">
+                  <div class="pattern-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  </div>
+                  <h3 class="pattern-card-title">Identity questions</h3>
+                </div>
+                <p class="pattern-card-desc">Who you are vs. who you're expected to be comes up frequently. This seems connected to both career and relationship themes.</p>
+                <div class="pattern-card-meta">Based on 4 notes · Most recent: Dec 3</div>
+              </div>
+            </div>
+          </section>
+          
+          <!-- Goals Section -->
+          <section class="section">
+            <div class="section-header">
+              <h2 class="section-title">Goals</h2>
+              <a href="#" class="section-link">View all</a>
+            </div>
+            <div class="goals-grid">
+              <div class="goal-card" onclick="openGoal('work')">
+                <div class="goal-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                </div>
+                <div class="goal-card-content">
+                  <h3 class="goal-card-title">What I want from work</h3>
+                  <p class="goal-card-observation">Your recent entries suggest you're getting clearer on this. Autonomy and impact keep coming up as non-negotiables.</p>
+                  <div class="goal-card-meta">4 related notes</div>
+                </div>
+              </div>
+              
+              <div class="goal-card" onclick="openGoal('presence')">
+                <div class="goal-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                </div>
+                <div class="goal-card-content">
+                  <h3 class="goal-card-title">Being more present</h3>
+                  <p class="goal-card-observation">You've mentioned wanting to be less in your head. Some entries show progress here, especially around morning routines.</p>
+                  <div class="goal-card-meta">2 related notes</div>
+                </div>
+              </div>
+              
+              <button class="add-goal-card" onclick="addGoal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add a goal
+              </button>
+            </div>
+          </section>
+          
+          <!-- Saved Insights Section -->
+          <section class="section">
+            <div class="section-header">
+              <h2 class="section-title">Saved Insights</h2>
+            </div>
+            <div class="saved-insights-list">
+              <div class="saved-insight-card">
+                <div class="saved-insight-content">
+                  <p class="saved-insight-text">"The discomfort isn't a sign you're making the wrong choice—it's a sign you're growing."</p>
+                  <div class="saved-insight-meta">
+                    <span>Saved Nov 28</span>
+                    <span>·</span>
+                    <span>From: What Sarah said</span>
+                  </div>
+                </div>
+                <div class="saved-insight-actions">
+                  <button class="saved-insight-action" onclick="viewRelated()" title="View related notes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+                  </button>
+                  <button class="saved-insight-action" onclick="removeInsight()" title="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="saved-insight-card">
+                <div class="saved-insight-content">
+                  <p class="saved-insight-text">You often write about "not being ready" when you actually mean "scared to try." These might be different things.</p>
+                  <div class="saved-insight-meta">
+                    <span>Saved Dec 2</span>
+                    <span>·</span>
+                    <span>AI insight</span>
+                  </div>
+                </div>
+                <div class="saved-insight-actions">
+                  <button class="saved-insight-action" onclick="viewRelated()" title="View related notes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+                  </button>
+                  <button class="saved-insight-action" onclick="removeInsight()" title="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          <!-- Patterns Over Time -->
+          <section class="section">
+            <div class="section-header">
+              <h2 class="section-title">Themes over time</h2>
+            </div>
+            <div class="pattern-list">
+              <div class="time-pattern-card">
+                <div class="time-pattern-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                </div>
+                <div class="time-pattern-content">
+                  <h3 class="time-pattern-title">Writing frequency</h3>
+                  <p class="time-pattern-desc">You write most on Sunday evenings — often after the week has settled.</p>
+                </div>
+              </div>
+              
+              <div class="time-pattern-card">
+                <div class="time-pattern-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </div>
+                <div class="time-pattern-content">
+                  <h3 class="time-pattern-title">Mood shifts</h3>
+                  <p class="time-pattern-desc">Your morning entries tend to be more hopeful than evening ones.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+        </div>
+      </div>
+      
+    </main>
+    
+    <!-- Tab Bar (Mobile) -->
+    <nav class="tab-bar">
+      <a href="#" class="tab-bar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9,22 9,12 15,12 15,22"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="#" class="tab-bar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+        <span>Notes</span>
+      </a>
+      <a href="#" class="tab-bar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="18" r="3"/>
+          <circle cx="6" cy="6" r="3"/>
+          <path d="M6 21V9a9 9 0 009 9"/>
+        </svg>
+        <span>Threads</span>
+      </a>
+      <a href="#" class="tab-bar-item is-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+        </svg>
+        <span>Insights</span>
+      </a>
+      <a href="#" class="tab-bar-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+    
+    <!-- FAB -->
+    <button class="fab" onclick="createNote()" aria-label="New note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
+    
+  </div>
+  
+  <script>
+    function exploreInsight() { console.log('Opening editor with insight prompt'); }
+    function saveInsight() { console.log('Saving insight'); }
+    function dismissInsight() { console.log('Dismissing insight'); }
+    function openPattern(id) { console.log('Opening pattern:', id); }
+    function openGoal(id) { console.log('Opening goal:', id); }
+    function addGoal() { console.log('Adding new goal'); }
+    function viewRelated() { console.log('Viewing related notes'); }
+    function removeInsight() { console.log('Removing saved insight'); }
+  </script>
+</body>
+</html>

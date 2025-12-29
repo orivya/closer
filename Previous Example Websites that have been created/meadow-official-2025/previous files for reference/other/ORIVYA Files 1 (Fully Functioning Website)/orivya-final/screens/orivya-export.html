@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Export</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.3);
+      
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      
+      --success: #4ade80;
+      --success-subtle: rgba(74, 222, 128, 0.1);
+      
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --transition-fast: 150ms ease;
+      --transition-normal: 200ms ease;
+      
+      --z-sticky: 100;
+      
+      --header-height: 56px;
+      --content-max-width: 560px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    button { font-family: inherit; background: none; border: none; cursor: pointer; color: inherit; }
+    :focus-visible { outline: 2px solid var(--sage); outline-offset: 2px; }
+    
+    /* Header */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-sticky);
+      display: flex;
+      align-items: center;
+      height: var(--header-height);
+      padding: 0 var(--space-4);
+      background-color: var(--bg-base);
+      border-bottom: 1px solid var(--border-subtle);
+      gap: var(--space-3);
+    }
+    
+    @media (min-width: 768px) {
+      .page-header { padding: 0 var(--space-6); }
+    }
+    
+    .back-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .back-btn:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    .back-btn svg { width: 22px; height: 22px; }
+    
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+    }
+    
+    /* Content */
+    .content {
+      padding: var(--space-6) var(--space-4);
+      padding-bottom: calc(var(--space-8) + var(--safe-area-bottom));
+    }
+    
+    @media (min-width: 768px) {
+      .content { padding: var(--space-8) var(--space-6); }
+    }
+    
+    .content-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    /* Intro */
+    .intro {
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    
+    .intro-icon {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-xl);
+      margin: 0 auto var(--space-4);
+    }
+    .intro-icon svg { width: 28px; height: 28px; color: var(--sage); }
+    
+    .intro-title {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .intro-desc {
+      font-size: var(--text-base);
+      color: var(--text-tertiary);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    /* Section */
+    .section {
+      margin-bottom: var(--space-8);
+    }
+    .section:last-child { margin-bottom: 0; }
+    
+    .section-title {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-3);
+    }
+    
+    /* Format Options */
+    .format-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .format-option {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      background-color: var(--bg-surface);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .format-option:hover { background-color: var(--bg-hover); border-color: var(--border-default); }
+    .format-option.is-selected {
+      background-color: var(--sage-subtle);
+      border-color: var(--sage);
+    }
+    
+    .format-radio {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--border-default);
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all var(--transition-fast);
+    }
+    .format-option.is-selected .format-radio {
+      border-color: var(--sage);
+      background-color: var(--sage);
+    }
+    .format-radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: var(--radius-full);
+      opacity: 0;
+      transform: scale(0);
+      transition: all var(--transition-fast);
+    }
+    .format-option.is-selected .format-radio::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .format-content { flex: 1; }
+    
+    .format-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-1);
+    }
+    
+    .format-name {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .format-badge {
+      padding: 2px 8px;
+      font-size: var(--text-xs);
+      font-weight: 500;
+      color: var(--sage);
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-full);
+    }
+    
+    .format-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      line-height: 1.5;
+    }
+    
+    .format-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+    }
+    .format-option.is-selected .format-icon { background-color: var(--sage-muted); }
+    .format-icon svg { width: 22px; height: 22px; color: var(--text-muted); }
+    .format-option.is-selected .format-icon svg { color: var(--sage); }
+    
+    /* Data Summary */
+    .data-summary {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+    }
+    
+    .data-summary-title {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+    
+    .data-items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+    }
+    
+    .data-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .data-item-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-sm);
+    }
+    .data-item-icon svg { width: 16px; height: 16px; color: var(--text-muted); }
+    
+    .data-item-info { }
+    .data-item-value {
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .data-item-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Export Button */
+    .export-footer {
+      position: sticky;
+      bottom: 0;
+      padding: var(--space-4);
+      padding-bottom: calc(var(--space-4) + var(--safe-area-bottom));
+      background: linear-gradient(to top, var(--bg-base) 80%, transparent);
+    }
+    
+    @media (min-width: 768px) {
+      .export-footer { padding: var(--space-6); }
+    }
+    
+    .export-footer-inner {
+      max-width: var(--content-max-width);
+      margin: 0 auto;
+    }
+    
+    .export-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      width: 100%;
+      height: 52px;
+      font-size: var(--text-base);
+      font-weight: 500;
+      color: white;
+      background-color: var(--sage);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-fast);
+    }
+    .export-btn:hover { background-color: var(--sage-dark); }
+    .export-btn svg { width: 20px; height: 20px; }
+    
+    /* Progress State */
+    .progress-state {
+      text-align: center;
+      padding: var(--space-8) 0;
+    }
+    
+    .progress-spinner {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto var(--space-5);
+      border: 3px solid var(--bg-surface-2);
+      border-top-color: var(--sage);
+      border-radius: var(--radius-full);
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .progress-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .progress-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-6);
+    }
+    
+    .progress-bar-wrapper {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background-color: var(--bg-surface-2);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: var(--space-2);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage-dark), var(--sage));
+      border-radius: var(--radius-full);
+      transition: width 0.3s ease;
+    }
+    
+    .progress-status {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    /* Success State */
+    .success-state {
+      text-align: center;
+      padding: var(--space-8) 0;
+    }
+    
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--success-subtle);
+      border-radius: var(--radius-full);
+      margin: 0 auto var(--space-5);
+    }
+    .success-icon svg { width: 32px; height: 32px; color: var(--success); }
+    
+    .success-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    
+    .success-desc {
+      font-size: var(--text-sm);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-6);
+    }
+    
+    .download-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      max-width: 320px;
+      margin: 0 auto var(--space-6);
+    }
+    
+    .download-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--sage-subtle);
+      border-radius: var(--radius-md);
+    }
+    .download-icon svg { width: 22px; height: 22px; color: var(--sage); }
+    
+    .download-info { flex: 1; text-align: left; }
+    .download-name {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .download-meta {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+    
+    .download-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background-color: var(--sage);
+      border-radius: var(--radius-md);
+      color: white;
+      transition: background-color var(--transition-fast);
+    }
+    .download-btn:hover { background-color: var(--sage-dark); }
+    .download-btn svg { width: 18px; height: 18px; }
+    
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    
+    .success-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      height: 44px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .success-btn svg { width: 18px; height: 18px; }
+    .success-btn--primary {
+      color: white;
+      background-color: var(--sage);
+    }
+    .success-btn--primary:hover { background-color: var(--sage-dark); }
+    .success-btn--secondary {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface);
+    }
+    .success-btn--secondary:hover { background-color: var(--bg-hover); color: var(--text-primary); }
+    
+    /* Utility */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  
+  <!-- Header -->
+  <header class="page-header">
+    <button class="back-btn" onclick="goBack()" aria-label="Go back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <h1 class="page-title">Export Data</h1>
+  </header>
+  
+  <!-- Content -->
+  <main class="content" id="mainContent">
+    <div class="content-inner">
+      
+      <!-- Intro -->
+      <div class="intro">
+        <div class="intro-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        <h2 class="intro-title">Export your data</h2>
+        <p class="intro-desc">Download a copy of all your notes, threads, and reflections. Your data is always yours.</p>
+      </div>
+      
+      <!-- Format Selection -->
+      <section class="section">
+        <h3 class="section-title">Choose Format</h3>
+        <div class="format-options">
+          
+          <div class="format-option is-selected" onclick="selectFormat(this, 'markdown')">
+            <div class="format-radio"></div>
+            <div class="format-content">
+              <div class="format-header">
+                <span class="format-name">Markdown</span>
+                <span class="format-badge">Recommended</span>
+              </div>
+              <p class="format-desc">Plain text files that work with any app. Each note becomes a .md file with full formatting preserved.</p>
+            </div>
+            <div class="format-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="format-option" onclick="selectFormat(this, 'json')">
+            <div class="format-radio"></div>
+            <div class="format-content">
+              <div class="format-header">
+                <span class="format-name">JSON</span>
+              </div>
+              <p class="format-desc">Structured data format ideal for importing into other apps or processing programmatically.</p>
+            </div>
+            <div class="format-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"/>
+                <polyline points="8 6 2 12 8 18"/>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="format-option" onclick="selectFormat(this, 'pdf')">
+            <div class="format-radio"></div>
+            <div class="format-content">
+              <div class="format-header">
+                <span class="format-name">PDF</span>
+              </div>
+              <p class="format-desc">Formatted document perfect for printing or archiving. Includes all notes in a single file.</p>
+            </div>
+            <div class="format-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <path d="M14 2v6h6"/>
+                <path d="M10 9H8"/>
+                <path d="M16 13H8"/>
+                <path d="M16 17H8"/>
+              </svg>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+      
+      <!-- Data Summary -->
+      <section class="section">
+        <h3 class="section-title">What's Included</h3>
+        <div class="data-summary">
+          <div class="data-summary-title">Your export will include:</div>
+          <div class="data-items">
+            <div class="data-item">
+              <div class="data-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                </svg>
+              </div>
+              <div class="data-item-info">
+                <div class="data-item-value">47</div>
+                <div class="data-item-label">Notes</div>
+              </div>
+            </div>
+            <div class="data-item">
+              <div class="data-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="6" y1="3" x2="6" y2="15"/>
+                  <circle cx="18" cy="6" r="3"/>
+                  <circle cx="6" cy="18" r="3"/>
+                  <path d="M18 9a9 9 0 0 1-9 9"/>
+                </svg>
+              </div>
+              <div class="data-item-info">
+                <div class="data-item-value">8</div>
+                <div class="data-item-label">Threads</div>
+              </div>
+            </div>
+            <div class="data-item">
+              <div class="data-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
+              <div class="data-item-info">
+                <div class="data-item-value">3</div>
+                <div class="data-item-label">Goals</div>
+              </div>
+            </div>
+            <div class="data-item">
+              <div class="data-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+                </svg>
+              </div>
+              <div class="data-item-info">
+                <div class="data-item-value">12</div>
+                <div class="data-item-label">Insights</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+    </div>
+  </main>
+  
+  <!-- Export Button -->
+  <footer class="export-footer" id="exportFooter">
+    <div class="export-footer-inner">
+      <button class="export-btn" onclick="startExport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export as Markdown
+      </button>
+    </div>
+  </footer>
+  
+  <!-- Progress State (hidden by default) -->
+  <div class="content hidden" id="progressContent">
+    <div class="content-inner">
+      <div class="progress-state">
+        <div class="progress-spinner"></div>
+        <h2 class="progress-title">Preparing your export...</h2>
+        <p class="progress-desc">This may take a moment depending on how much you've written.</p>
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-status" id="progressStatus">Starting export...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Success State (hidden by default) -->
+  <div class="content hidden" id="successContent">
+    <div class="content-inner">
+      <div class="success-state">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h2 class="success-title">Export complete!</h2>
+        <p class="success-desc">Your data has been packaged and is ready to download.</p>
+        
+        <div class="download-card">
+          <div class="download-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <div class="download-info">
+            <div class="download-name">orivya-export-2025-12-09.zip</div>
+            <div class="download-meta">47 files · 2.4 MB</div>
+          </div>
+          <button class="download-btn" onclick="downloadFile()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="success-actions">
+          <button class="success-btn success-btn--primary" onclick="downloadFile()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download
+          </button>
+          <button class="success-btn success-btn--secondary" onclick="goBack()">
+            Back to settings
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let selectedFormat = 'markdown';
+    
+    function goBack() { console.log('Going back'); }
+    
+    function selectFormat(element, format) {
+      document.querySelectorAll('.format-option').forEach(opt => opt.classList.remove('is-selected'));
+      element.classList.add('is-selected');
+      selectedFormat = format;
+      
+      const formatNames = { markdown: 'Markdown', json: 'JSON', pdf: 'PDF' };
+      document.querySelector('.export-btn').innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Export as ${formatNames[format]}
+      `;
+    }
+    
+    function startExport() {
+      document.getElementById('mainContent').classList.add('hidden');
+      document.getElementById('exportFooter').classList.add('hidden');
+      document.getElementById('progressContent').classList.remove('hidden');
+      
+      // Simulate progress
+      let progress = 0;
+      const statuses = [
+        'Gathering notes...',
+        'Processing threads...',
+        'Including insights...',
+        'Packaging files...',
+        'Finalizing...'
+      ];
+      
+      const interval = setInterval(() => {
+        progress += Math.random() * 15 + 5;
+        if (progress > 100) progress = 100;
+        
+        document.getElementById('progressFill').style.width = progress + '%';
+        document.getElementById('progressStatus').textContent = statuses[Math.min(Math.floor(progress / 25), 4)];
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(showSuccess, 500);
+        }
+      }, 400);
+    }
+    
+    function showSuccess() {
+      document.getElementById('progressContent').classList.add('hidden');
+      document.getElementById('successContent').classList.remove('hidden');
+    }
+    
+    function downloadFile() {
+      console.log('Downloading file');
+    }
+  </script>
+</body>
+</html>

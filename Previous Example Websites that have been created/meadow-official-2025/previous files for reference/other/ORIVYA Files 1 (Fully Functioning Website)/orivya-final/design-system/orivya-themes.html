@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orivya — Theme System</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ==========================================
+       DARK THEME (Default)
+    ========================================== */
+    :root,
+    [data-theme="dark"] {
+      /* Brand */
+      --sage: #7d9b8a;
+      --sage-light: #9bb3a7;
+      --sage-dark: #5f8170;
+      --sage-subtle: rgba(125, 155, 138, 0.08);
+      --sage-muted: rgba(125, 155, 138, 0.15);
+      --sage-glow: rgba(125, 155, 138, 0.4);
+      
+      /* Backgrounds */
+      --bg-base: #08080a;
+      --bg-elevated: #0e0e11;
+      --bg-surface: #141417;
+      --bg-surface-2: #1a1a1e;
+      --bg-hover: #1e1e23;
+      --bg-active: #252529;
+      
+      /* Text */
+      --text-primary: #fafafa;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+      --text-inverse: #09090b;
+      
+      /* Borders */
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-default: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+      
+      /* Semantic */
+      --success: #4ade80;
+      --success-subtle: rgba(74, 222, 128, 0.1);
+      --success-muted: rgba(74, 222, 128, 0.2);
+      
+      --error: #f87171;
+      --error-subtle: rgba(248, 113, 113, 0.1);
+      --error-muted: rgba(248, 113, 113, 0.2);
+      
+      --warning: #fbbf24;
+      --warning-subtle: rgba(251, 191, 36, 0.1);
+      --warning-muted: rgba(251, 191, 36, 0.2);
+      
+      --info: #60a5fa;
+      --info-subtle: rgba(96, 165, 250, 0.1);
+      --info-muted: rgba(96, 165, 250, 0.2);
+      
+      /* Focus */
+      --focus-ring: #60a5fa;
+      --focus-ring-offset: var(--bg-base);
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+      --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+      
+      /* Overlays */
+      --overlay-light: rgba(0, 0, 0, 0.4);
+      --overlay-medium: rgba(0, 0, 0, 0.6);
+      --overlay-heavy: rgba(0, 0, 0, 0.8);
+      
+      /* Gradients */
+      --gradient-sage: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+      --gradient-surface: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+      --gradient-fade-down: linear-gradient(180deg, transparent 0%, var(--bg-base) 100%);
+      --gradient-fade-up: linear-gradient(0deg, transparent 0%, var(--bg-base) 100%);
+    }
+    
+    /* ==========================================
+       LIGHT THEME
+    ========================================== */
+    [data-theme="light"] {
+      /* Brand */
+      --sage: #5f8170;
+      --sage-light: #7d9b8a;
+      --sage-dark: #4a6b5a;
+      --sage-subtle: rgba(95, 129, 112, 0.06);
+      --sage-muted: rgba(95, 129, 112, 0.12);
+      --sage-glow: rgba(95, 129, 112, 0.25);
+      
+      /* Backgrounds */
+      --bg-base: #fafafa;
+      --bg-elevated: #ffffff;
+      --bg-surface: #f4f4f5;
+      --bg-surface-2: #e4e4e7;
+      --bg-hover: #d4d4d8;
+      --bg-active: #a1a1aa;
+      
+      /* Text */
+      --text-primary: #09090b;
+      --text-secondary: #52525b;
+      --text-tertiary: #71717a;
+      --text-muted: #a1a1aa;
+      --text-inverse: #fafafa;
+      
+      /* Borders */
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border-default: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.15);
+      
+      /* Semantic */
+      --success: #16a34a;
+      --success-subtle: rgba(22, 163, 74, 0.08);
+      --success-muted: rgba(22, 163, 74, 0.15);
+      
+      --error: #dc2626;
+      --error-subtle: rgba(220, 38, 38, 0.08);
+      --error-muted: rgba(220, 38, 38, 0.15);
+      
+      --warning: #d97706;
+      --warning-subtle: rgba(217, 119, 6, 0.08);
+      --warning-muted: rgba(217, 119, 6, 0.15);
+      
+      --info: #2563eb;
+      --info-subtle: rgba(37, 99, 235, 0.08);
+      --info-muted: rgba(37, 99, 235, 0.15);
+      
+      /* Focus */
+      --focus-ring: #2563eb;
+      --focus-ring-offset: var(--bg-base);
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+      --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+      
+      /* Overlays */
+      --overlay-light: rgba(0, 0, 0, 0.2);
+      --overlay-medium: rgba(0, 0, 0, 0.4);
+      --overlay-heavy: rgba(0, 0, 0, 0.6);
+      
+      /* Gradients */
+      --gradient-sage: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+      --gradient-surface: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-surface) 100%);
+      --gradient-fade-down: linear-gradient(180deg, transparent 0%, var(--bg-base) 100%);
+      --gradient-fade-up: linear-gradient(0deg, transparent 0%, var(--bg-base) 100%);
+    }
+    
+    /* ==========================================
+       BASE STYLES
+    ========================================== */
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      transition: background-color 200ms ease, color 200ms ease;
+      padding: 2rem;
+    }
+    
+    button { font-family: inherit; cursor: pointer; }
+    
+    h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      color: var(--text-tertiary);
+      margin-bottom: 2rem;
+    }
+    
+    /* Theme Switcher */
+    .theme-switcher {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 0.25rem;
+      padding: 0.25rem;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      z-index: 100;
+    }
+    
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      border-radius: 8px;
+      color: var(--text-tertiary);
+      transition: all 150ms ease;
+    }
+    .theme-btn:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    .theme-btn.active {
+      background-color: var(--sage-subtle);
+      color: var(--sage);
+    }
+    .theme-btn svg { width: 18px; height: 18px; }
+    
+    /* Section */
+    .section {
+      margin-bottom: 3rem;
+    }
+    
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    
+    /* Color Swatches */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+    }
+    
+    .swatch-color {
+      height: 60px;
+    }
+    
+    .swatch-info {
+      padding: 0.75rem;
+    }
+    
+    .swatch-name {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    
+    .swatch-var {
+      font-size: 0.625rem;
+      font-family: 'SF Mono', monospace;
+      color: var(--text-muted);
+    }
+    
+    /* Preview Cards */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .preview-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: all 200ms ease;
+    }
+    
+    .preview-card:hover {
+      border-color: var(--border-default);
+    }
+    
+    .preview-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .preview-text {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+    
+    .preview-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      height: 40px;
+      padding: 0 1rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 10px;
+      transition: all 150ms ease;
+    }
+    
+    .btn--primary {
+      color: white;
+      background: var(--gradient-sage);
+    }
+    .btn--primary:hover {
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn--secondary {
+      color: var(--text-secondary);
+      background-color: var(--bg-surface-2);
+    }
+    .btn--secondary:hover {
+      background-color: var(--bg-hover);
+      color: var(--text-primary);
+    }
+    
+    .btn--ghost {
+      color: var(--text-secondary);
+      background: transparent;
+    }
+    .btn--ghost:hover {
+      background-color: var(--bg-hover);
+    }
+    
+    /* Input */
+    .input {
+      width: 100%;
+      max-width: 300px;
+      height: 44px;
+      padding: 0 1rem;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      background-color: var(--bg-surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      transition: all 150ms ease;
+    }
+    .input::placeholder { color: var(--text-muted); }
+    .input:focus {
+      outline: none;
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px var(--sage-muted);
+    }
+    
+    /* Status Badges */
+    .badge-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border-radius: 9999px;
+    }
+    
+    .badge--success {
+      color: var(--success);
+      background-color: var(--success-subtle);
+    }
+    .badge--error {
+      color: var(--error);
+      background-color: var(--error-subtle);
+    }
+    .badge--warning {
+      color: var(--warning);
+      background-color: var(--warning-subtle);
+    }
+    .badge--info {
+      color: var(--info);
+      background-color: var(--info-subtle);
+    }
+    
+    /* Progress */
+    .progress {
+      height: 6px;
+      background-color: var(--bg-surface-2);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--gradient-sage);
+      border-radius: 9999px;
+      transition: width 300ms ease;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-btn active" onclick="setTheme('dark')" title="Dark mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+    </button>
+    <button class="theme-btn" onclick="setTheme('light')" title="Light mode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+  
+  <h1>Theme System</h1>
+  <p class="subtitle">Dark and light mode color tokens — click the icons above to switch</p>
+  
+  <!-- Brand Colors -->
+  <section class="section">
+    <h2 class="section-title">Brand Colors</h2>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--sage);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Sage</div>
+          <div class="swatch-var">--sage</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--sage-light);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Sage Light</div>
+          <div class="swatch-var">--sage-light</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--sage-dark);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Sage Dark</div>
+          <div class="swatch-var">--sage-dark</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--sage-subtle);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Sage Subtle</div>
+          <div class="swatch-var">--sage-subtle</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Background Colors -->
+  <section class="section">
+    <h2 class="section-title">Background Colors</h2>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--bg-base);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Base</div>
+          <div class="swatch-var">--bg-base</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--bg-elevated);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Elevated</div>
+          <div class="swatch-var">--bg-elevated</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--bg-surface);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface</div>
+          <div class="swatch-var">--bg-surface</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--bg-surface-2);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface 2</div>
+          <div class="swatch-var">--bg-surface-2</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--bg-hover);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Hover</div>
+          <div class="swatch-var">--bg-hover</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Text Colors -->
+  <section class="section">
+    <h2 class="section-title">Text Colors</h2>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--text-primary);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary</div>
+          <div class="swatch-var">--text-primary</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--text-secondary);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Secondary</div>
+          <div class="swatch-var">--text-secondary</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--text-tertiary);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Tertiary</div>
+          <div class="swatch-var">--text-tertiary</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--text-muted);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Muted</div>
+          <div class="swatch-var">--text-muted</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Semantic Colors -->
+  <section class="section">
+    <h2 class="section-title">Semantic Colors</h2>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--success);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Success</div>
+          <div class="swatch-var">--success</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--error);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Error</div>
+          <div class="swatch-var">--error</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--warning);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Warning</div>
+          <div class="swatch-var">--warning</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--info);"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Info</div>
+          <div class="swatch-var">--info</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Component Preview -->
+  <section class="section">
+    <h2 class="section-title">Component Preview</h2>
+    <div class="preview-grid">
+      
+      <div class="preview-card">
+        <div class="preview-title">Note Card Example</div>
+        <div class="preview-text">This is how a note card looks in the current theme. Text adapts automatically.</div>
+        <div class="preview-meta">2 hours ago · Career</div>
+      </div>
+      
+      <div class="preview-card">
+        <div class="preview-title">Buttons</div>
+        <div class="btn-group" style="margin-bottom: 1rem;">
+          <button class="btn btn--primary">Primary</button>
+          <button class="btn btn--secondary">Secondary</button>
+          <button class="btn btn--ghost">Ghost</button>
+        </div>
+      </div>
+      
+      <div class="preview-card">
+        <div class="preview-title">Input Field</div>
+        <input type="text" class="input" placeholder="Type something...">
+      </div>
+      
+      <div class="preview-card">
+        <div class="preview-title">Status Badges</div>
+        <div class="badge-group">
+          <span class="badge badge--success">Success</span>
+          <span class="badge badge--error">Error</span>
+          <span class="badge badge--warning">Warning</span>
+          <span class="badge badge--info">Info</span>
+        </div>
+      </div>
+      
+      <div class="preview-card">
+        <div class="preview-title">Progress Bar</div>
+        <div class="preview-text">Goal progress: 70%</div>
+        <div class="progress">
+          <div class="progress-fill" style="width: 70%;"></div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+  
+  <script>
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      
+      // Update button states
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+      
+      // Save preference
+      localStorage.setItem('orivya-theme', theme);
+    }
+    
+    // Load saved theme
+    const savedTheme = localStorage.getItem('orivya-theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.querySelectorAll('.theme-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', (savedTheme === 'dark' && i === 0) || (savedTheme === 'light' && i === 1));
+      });
+    }
+    
+    // Respect system preference
+    if (!savedTheme && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      setTheme('light');
+    }
+  </script>
+  
+</body>
+</html>

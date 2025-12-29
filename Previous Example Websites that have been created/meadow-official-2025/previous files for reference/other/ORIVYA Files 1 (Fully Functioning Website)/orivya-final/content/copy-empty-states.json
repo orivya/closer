@@ -1,0 +1,119 @@
+{
+  "version": "1.0.0",
+  "description": "Empty state messages - warm, inviting, never cold or generic",
+  "philosophy": "Empty states are opportunities, not dead ends. Use human language.",
+  
+  "empty_states": {
+    "notes_list": {
+      "headline": "Your thoughts live here",
+      "body": "Start your first entry and see where it takes you.",
+      "cta": "Start writing",
+      "cta_secondary": null,
+      "icon": "pen"
+    },
+    
+    "notes_list_filtered": {
+      "headline": "Nothing here yet",
+      "body": "No notes match this filter. Try adjusting or start fresh.",
+      "cta": "Clear filter",
+      "cta_secondary": null,
+      "icon": "filter"
+    },
+    
+    "threads_list": {
+      "headline": "No threads yet",
+      "body": "Threads connect notes that share a theme. They'll appear as you write.",
+      "cta": "Learn about threads",
+      "cta_secondary": null,
+      "icon": "git-branch"
+    },
+    
+    "goals_list": {
+      "headline": "No goals yet",
+      "body": "Goals are questions you're living with. Add one to track your thinking over time.",
+      "cta": "Add a goal",
+      "cta_secondary": null,
+      "icon": "target"
+    },
+    
+    "insights_page": {
+      "headline": "Understanding grows over time",
+      "body": "Write a few more entries and patterns will start to emerge.",
+      "cta": "Start writing",
+      "cta_secondary": null,
+      "icon": "sparkles",
+      "minimum_notes": 3,
+      "progress_message": "You have {COUNT} of 3 notes needed for insights."
+    },
+    
+    "insights_saved": {
+      "headline": "No saved insights yet",
+      "body": "When something resonates, save it here.",
+      "cta": null,
+      "cta_secondary": null,
+      "icon": "bookmark"
+    },
+    
+    "search_no_results": {
+      "headline": "No notes found",
+      "body": "Try different words or check the spelling.",
+      "cta": "Clear search",
+      "cta_secondary": null,
+      "icon": "search"
+    },
+    
+    "archive_empty": {
+      "headline": "Archive is empty",
+      "body": "Archived notes will appear here. Nothing to see for now.",
+      "cta": null,
+      "cta_secondary": null,
+      "icon": "archive"
+    },
+    
+    "trash_empty": {
+      "headline": "Trash is empty",
+      "body": "Deleted notes appear here for 30 days before permanent deletion.",
+      "cta": null,
+      "cta_secondary": null,
+      "icon": "trash"
+    },
+    
+    "thread_detail_no_notes": {
+      "headline": "No notes in this thread yet",
+      "body": "Add notes to build out your thinking.",
+      "cta": "Add a note",
+      "cta_secondary": null,
+      "icon": "plus"
+    },
+    
+    "goal_detail_no_notes": {
+      "headline": "No related notes yet",
+      "body": "Link notes to this goal as you write about it.",
+      "cta": "Write about this",
+      "cta_secondary": null,
+      "icon": "pen"
+    }
+  },
+  
+  "variations": {
+    "notes_list_returning_user": {
+      "headline": "Welcome back",
+      "body": "The page is here when you need it.",
+      "cta": "Start writing",
+      "note": "Show this if user had notes but deleted all of them"
+    }
+  },
+  
+  "icons": {
+    "pen": "feather-edit-3 or similar pen/write icon",
+    "filter": "feather-filter",
+    "git-branch": "feather-git-branch",
+    "target": "feather-target or concentric circles",
+    "sparkles": "custom sparkle/star icon",
+    "bookmark": "feather-bookmark",
+    "search": "feather-search",
+    "archive": "feather-archive",
+    "trash": "feather-trash-2",
+    "plus": "feather-plus"
+  }
+}

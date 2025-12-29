@@ -1,0 +1,8 @@
+/* Meadow root stylesheet.
+ *
+ * This file exists because `index.html` references `/index.css`.
+ * The Lovable-style UI primarily uses Tailwind (via CDN) + component-scoped styles.
+ * Keeping this file prevents a 404 for `/index.css` in dev/production.
+ */
+
+
