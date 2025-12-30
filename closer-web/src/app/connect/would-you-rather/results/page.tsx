@@ -57,16 +57,9 @@ function ResultsContent() {
                     background: 'linear-gradient(135deg, rgba(224, 159, 125, 0.1), rgba(255,255,255,0.02))',
                     display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 24
                 }}>
-                    {/* Progress Bar Background */}
-                    <div style={{
-                        position: 'absolute', left: 0, top: 0, bottom: 0, width: `${percentA}%`,
-                        background: 'rgba(224, 159, 125, 0.1)', zIndex: 0
-                    }} />
-
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                             <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--clay)', letterSpacing: '0.1em' }}>OPTION A</span>
-                            <span style={{ fontSize: 24, fontWeight: 300, color: 'var(--sand)' }}>{percentA}%</span>
                         </div>
                         <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, color: 'var(--sand)', marginBottom: 16 }}>
                             {optionA}
@@ -85,16 +78,9 @@ function ResultsContent() {
                     background: 'linear-gradient(135deg, rgba(196, 181, 253, 0.1), rgba(255,255,255,0.02))',
                     display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 24
                 }}>
-                    {/* Progress Bar Background */}
-                    <div style={{
-                        position: 'absolute', left: 0, top: 0, bottom: 0, width: `${percentB}%`,
-                        background: 'rgba(196, 181, 253, 0.1)', zIndex: 0
-                    }} />
-
                     <div style={{ position: 'relative', zIndex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
                             <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--mist)', letterSpacing: '0.1em' }}>OPTION B</span>
-                            <span style={{ fontSize: 24, fontWeight: 300, color: 'var(--sand)' }}>{percentB}%</span>
                         </div>
                         <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: 20, color: 'var(--sand)', marginBottom: 16 }}>
                             {optionB}
