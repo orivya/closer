@@ -1,57 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Flame, Info, MessageCircle, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { ArrowLeft, Flame, History, Play, Trophy, Users } from "lucide-react";
 import { useState } from "react";
 
-type HotTake = {
-    id: string;
-    statement: string;
-    category: string;
-};
-
-const SAMPLE_TAKES: HotTake[] = [
-    { id: "t1", statement: "Pineapple absolutely belongs on pizza.", category: "Food" },
-    { id: "t2", statement: "It’s better to be always 10 minutes early than 1 minute late.", category: "Habits" },
-    { id: "t3", statement: "Voice messages are superior to text messages.", category: "Communication" },
-    { id: "t4", statement: "The toilet paper must roll over, not under.", category: "House Rules" },
-];
-
-export default function HotTakesPage() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [rating, setRating] = useState<number | null>(null); // 1 (Cold) to 5 (Fire)
-    const [isRevealed, setIsRevealed] = useState(false);
-
-    // Mock Partner Answer (random for demo)
-    const [partnerRating, setPartnerRating] = useState<number | null>(null);
-
-    const currentTake = SAMPLE_TAKES[currentIndex];
-
-    function handleRate(value: number) {
-        setRating(value);
-        // Simulate network delay for reveal
-        setTimeout(() => {
-            setPartnerRating(Math.floor(Math.random() * 5) + 1); // Random 1-5
-            setIsRevealed(true);
-        }, 400);
-    }
-
-    function nextTake() {
-        setIsRevealed(false);
-        setRating(null);
-        setPartnerRating(null);
-        setCurrentIndex((i) => (i + 1) % SAMPLE_TAKES.length);
-    }
-
-    function getFlameColor(level: number) {
-        // Gradient from Stone (1) to Clay/Red (5)
-        if (level === 1) return "#9CA3AF"; // Stone
-        if (level === 2) return "#C4B5FD"; // Mist
-        if (level === 3) return "#F5E6D3"; // Sand
-        if (level === 4) return "#E09F7D"; // Clay
-        return "#FF6B6B"; // Fire Red
-    }
-
+export default function HotTakesHubPage() {
     return (
         <main className="view active" style={{ display: 'flex', flexDirection: 'column', height: '100vh', paddingBottom: 0 }}>
             {/* Header */}
@@ -64,119 +17,89 @@ export default function HotTakesPage() {
                 </Link>
                 <div style={{ textAlign: 'center' }}>
                     <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 18, color: 'var(--sand)' }}>Hot Takes</h1>
-                    <div style={{ fontSize: 11, color: 'var(--clay)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                        Spicy Debates
+                    <div style={{ fontSize: 11, color: 'var(--stone)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                        Hub
                     </div>
                 </div>
-                <button className="icon-btn focus-ring">
-                    <Info aria-hidden="true" />
-                </button>
+                <Link href="/connect/hot-takes/history" className="icon-btn focus-ring">
+                    <History aria-hidden="true" size={18} />
+                </Link>
             </header>
 
             {/* Main Content */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+            <div className="container" style={{ flex: 1, padding: 24, display: 'flex', flexDirection: 'column', gap: 24 }}>
 
-                {/* Fire Icon pulse */}
+                {/* Hero Card */}
                 <div style={{
-                    width: 80, height: 80, borderRadius: '50%', background: 'rgba(224, 159, 125, 0.1)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 32,
-                    boxShadow: '0 0 40px rgba(224, 159, 125, 0.15)'
+                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(255,255,255,0.02))',
+                    borderRadius: 32, padding: 32,
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                    position: 'relative', overflow: 'hidden', minHeight: 240
                 }}>
-                    <Flame size={40} style={{ color: 'var(--clay)', fill: isRevealed ? 'var(--clay)' : 'transparent', transition: 'all 0.5s' }} />
+                    <div style={{
+                        position: 'absolute', top: -20, right: -20, width: 120, height: 120,
+                        background: 'rgba(239, 68, 68, 0.2)', borderRadius: '50%', filter: 'blur(40px)'
+                    }} />
+
+                    <Flame size={48} style={{ color: '#EF4444', marginBottom: 16 }} />
+
+                    <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 24, color: 'var(--sand)', marginBottom: 8, textAlign: 'center' }}>
+                        Ready to Roast?
+                    </h2>
+                    <p style={{ color: 'var(--stone)', fontSize: 14, textAlign: 'center', marginBottom: 24, maxWidth: 240 }}>
+                        Spark fiery debates on food, habits, and romance. See where you match and where you clash.
+                    </p>
+
+                    <Link
+                        href="/connect/hot-takes/categories"
+                        className="btn btn-primary focus-ring pressable"
+                        style={{
+                            background: '#EF4444', color: '#000', width: '100%', maxWidth: 200,
+                            boxShadow: '0 8px 16px -4px rgba(239, 68, 68, 0.4)'
+                        }}
+                    >
+                        <Play size={18} fill="black" /> Start Playing
+                    </Link>
                 </div>
 
-                {/* The Take */}
-                <div style={{
-                    fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em',
-                    color: 'var(--stone)', marginBottom: 16
-                }}>
-                    {currentTake.category}
-                </div>
-                <h2 style={{
-                    fontFamily: 'var(--font-serif)', fontSize: 28, lineHeight: 1.3,
-                    textAlign: 'center', color: 'var(--sand)', maxWidth: 400, marginBottom: 48
-                }}>
-                    "{currentTake.statement}"
-                </h2>
-
-                {/* Rating Instructions */}
-                {!isRevealed && (
-                    <div style={{ marginBottom: 24, fontSize: 13, color: 'var(--stone)' }}>
-                        How much do you agree?
-                    </div>
-                )}
-
-                {/* Rating Scale */}
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                    <ThumbsDown size={16} style={{ color: 'var(--stone)' }} />
-                    <div style={{ display: 'flex', gap: 8 }}>
-                        {[1, 2, 3, 4, 5].map((level) => {
-                            const isActive = rating !== null && level <= rating;
-                            const isPartner = isRevealed && partnerRating === level;
-
-                            return (
-                                <button
-                                    key={level}
-                                    onClick={() => !isRevealed && handleRate(level)}
-                                    className="focus-ring"
-                                    disabled={isRevealed}
-                                    style={{
-                                        width: 44,
-                                        height: 56,
-                                        borderRadius: 12,
-                                        border: '1px solid',
-                                        borderColor: isActive ? getFlameColor(level) : 'var(--border-subtle)',
-                                        background: isActive ? `${getFlameColor(level)}20` : 'rgba(255,255,255,0.03)',
-                                        color: isActive ? getFlameColor(level) : 'var(--stone)',
-                                        cursor: isRevealed ? 'default' : 'pointer',
-                                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                                        position: 'relative',
-                                        transform: isActive ? 'scale(1.05)' : 'scale(1)'
-                                    }}
-                                >
-                                    <Flame size={20} style={{ fill: isActive ? 'currentColor' : 'transparent', transition: 'fill 0.3s' }} />
-                                    {isPartner && (
-                                        <div style={{
-                                            position: 'absolute', bottom: -28,
-                                            display: 'flex', flexDirection: 'column', alignItems: 'center'
-                                        }}>
-                                            <div style={{ width: 1, height: 8, background: 'var(--mist)' }} />
-                                            <div style={{
-                                                background: 'var(--mist)', color: '#000', fontSize: 10, fontWeight: 700,
-                                                padding: '2px 6px', borderRadius: 6
-                                            }}>THEM</div>
-                                        </div>
-                                    )}
-                                </button>
-                            );
-                        })}
-                    </div>
-                    <ThumbsUp size={16} style={{ color: 'var(--stone)' }} />
-                </div>
-
-            </div>
-
-            {/* Footer / Results */}
-            <div style={{ padding: '24px', minHeight: 120 }}>
-                {isRevealed && (
-                    <div className="glass" style={{ borderRadius: 24, padding: '20px', animation: 'fade-in-up 0.5s ease' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
-                            <div className="chat-avatar-lg" style={{ width: 32, height: 32, fontSize: 14 }}>E</div>
-                            <div style={{ fontSize: 14, color: 'var(--sand)' }}>
-                                Emma voted <strong style={{ color: getFlameColor(partnerRating!) }}>{partnerRating}/5</strong>
-                            </div>
+                {/* Stats Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <Link href="/connect/hot-takes/history" className="glass pressable" style={{ padding: 20, borderRadius: 24, textDecoration: 'none' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: 'var(--clay)' }}>
+                            <Trophy size={16} />
+                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Match Rate</span>
                         </div>
-                        <div style={{ display: 'flex', gap: 12 }}>
-                            <button onClick={nextTake} className="btn btn-primary" style={{ flex: 1, padding: 12, fontSize: 14 }}>
-                                Next Take
-                            </button>
-                            <button className="btn" style={{ width: 48, padding: 0 }} aria-label="Discuss">
-                                <MessageCircle size={18} />
-                            </button>
+                        <div style={{ fontSize: 28, fontFamily: 'var(--font-serif)', color: 'var(--sand)' }}>85%</div>
+                        <div style={{ fontSize: 12, color: 'var(--stone)' }}>High Compatibility</div>
+                    </Link>
+
+                    <div className="glass" style={{ padding: 20, borderRadius: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: '#F59E0B' }}>
+                            <Users size={16} />
+                            <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}>Topics</span>
                         </div>
+                        <div style={{ fontSize: 28, fontFamily: 'var(--font-serif)', color: 'var(--sand)' }}>42</div>
+                        <div style={{ fontSize: 12, color: 'var(--stone)' }}>Takes Voted</div>
                     </div>
-                )}
+                </div>
+
+                {/* Recent Session Tease */}
+                <div style={{ marginTop: 'auto' }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--stone)', textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.05em' }}>
+                        Last Played
+                    </div>
+                    <Link href="/connect/hot-takes/history" className="glass pressable" style={{ padding: 16, borderRadius: 20, display: 'flex', alignItems: 'center', gap: 16, textDecoration: 'none', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Flame size={18} color="var(--stone)" />
+                        </div>
+                        <div>
+                            <div style={{ color: 'var(--sand)', fontSize: 14, fontWeight: 500 }}>Pineapple on Pizza</div>
+                            <div style={{ color: '#EF4444', fontSize: 12, fontWeight: 700 }}>MISMATCH</div>
+                        </div>
+                    </Link>
+                </div>
+
             </div>
         </main>
     );
