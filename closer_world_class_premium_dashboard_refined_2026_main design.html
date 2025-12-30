@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Closer — Digital Sanctuary</title>
+
+  <!-- Fonts (kept) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,200;1,9..144,300;1,9..144,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Icons (kept) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /*
+      CLOSER — PREMIUM 2026 REFINEMENT
+      -------------------------------
+      What’s improved (without changing your vibe):
+      - Systematic tokens (spacing/radius/shadows), consistent component language.
+      - Better depth: subtle glass, richer surfaces, less "flat black".
+      - High-end micro-interactions: hover lift, press states, focus-visible rings.
+      - Accessibility: keyboard navigation, reduced motion support, larger tap targets.
+      - Mobile polish: safe-area padding, improved bottom nav, touch-friendly interactions.
+      - UX: whisper now works on touch (press & hold), draw card modal, tilt/parallax (optional).
+    */
+
+    /* ------------------------------
+       1) DESIGN TOKENS
+    ------------------------------ */
+    :root {
+      /* Core palette (yours, refined) */
+      --base: #050505;
+      --surface-0: #0B0B0B;
+      --surface-1: #0F0F0F;
+      --surface-2: #141414;
+      --surface-glass: rgba(20, 20, 20, 0.62);
+
+      --clay: #E09F7D;
+      --clay-dark: #8a5a42;
+      --clay-glow: rgba(224, 159, 125, 0.22);
+
+      --mist: #C4B5FD;
+      --mist-dark: #7c6eb0;
+      --mist-glow: rgba(196, 181, 253, 0.22);
+
+      --sand: #F5E6D3;
+      --stone: #9CA3AF;
+      --muted: rgba(245, 230, 211, 0.65);
+
+      --border-subtle: rgba(245, 230, 211, 0.06);
+      --border-highlight: rgba(245, 230, 211, 0.12);
+      --border-strong: rgba(245, 230, 211, 0.18);
+
+      /* Typography */
+      --font-sans: "Manrope", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --font-serif: "Fraunces", ui-serif, Georgia, serif;
+
+      /* Spacing scale (2026: consistent rhythm) */
+      --s-1: 4px;
+      --s-2: 8px;
+      --s-3: 12px;
+      --s-4: 16px;
+      --s-5: 20px;
+      --s-6: 24px;
+      --s-7: 32px;
+      --s-8: 40px;
+      --s-9: 48px;
+      --s-10: 64px;
+
+      /* Radii */
+      --r-sm: 12px;
+      --r-md: 16px;
+      --r-lg: 24px;
+      --r-xl: 32px;
+      --r-2xl: 40px;
+
+      /* Shadows (subtle + premium) */
+      --shadow-1: 0 10px 30px rgba(0,0,0,0.35);
+      --shadow-2: 0 20px 50px rgba(0,0,0,0.55);
+      --shadow-3: 0 30px 80px rgba(0,0,0,0.70);
+
+      /* Motion */
+      --easing: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-1: 140ms;
+      --dur-2: 220ms;
+      --dur-3: 520ms;
+
+      /* Focus ring */
+      --ring: 0 0 0 4px rgba(224, 159, 125, 0.22);
+
+      /* Active accent per-view (set by JS) */
+      --accent: var(--clay);
+      --accent-glow: var(--clay-glow);
+    }
+
+    /* ------------------------------
+       2) RESET + BASE
+    ------------------------------ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--sand);
+      background: var(--base);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      overflow: hidden;
+    }
+
+    ::selection {
+      background: rgba(224, 159, 125, 0.25);
+      color: var(--sand);
+    }
+
+    a, button { -webkit-tap-highlight-color: transparent; }
+
+    button {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    /* Accessibility helper */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* ------------------------------
+       3) UTILITIES
+    ------------------------------ */
+    .font-serif { font-family: var(--font-serif); }
+    .text-balance { text-wrap: balance; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { scrollbar-width: none; }
+
+    .focus-ring:focus-visible {
+      outline: none;
+      box-shadow: var(--ring);
+      border-color: rgba(224, 159, 125, 0.22);
+    }
+
+    .pressable {
+      transition: transform var(--dur-1) var(--easing), box-shadow var(--dur-2) var(--easing);
+    }
+    .pressable:active { transform: translateY(1px) scale(0.99); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
+
+    /* ------------------------------
+       4) AMBIENT BACKGROUND
+    ------------------------------ */
+    .grain-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.022;
+      mix-blend-mode: overlay;
+    }
+
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(900px 500px at 20% 10%, rgba(196,181,253,0.10), transparent 60%),
+        radial-gradient(900px 600px at 90% 0%, rgba(224,159,125,0.10), transparent 55%),
+        radial-gradient(700px 500px at 40% 95%, rgba(196,181,253,0.09), transparent 55%),
+        radial-gradient(800px 700px at 95% 85%, rgba(224,159,125,0.08), transparent 55%);
+    }
+
+    @keyframes breathe-bg {
+      0%, 100% { opacity: 0.18; transform: translateZ(0) scale(1); }
+      50% { opacity: 0.26; transform: translateZ(0) scale(1.06); }
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(150px);
+      animation: breathe-bg 11s infinite alternate ease-in-out;
+      transform: translateZ(0);
+      will-change: transform, opacity;
+    }
+
+    .blob-1 { top: -12%; right: -14%; width: 640px; height: 640px; background: var(--clay-glow); }
+    .blob-2 { bottom: -14%; left: -14%; width: 640px; height: 640px; background: var(--mist-glow); animation-delay: -6s; }
+
+    /* ------------------------------
+       5) LAYOUT
+    ------------------------------ */
+    #app { display: flex; width: 100%; height: 100vh; position: relative; }
+
+    .view {
+      display: none;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+      z-index: 10;
+      padding-bottom: calc(120px + env(safe-area-inset-bottom));
+      scroll-behavior: smooth;
+    }
+
+    @keyframes view-in {
+      from { opacity: 0; transform: translateY(14px) scale(0.995); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .view.active { display: block; animation: view-in var(--dur-3) var(--easing); }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: clamp(28px, 4vw, 56px) clamp(18px, 3vw, 28px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ------------------------------
+       6) COMPONENTS
+    ------------------------------ */
+
+    .glass {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    @supports not ((backdrop-filter: blur(18px)) or (-webkit-backdrop-filter: blur(18px))) {
+      .glass { background: rgba(18,18,18,0.92); }
+    }
+
+    .card {
+      background: linear-gradient(155deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-1);
+    }
+
+    .card:hover { border-color: var(--border-highlight); }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      background: var(--border-subtle);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+      color: var(--stone);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 16px;
+      padding: 12px 18px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+      color: var(--sand);
+      cursor: pointer;
+      transition: transform var(--dur-1) var(--easing), background var(--dur-2) var(--easing), border-color var(--dur-2) var(--easing);
+    }
+
+    .btn:hover { background: rgba(255,255,255,0.04); border-color: var(--border-highlight); transform: translateY(-1px); }
+    .btn:active { transform: translateY(0) scale(0.99); }
+
+    .btn-primary {
+      background: linear-gradient(180deg, rgba(245,230,211,1), rgba(245,230,211,0.92));
+      color: var(--base);
+      border-color: rgba(245,230,211,0.18);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+    .btn-primary:hover { transform: translateY(-1px) scale(1.01); }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+      color: var(--muted);
+    }
+
+    /* ------------------------------
+       7) NAVIGATION (Premium)
+    ------------------------------ */
+    .nav-sidebar {
+      width: 92px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+      border-right: 1px solid var(--border-subtle);
+      z-index: 50;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 767px) { .nav-sidebar { display: none; } }
+
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--sand);
+      margin-bottom: 64px;
+      position: relative;
+      user-select: none;
+    }
+
+    .nav-logo::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .nav-items { display: flex; flex-direction: column; gap: 14px; width: 100%; align-items: center; }
+
+    .nav-item {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform var(--dur-1) var(--easing), background var(--dur-2) var(--easing), border-color var(--dur-2) var(--easing), color var(--dur-2) var(--easing);
+      color: var(--stone);
+      background: transparent;
+      border: 1px solid transparent;
+      position: relative;
+    }
+
+    .nav-item::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 62px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(18,18,18,0.92);
+      border: 1px solid var(--border-subtle);
+      font-size: 12px;
+      color: var(--sand);
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: opacity var(--dur-2) var(--easing), transform var(--dur-2) var(--easing);
+    }
+
+    .nav-item:hover::after {
+      opacity: 1;
+      transform: translateY(-50%) translateX(4px);
+    }
+
+    .nav-item:hover { color: var(--accent); background: rgba(255,255,255,0.03); transform: translateY(-1px); }
+
+    .nav-item.active {
+      color: var(--sand);
+      border-color: var(--border-highlight);
+      background: rgba(255,255,255,0.03);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset;
+    }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      left: -18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px var(--accent-glow);
+    }
+
+    .nav-item svg { width: 20px; height: 20px; stroke-width: 1.65px; }
+
+    /* Mobile Nav (safe-area, wider taps) */
+    .nav-mobile {
+      position: fixed;
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 110;
+      pointer-events: none;
+    }
+
+    @media (min-width: 768px) { .nav-mobile { display: none; } }
+
+    .nav-mobile-inner {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 26px;
+      border: 1px solid var(--border-highlight);
+      background: rgba(15, 15, 15, 0.86);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow-2);
+    }
+
+    .nav-mobile-item {
+      width: 50px;
+      height: 50px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      color: var(--stone);
+      transition: transform var(--dur-1) var(--easing), background var(--dur-2) var(--easing), color var(--dur-2) var(--easing);
+      cursor: pointer;
+    }
+
+    .nav-mobile-item:active { transform: scale(0.98); }
+    .nav-mobile-item.active { color: var(--sand); background: rgba(255,255,255,0.05); }
+    .nav-mobile-item svg { width: 22px; height: 22px; stroke-width: 1.65px; }
+
+    /* ------------------------------
+       8) HOME VIEW
+    ------------------------------ */
+    .timezone-pill {
+      align-self: center;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: var(--s-10);
+    }
+
+    .timezone-item { display: flex; flex-direction: column; align-items: center; line-height: 1.15; }
+    .tz-time { color: var(--sand); font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; font-weight: 700; }
+    .tz-city { font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; opacity: 0.7; }
+    .timezone-divider { height: 24px; width: 1px; background: var(--border-subtle); }
+
+    .connection-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 42px;
+      margin-bottom: var(--s-10);
+      position: relative;
+    }
+
+    .connection-track {
+      position: absolute;
+      width: 220px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+    }
+
+    @keyframes traverse {
+      0% { transform: translateX(-90px); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateX(90px); opacity: 0; }
+    }
+
+    .connection-spark {
+      position: absolute;
+      width: 120px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      animation: traverse 4.4s infinite ease-in-out;
+      filter: drop-shadow(0 0 10px var(--accent-glow));
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 18px var(--glow-color); opacity: 1; }
+      50% { box-shadow: 0 0 40px var(--glow-color); opacity: 0.86; }
+    }
+
+    .avatar {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid var(--border-highlight);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 300;
+      position: relative;
+      z-index: 2;
+      transition: transform var(--dur-2) var(--easing), border-color var(--dur-2) var(--easing);
+      box-shadow: var(--shadow-1);
+    }
+
+    .avatar.me {
+      color: var(--clay);
+      border-color: rgba(224, 159, 125, 0.28);
+      --glow-color: rgba(224, 159, 125, 0.22);
+      animation: pulse-glow 5.2s infinite;
+    }
+
+    .avatar.them {
+      color: var(--mist);
+      border-color: rgba(196, 181, 253, 0.28);
+      --glow-color: rgba(196, 181, 253, 0.22);
+      animation: pulse-glow 5.2s infinite reverse;
+    }
+
+    .countdown-hero { text-align: center; margin-bottom: var(--s-10); }
+
+    .visit-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .days-display { position: relative; display: inline-block; }
+
+    .days-num {
+      font-family: var(--font-serif);
+      font-size: clamp(84px, 10vw, 112px);
+      font-weight: 220;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      background: linear-gradient(to bottom, var(--sand), rgba(245,230,211,0.58));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-variation-settings: "opsz" 120;
+    }
+
+    .days-text {
+      position: absolute;
+      bottom: 18px;
+      right: -32px;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 24px;
+      color: var(--stone);
+    }
+
+    .daily-card {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 32px;
+      border-radius: var(--r-2xl);
+      cursor: pointer;
+      transition: transform var(--dur-2) var(--easing), border-color var(--dur-2) var(--easing), background var(--dur-2) var(--easing);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .daily-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: radial-gradient(520px 260px at 18% 0%, rgba(224,159,125,0.12), transparent 60%),
+                  radial-gradient(520px 260px at 92% 110%, rgba(196,181,253,0.10), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .daily-card > * { position: relative; }
+
+    .daily-card:hover { border-color: var(--border-highlight); transform: translateY(-4px); }
+
+    .card-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+
+    .card-question {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      line-height: 1.35;
+      color: var(--sand);
+      margin-bottom: 28px;
+      max-width: 92%;
+      font-variation-settings: "opsz" 120;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 18px;
+    }
+
+    .card-cta { font-size: 13px; color: var(--stone); transition: color var(--dur-2) var(--easing); }
+    .daily-card:hover .card-cta { color: var(--sand); }
+
+    /* ------------------------------
+       9) CONNECT VIEW
+    ------------------------------ */
+    .connect-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: var(--s-10);
+      padding-bottom: var(--s-7);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 280;
+      color: var(--sand);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+      font-variation-settings: "opsz" 120;
+    }
+
+    .page-subtitle { font-size: 15px; color: var(--stone); line-height: 1.5; }
+
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.03);
+    }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 4px rgba(16,185,129,0.18); opacity: 0.9; }
+      50% { box-shadow: 0 0 12px rgba(16,185,129,0.55); opacity: 1; }
+    }
+
+    .sync-dot { width: 7px; height: 7px; background: #10B981; border-radius: 999px; animation: pulse-green 2.2s infinite; }
+    .sync-text { font-size: 12px; font-weight: 750; color: #10B981; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .featured-hero {
+      position: relative;
+      width: 100%;
+      min-height: 420px;
+      display: flex;
+      overflow: hidden;
+      margin-bottom: var(--s-10);
+      border-radius: var(--r-2xl);
+      border: 1px solid var(--border-subtle);
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.22));
+      box-shadow: var(--shadow-2);
+      transition: border-color var(--dur-2) var(--easing), transform var(--dur-2) var(--easing);
+    }
+
+    .featured-hero::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: radial-gradient(800px 500px at 10% 0%, rgba(224,159,125,0.16), transparent 55%),
+                  radial-gradient(900px 560px at 100% 100%, rgba(196,181,253,0.12), transparent 60%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .featured-hero:hover { border-color: rgba(224, 159, 125, 0.20); }
+
+    .featured-content {
+      position: relative;
+      flex: 1;
+      padding: clamp(26px, 3.8vw, 52px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--border-subtle);
+      z-index: 4;
+    }
+
+    .featured-badge {
+      width: fit-content;
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 18px;
+      padding: 7px 12px;
+      border: 1px solid rgba(224, 159, 125, 0.28);
+      border-radius: 999px;
+      background: rgba(224, 159, 125, 0.06);
+    }
+
+    .featured-title {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 4vw, 42px);
+      font-style: italic;
+      color: var(--sand);
+      margin-bottom: 14px;
+      line-height: 1.08;
+      font-variation-settings: "opsz" 120;
+    }
+
+    .featured-desc {
+      font-size: 15px;
+      color: var(--stone);
+      line-height: 1.65;
+      max-width: 420px;
+      margin-bottom: 28px;
+    }
+
+    .featured-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+    .featured-visual {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, rgba(224, 159, 125, 0.06), transparent 70%);
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    @media (max-width: 840px) {
+      .featured-hero { flex-direction: column; min-height: auto; }
+      .featured-content { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+      .featured-visual { height: 360px; }
+    }
+
+    /* Rising hearts */
+    @keyframes heart-rise-fade {
+      0% { transform: translateY(24px) scale(0.6); opacity: 0; }
+      18% { opacity: 0.40; }
+      100% { transform: translateY(-190px) scale(1.12); opacity: 0; }
+    }
+
+    .rising-hearts-container {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 220px;
+      pointer-events: none;
+      z-index: 2;
+      filter: drop-shadow(0 0 18px rgba(224,159,125,0.10));
+    }
+
+    .rising-heart {
+      position: absolute;
+      color: rgba(224,159,125,0.92);
+      opacity: 0;
+      animation: heart-rise-fade 6.2s infinite ease-out;
+    }
+
+    .rh-1 { left: 20%; width: 14px; animation-delay: 0s; }
+    .rh-2 { left: 70%; width: 10px; animation-delay: 1.4s; }
+    .rh-3 { left: 45%; width: 18px; animation-delay: 2.8s; }
+    .rh-4 { left: 30%; width: 12px; animation-delay: 4.2s; }
+    .rh-5 { left: 80%; width: 16px; animation-delay: 2.1s; }
+
+    /* 3D Card Stack */
+    .card-stack {
+      position: relative;
+      width: 230px;
+      height: 310px;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      transition: transform var(--dur-3) var(--easing);
+      z-index: 3;
+      will-change: transform;
+    }
+
+    .stacked-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(26,26,26,1), rgba(10,10,10,1));
+      border: 1px solid var(--border-highlight);
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      transition: transform var(--dur-3) var(--easing), box-shadow var(--dur-3) var(--easing);
+      backface-visibility: hidden;
+      overflow: hidden;
+    }
+
+    .stacked-card.bottom { transform: translateZ(-22px) rotate(-6deg); opacity: 0.9; }
+    .stacked-card.middle { transform: translateZ(-12px) rotate(3deg); opacity: 0.95; }
+    .stacked-card.top { transform: translateZ(0) rotate(0); }
+
+    .featured-hero:hover .stacked-card.bottom { transform: translateZ(-44px) translateX(-18px) rotate(-10deg); }
+    .featured-hero:hover .stacked-card.middle { transform: translateZ(-22px) translateX(10px) rotate(6deg); }
+    .featured-hero:hover .stacked-card.top { transform: translateZ(22px) translateY(-10px); box-shadow: var(--shadow-3); }
+
+    .card-back-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+      background-image: radial-gradient(var(--sand) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .deck-spine {
+      width: 50px;
+      height: 100%;
+      border-right: 1px solid var(--border-subtle);
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.012);
+    }
+
+    .deck-label-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      color: var(--sand);
+      text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0.92;
+    }
+
+    .deck-visual-area { flex: 1; display: grid; place-items: center; position: relative; }
+    .card-hearts-visual { display: flex; gap: 6px; align-items: center; justify-content: center; }
+    .heart-svg { width: 24px; height: 24px; }
+    .heart-lg { width: 40px; height: 40px; }
+
+    /* Play grid */
+    .grid-section { margin-bottom: var(--s-9); }
+
+    .section-head {
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--stone);
+      margin-bottom: 18px;
+      padding-left: 8px;
+    }
+
+    .games-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+
+    @media (max-width: 520px) {
+      .games-grid { grid-template-columns: 1fr; }
+    }
+
+    .game-tile {
+      padding: 22px;
+      border-radius: var(--r-xl);
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      gap: 16px;
+      cursor: pointer;
+      transition: transform var(--dur-2) var(--easing), background var(--dur-2) var(--easing), border-color var(--dur-2) var(--easing);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-tile::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background: radial-gradient(320px 220px at 15% 0%, rgba(255,255,255,0.05), transparent 65%);
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .game-tile:hover { background: rgba(255,255,255,0.035); transform: translateY(-2px); border-color: var(--border-highlight); }
+
+    .game-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+
+    .game-icon svg { width: 20px; height: 20px; stroke-width: 1.6px; }
+
+    .tile-title { font-size: 15px; font-weight: 750; color: var(--sand); }
+    .tile-desc { font-size: 12px; color: var(--stone); margin-top: 3px; }
+
+    .icon-clay { background: rgba(224, 159, 125, 0.12); color: var(--clay); }
+    .icon-mist { background: rgba(196, 181, 253, 0.12); color: var(--mist); }
+    .icon-gold { background: rgba(212, 175, 55, 0.12); color: #D4AF37; }
+    .icon-sage { background: rgba(138, 166, 134, 0.12); color: #8AA686; }
+
+    /* Rituals */
+    .rituals-list { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; }
+
+    .ritual-pill {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+      cursor: pointer;
+      transition: transform var(--dur-1) var(--easing), background var(--dur-2) var(--easing), border-color var(--dur-2) var(--easing);
+    }
+
+    .ritual-pill:hover { background: rgba(255,255,255,0.04); border-color: var(--border-highlight); transform: translateY(-1px); }
+    .ritual-name { font-size: 13px; font-weight: 700; color: var(--sand); }
+
+    /* ------------------------------
+       10) MESSAGES
+    ------------------------------ */
+    .chat-container { display: flex; flex-direction: column; height: 100%; padding: 18px 0; max-width: 640px; }
+
+    .chat-header-refined {
+      position: sticky;
+      top: 18px;
+      z-index: 20;
+      margin: 0 auto 20px;
+      padding: 14px 16px;
+      border-radius: var(--r-xl);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-1);
+    }
+
+    .chat-info { display: flex; align-items: center; gap: 14px; }
+
+    .chat-avatar-lg {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-highlight);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      color: var(--sand);
+    }
+
+    .chat-status-text {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 750;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .chat-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .chat-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 10px 2px 20px;
+    }
+
+    .date-sep {
+      text-align: center;
+      font-size: 10px;
+      color: var(--stone);
+      margin: 18px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.55;
+    }
+
+    .chat-bubble {
+      max-width: 76%;
+      padding: 14px 18px;
+      border-radius: 22px;
+      font-size: 15px;
+      line-height: 1.5;
+      position: relative;
+      transition: transform var(--dur-1) var(--easing);
+    }
+
+    .chat-bubble:hover { transform: translateY(-1px); }
+
+    .chat-bubble.them {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      border-bottom-left-radius: 6px;
+    }
+
+    .chat-bubble.me {
+      align-self: flex-end;
+      background: linear-gradient(135deg, rgba(224, 159, 125, 0.16), rgba(224, 159, 125, 0.06));
+      border: 1px solid rgba(224, 159, 125, 0.14);
+      border-bottom-right-radius: 6px;
+      color: rgba(245,230,211,0.98);
+    }
+
+    .read-receipt {
+      font-size: 10px;
+      color: var(--stone);
+      opacity: 0.72;
+      text-align: right;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    /* Whisper: now works on touch (press & hold). Hover still reveals on desktop. */
+    .whisper-container {
+      align-self: flex-start;
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--r-xl);
+      cursor: pointer;
+      padding: 16px 18px;
+      background: rgba(196, 181, 253, 0.06);
+      border: 1px solid rgba(196, 181, 253, 0.14);
+      user-select: none;
+      touch-action: manipulation;
+    }
+
+    .whisper-content {
+      filter: blur(7px);
+      opacity: 0.52;
+      color: var(--mist);
+      transition: filter var(--dur-3) var(--easing), opacity var(--dur-3) var(--easing);
+    }
+
+    .whisper-container:hover .whisper-content,
+    .whisper-container.reveal .whisper-content {
+      filter: blur(0);
+      opacity: 1;
+    }
+
+    .whisper-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: rgba(196, 181, 253, 0.9);
+      pointer-events: none;
+      transition: opacity var(--dur-2) var(--easing);
+    }
+
+    .whisper-container:hover .whisper-label,
+    .whisper-container.reveal .whisper-label { opacity: 0; }
+
+    .chat-input-refined {
+      margin-top: auto;
+      padding: 10px;
+      border-radius: var(--r-xl);
+      border: 1px solid var(--border-subtle);
+      background: rgba(15,15,15,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: var(--shadow-2);
+    }
+
+    .chat-input-refined .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: var(--stone);
+      cursor: pointer;
+      transition: background var(--dur-2) var(--easing), color var(--dur-2) var(--easing), transform var(--dur-1) var(--easing);
+    }
+
+    .chat-input-refined .icon-btn:hover { background: rgba(255,255,255,0.04); color: var(--sand); }
+    .chat-input-refined .icon-btn:active { transform: scale(0.98); }
+
+    .chat-input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0 10px;
+      color: var(--sand);
+      outline: none;
+      font-size: 15px;
+    }
+
+    .chat-input-field::placeholder { color: rgba(156,163,175,0.8); }
+
+    /* ------------------------------
+       11) MOMENTS
+    ------------------------------ */
+    .calendar-strip {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 26px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .cal-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      opacity: 0.55;
+      transition: opacity var(--dur-2) var(--easing);
+      padding: 6px 6px;
+      border-radius: 16px;
+    }
+
+    .cal-day:hover { opacity: 0.85; }
+    .cal-day.active { opacity: 1; }
+
+    .cal-name { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--stone); }
+
+    .cal-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 750;
+      background: transparent;
+      border: 1px solid transparent;
+    }
+
+    .cal-day.active .cal-num {
+      background: var(--sand);
+      color: var(--base);
+      border-color: rgba(245,230,211,0.22);
+    }
+
+    .timeline-feed { display: flex; flex-direction: column; gap: 40px; }
+    .timeline-group { display: flex; flex-direction: column; gap: 22px; }
+
+    .date-header { display: flex; align-items: center; gap: 16px; margin-bottom: 6px; }
+    .date-line { height: 1px; flex: 1; background: var(--border-subtle); }
+
+    .date-text {
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--stone);
+    }
+
+    /* Photo (polaroid vibe retained, slightly premium) */
+    .photo-card {
+      padding: 12px 12px 18px 12px;
+      background: #ffffff;
+      border-radius: 16px;
+      transform: rotate(-0.8deg);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.28);
+      transition: transform var(--dur-2) var(--easing);
+      width: min(520px, 100%);
+    }
+
+    .photo-card:hover { transform: rotate(0deg) scale(1.01); }
+
+    .photo-img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 10px;
+      filter: contrast(1.08) saturate(0.95);
+    }
+
+    .photo-caption {
+      margin-top: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
+      color: #2b2b2b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 8px;
+    }
+
+    .song-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px;
+      border-radius: var(--r-xl);
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.03);
+      width: min(560px, 100%);
+    }
+
+    .song-art { width: 56px; height: 56px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); display: grid; place-items: center; }
+
+    .song-details h4 { font-size: 15px; color: var(--sand); margin-bottom: 3px; font-weight: 800; }
+    .song-details p { font-size: 12px; color: var(--stone); }
+
+    @keyframes equalize { 0%, 100% { height: 4px; } 50% { height: 16px; } }
+
+    .equalizer { display: flex; gap: 3px; align-items: flex-end; height: 16px; margin-left: auto; }
+    .bar { width: 3px; background: var(--accent); animation: equalize 1s infinite ease-in-out; border-radius: 999px; }
+
+    /* ------------------------------
+       12) US / PROFILE
+    ------------------------------ */
+    .profile-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 20px 0 18px;
+      max-width: 520px;
+    }
+
+    .stat-box {
+      border-radius: var(--r-xl);
+      border: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.02);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 34px;
+      font-weight: 280;
+      letter-spacing: -0.02em;
+      color: var(--sand);
+      font-variation-settings: "opsz" 120;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--stone);
+    }
+
+    /* ------------------------------
+       13) MODAL (Draw Card)
+    ------------------------------ */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 22px;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-card {
+      width: min(560px, 100%);
+      border-radius: var(--r-2xl);
+      border: 1px solid var(--border-highlight);
+      background: linear-gradient(155deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+      box-shadow: var(--shadow-3);
+      overflow: hidden;
+    }
+
+    .modal-top {
+      padding: 18px 18px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .modal-title {
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-close {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--stone);
+      transition: background var(--dur-2) var(--easing), color var(--dur-2) var(--easing);
+    }
+
+    .modal-close:hover { background: rgba(255,255,255,0.04); color: var(--sand); }
+
+    .modal-body { padding: 24px 22px 22px; }
+
+    .modal-question {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      line-height: 1.35;
+      color: var(--sand);
+      margin-bottom: 18px;
+      font-variation-settings: "opsz" 120;
+    }
+
+    .modal-sub {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--stone);
+      margin-bottom: 18px;
+    }
+
+    .modal-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  </style>
+</head>
+<body>
+  <!-- Texture + Ambient -->
+  <div class="grain-overlay"></div>
+  <div class="ambient-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+
+  <div id="app" role="application" aria-label="Closer dashboard">
+    <!-- Sidebar -->
+    <nav class="nav-sidebar" aria-label="Primary">
+      <div class="nav-logo" aria-hidden="true">C.</div>
+      <div class="nav-items" role="tablist" aria-label="Views">
+        <button type="button" class="nav-item focus-ring active" data-view="home" data-tooltip="Home" aria-controls="home-view" aria-selected="true" role="tab"><i data-lucide="home"></i><span class="sr-only">Home</span></button>
+        <button type="button" class="nav-item focus-ring" data-view="moments" data-tooltip="Moments" aria-controls="moments-view" aria-selected="false" role="tab"><i data-lucide="aperture"></i><span class="sr-only">Moments</span></button>
+        <button type="button" class="nav-item focus-ring" data-view="messages" data-tooltip="Messages" aria-controls="messages-view" aria-selected="false" role="tab"><i data-lucide="message-circle"></i><span class="sr-only">Messages</span></button>
+        <button type="button" class="nav-item focus-ring" data-view="connect" data-tooltip="Connect" aria-controls="connect-view" aria-selected="false" role="tab"><i data-lucide="sparkles"></i><span class="sr-only">Connect</span></button>
+        <button type="button" class="nav-item focus-ring" data-view="us" data-tooltip="Us" aria-controls="us-view" aria-selected="false" role="tab"><i data-lucide="user"></i><span class="sr-only">Us</span></button>
+      </div>
+
+      <div style="margin-top:auto; padding-top:24px; display:flex; flex-direction:column; align-items:center; gap:10px; opacity:0.8">
+        <div class="pill" aria-hidden="true" style="font-size:12px;">
+          <i data-lucide="command" style="width:14px"></i>
+          <span>Switch</span>
+          <span class="kbd">⌘</span><span class="kbd">1–5</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Bar -->
+    <nav class="nav-mobile" aria-label="Primary mobile">
+      <div class="nav-mobile-inner" role="tablist" aria-label="Views">
+        <button type="button" class="nav-mobile-item focus-ring active" data-view="home" aria-controls="home-view" aria-selected="true" role="tab"><i data-lucide="home"></i><span class="sr-only">Home</span></button>
+        <button type="button" class="nav-mobile-item focus-ring" data-view="moments" aria-controls="moments-view" aria-selected="false" role="tab"><i data-lucide="aperture"></i><span class="sr-only">Moments</span></button>
+        <button type="button" class="nav-mobile-item focus-ring" data-view="messages" aria-controls="messages-view" aria-selected="false" role="tab"><i data-lucide="message-circle"></i><span class="sr-only">Messages</span></button>
+        <button type="button" class="nav-mobile-item focus-ring" data-view="connect" aria-controls="connect-view" aria-selected="false" role="tab"><i data-lucide="sparkles"></i><span class="sr-only">Connect</span></button>
+        <button type="button" class="nav-mobile-item focus-ring" data-view="us" aria-controls="us-view" aria-selected="false" role="tab"><i data-lucide="user"></i><span class="sr-only">Us</span></button>
+      </div>
+    </nav>
+
+    <!-- HOME VIEW -->
+    <main id="home-view" class="view active" role="tabpanel" aria-label="Home">
+      <div class="container">
+        <div class="timezone-pill glass" aria-label="Time zones">
+          <div class="timezone-item">
+            <span class="tz-time" id="time-sf">6:42 PM</span>
+            <span class="tz-city">San Francisco</span>
+          </div>
+          <div class="timezone-divider"></div>
+          <div class="timezone-item">
+            <span class="tz-time" id="time-ny" style="color:var(--mist)">9:42 PM</span>
+            <span class="tz-city">New York</span>
+          </div>
+        </div>
+
+        <div class="connection-visual" aria-hidden="true">
+          <div class="connection-track"></div>
+          <div class="connection-spark"></div>
+          <div class="avatar me">M</div>
+          <div class="avatar them">E</div>
+        </div>
+
+        <div class="countdown-hero">
+          <div class="visit-label">Next Visit in</div>
+          <div class="days-display" aria-label="Countdown">
+            <span class="days-num" id="days-num">12</span>
+            <span class="days-text">days</span>
+          </div>
+        </div>
+
+        <div class="daily-card card focus-ring" role="button" tabindex="0" aria-label="Answer daily question" onclick="navigateTo('connect')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); navigateTo('connect');}">
+          <div class="card-label"><i data-lucide="sparkles" style="width:14px"></i> Daily Question</div>
+          <h3 class="card-question text-balance">“What’s a small moment from this week that you want to remember?”</h3>
+          <div class="card-footer">
+            <span class="card-cta">Tap to answer</span>
+            <div style="display:flex; align-items:center;">
+              <div aria-hidden="true" style="width:26px; height:26px; border-radius:999px; background:var(--clay); border:2px solid var(--base); margin-right:-8px;"></div>
+              <div aria-hidden="true" style="width:26px; height:26px; border-radius:999px; background:rgba(255,255,255,0.02); border:1px solid var(--border-highlight); display:grid; place-items:center; font-size:9px; color:var(--stone);">?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- CONNECT VIEW -->
+    <main id="connect-view" class="view" role="tabpanel" aria-label="Connect">
+      <div class="container">
+        <div class="connect-header">
+          <div>
+            <h1 class="page-title">Connect</h1>
+            <p class="page-subtitle">Deepen your bond through play.</p>
+          </div>
+          <div class="sync-status" aria-label="Sync status">
+            <div class="sync-dot" aria-hidden="true"></div>
+            <span class="sync-text">Sync Active</span>
+          </div>
+        </div>
+
+        <section class="featured-hero" id="featured-hero" aria-label="Featured experience">
+          <div class="featured-content">
+            <div class="featured-badge">Featured Experience</div>
+            <h2 class="featured-title">The Intimacy Deck</h2>
+            <p class="featured-desc">150 questions designed to spark conversation, reignite passion, and deepen your understanding.</p>
+
+            <div class="featured-actions">
+              <button type="button" class="btn btn-primary focus-ring pressable" id="draw-card-btn">
+                <i data-lucide="sparkles" style="width:16px"></i>
+                Draw Card
+              </button>
+              <button type="button" class="btn focus-ring pressable" id="shuffle-btn">
+                <i data-lucide="shuffle" style="width:16px"></i>
+                Shuffle
+              </button>
+            </div>
+          </div>
+
+          <div class="featured-visual" aria-hidden="true">
+            <div class="rising-hearts-container">
+              <svg class="rising-heart rh-1" viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+              <svg class="rising-heart rh-2" viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+              <svg class="rising-heart rh-3" viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+              <svg class="rising-heart rh-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+              <svg class="rising-heart rh-5" viewBox="0 0 24 24" fill="currentColor"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+            </div>
+
+            <div class="card-stack" id="card-stack" title="Tap to draw" role="button" tabindex="0">
+              <div class="stacked-card bottom"></div>
+              <div class="stacked-card middle"></div>
+              <div class="stacked-card top">
+                <div class="card-back-pattern"></div>
+                <div style="display:flex; height:100%">
+                  <div class="deck-spine"><span class="deck-label-vertical">INTIMACY</span></div>
+                  <div class="deck-visual-area">
+                    <div class="card-hearts-visual">
+                      <svg class="heart-svg" viewBox="0 0 24 24" fill="rgba(224,159,125,0.22)"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+                      <svg class="heart-lg" viewBox="0 0 24 24" fill="var(--clay)"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+                      <svg class="heart-svg" viewBox="0 0 24 24" fill="rgba(224,159,125,0.22)"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.7l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 000-7.8z"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="grid-section" aria-label="Play together">
+          <div class="section-head">Play Together</div>
+          <div class="games-grid">
+            <div class="game-tile focus-ring" role="button" tabindex="0">
+              <div class="game-icon icon-clay"><i data-lucide="flame"></i></div>
+              <div>
+                <div class="tile-title">Hot Takes</div>
+                <div class="tile-desc">Spicy debates</div>
+              </div>
+            </div>
+            <div class="game-tile focus-ring" role="button" tabindex="0">
+              <div class="game-icon icon-mist"><i data-lucide="git-pull-request"></i></div>
+              <div>
+                <div class="tile-title">Would You Rather</div>
+                <div class="tile-desc">Tough choices</div>
+              </div>
+            </div>
+            <div class="game-tile focus-ring" role="button" tabindex="0">
+              <div class="game-icon icon-gold"><i data-lucide="hourglass"></i></div>
+              <div>
+                <div class="tile-title">Time Capsule</div>
+                <div class="tile-desc">Lock a message</div>
+              </div>
+            </div>
+            <div class="game-tile focus-ring" role="button" tabindex="0">
+              <div class="game-icon icon-sage"><i data-lucide="hammer"></i></div>
+              <div>
+                <div class="tile-title">Dream Builder</div>
+                <div class="tile-desc">Future plans</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid-section" aria-label="Rituals">
+          <div class="section-head">Rituals</div>
+          <div class="rituals-list no-scrollbar">
+            <div class="ritual-pill focus-ring" role="button" tabindex="0"><i data-lucide="sun" style="width:16px; color:var(--clay)"></i><span class="ritual-name">Morning Hello</span></div>
+            <div class="ritual-pill focus-ring" role="button" tabindex="0"><i data-lucide="smile" style="width:16px; color:var(--mist)"></i><span class="ritual-name">Gratitude</span></div>
+            <div class="ritual-pill focus-ring" role="button" tabindex="0"><i data-lucide="moon" style="width:16px; color:var(--mist)"></i><span class="ritual-name">Goodnight</span></div>
+            <div class="ritual-pill focus-ring" role="button" tabindex="0"><i data-lucide="heart" style="width:16px; color:var(--clay)"></i><span class="ritual-name">Thinking of You</span></div>
+            <div class="ritual-pill focus-ring" role="button" tabindex="0"><i data-lucide="calendar" style="width:16px; color:var(--sand)"></i><span class="ritual-name">Weekly Check‑in</span></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- MESSAGES VIEW -->
+    <main id="messages-view" class="view" role="tabpanel" aria-label="Messages">
+      <div class="container chat-container">
+        <header class="chat-header-refined glass" aria-label="Chat header">
+          <div class="chat-info">
+            <div class="chat-avatar-lg" aria-hidden="true">E</div>
+            <div>
+              <h3 style="font-size:16px; font-weight:800; color:var(--sand); margin-bottom:3px;">Emma</h3>
+              <span class="chat-status-text"><span class="chat-status-dot" aria-hidden="true"></span>Online now</span>
+            </div>
+          </div>
+          <button type="button" class="icon-btn focus-ring" aria-label="More">
+            <i data-lucide="more-horizontal" style="color:var(--stone)"></i>
+          </button>
+        </header>
+
+        <div class="chat-list">
+          <div class="date-sep">Yesterday</div>
+
+          <div class="chat-bubble them">I was just looking at the moon and thinking of you.</div>
+
+          <div class="chat-bubble me">
+            I’m looking at it too. It’s beautiful tonight.
+            <div class="read-receipt">Read 9:45 PM <i data-lucide="check-check" style="width:12px"></i></div>
+          </div>
+
+          <div class="date-sep">Today</div>
+
+          <div class="whisper-container focus-ring" role="button" tabindex="0" aria-label="Whisper message. Press and hold to reveal.">
+            <div class="whisper-label"><i data-lucide="eye-off" style="width:12px; margin-right:8px"></i>Press & Hold</div>
+            <div class="whisper-content">I found that book you were looking for! Surprise!</div>
+          </div>
+        </div>
+
+        <div class="chat-input-refined" aria-label="Message input">
+          <button type="button" class="icon-btn focus-ring" aria-label="Add"><i data-lucide="plus"></i></button>
+          <input type="text" class="chat-input-field" placeholder="Message Emma…" aria-label="Message" />
+          <button type="button" class="icon-btn focus-ring" aria-label="Voice"><i data-lucide="mic"></i></button>
+        </div>
+      </div>
+    </main>
+
+    <!-- MOMENTS VIEW -->
+    <main id="moments-view" class="view" role="tabpanel" aria-label="Moments">
+      <div class="container">
+        <div style="margin-bottom:16px;">
+          <h1 class="page-title">Moments</h1>
+          <p class="page-subtitle">Tiny artifacts that make you two feel close.</p>
+        </div>
+
+        <div class="calendar-strip" aria-label="Calendar">
+          <div class="cal-day focus-ring" role="button" tabindex="0"><span class="cal-name">Mon</span><div class="cal-num">9</div></div>
+          <div class="cal-day focus-ring" role="button" tabindex="0"><span class="cal-name">Tue</span><div class="cal-num">10</div></div>
+          <div class="cal-day focus-ring active" role="button" tabindex="0"><span class="cal-name">Wed</span><div class="cal-num">11</div></div>
+          <div class="cal-day focus-ring" role="button" tabindex="0"><span class="cal-name">Thu</span><div class="cal-num">12</div></div>
+          <div class="cal-day focus-ring" role="button" tabindex="0"><span class="cal-name">Fri</span><div class="cal-num">13</div></div>
+        </div>
+
+        <div class="timeline-feed">
+          <div class="timeline-group">
+            <div class="date-header"><span class="date-text">Today</span><div class="date-line"></div></div>
+
+            <div class="photo-card">
+              <img src="https://images.unsplash.com/photo-1516058020843-e38466e60b2e?q=80&w=800" class="photo-img" alt="Morning Coffee" />
+              <div class="photo-caption">
+                <span>Morning Coffee ☕️</span>
+                <span style="font-size:10px; color:#7a7a7a">9:42 AM</span>
+              </div>
+            </div>
+
+            <div class="song-card">
+              <div class="song-art"><i data-lucide="music" style="color:var(--stone)"></i></div>
+              <div class="song-details">
+                <h4>Until I Found You</h4>
+                <p>Stephen Sanchez</p>
+              </div>
+              <div class="equalizer" aria-hidden="true">
+                <div class="bar" style="animation-delay:0s"></div>
+                <div class="bar" style="animation-delay:0.2s"></div>
+                <div class="bar" style="animation-delay:0.4s"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-group">
+            <div class="date-header"><span class="date-text">Yesterday</span><div class="date-line"></div></div>
+            <div class="daily-card card" style="padding:24px; max-width:560px;">
+              <div class="card-label" style="margin-bottom:12px;">Saved Answer</div>
+              <p style="font-family:var(--font-serif); font-size:18px; color:var(--sand); line-height:1.45;">“I love our shared sense of humor. Nobody makes me laugh like you do.”</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- US VIEW -->
+    <main id="us-view" class="view" role="tabpanel" aria-label="Us">
+      <div class="container">
+        <div style="margin-bottom:12px;">
+          <h1 class="page-title">Us</h1>
+          <p class="page-subtitle">Your shared rhythm, captured.</p>
+        </div>
+
+        <div class="profile-stats">
+          <div class="stat-box"><span class="stat-num">14</span><span class="stat-label">Day Streak</span></div>
+          <div class="stat-box"><span class="stat-num">452</span><span class="stat-label">Answers</span></div>
+        </div>
+
+        <div class="game-tile focus-ring" role="button" tabindex="0" style="flex-direction:row; align-items:center; justify-content:space-between; width:min(560px, 100%);">
+          <div style="display:flex; align-items:center; gap:14px;"><i data-lucide="settings" style="color:var(--stone)"></i><span style="color:var(--sand); font-weight:750">Settings</span></div>
+          <i data-lucide="chevron-right" style="color:var(--stone); width:18px;"></i>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Draw Card Modal -->
+  <div class="modal" id="card-modal" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
+    <div class="modal-card" role="document">
+      <div class="modal-top">
+        <div class="modal-title" id="card-modal-title"><i data-lucide="sparkles" style="width:14px"></i> Intimacy Deck</div>
+        <button type="button" class="modal-close focus-ring" id="close-modal" aria-label="Close">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-question" id="modal-question">“What’s something you wish I understood without you having to explain it?”</div>
+        <div class="modal-sub">Take 60 seconds each. No fixing—just listening.</div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary focus-ring pressable" id="next-question">
+            <i data-lucide="dice-5" style="width:16px"></i>
+            Next Card
+          </button>
+          <button type="button" class="btn focus-ring pressable" id="copy-question">
+            <i data-lucide="copy" style="width:16px"></i>
+            Copy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // ---- Lucide init ----
+      function icons() {
+        if (typeof lucide !== "undefined" && lucide.createIcons) lucide.createIcons();
+      }
+
+      // ---- Accent per view (keeps your palette but makes navigation feel alive) ----
+      const accentMap = {
+        home: { accent: "var(--clay)", glow: "var(--clay-glow)" },
+        moments: { accent: "var(--mist)", glow: "var(--mist-glow)" },
+        messages: { accent: "var(--clay)", glow: "var(--clay-glow)" },
+        connect: { accent: "var(--clay)", glow: "var(--clay-glow)" },
+        us: { accent: "var(--mist)", glow: "var(--mist-glow)" },
+      };
+
+      function setAccent(viewName) {
+        const entry = accentMap[viewName] || accentMap.home;
+        document.documentElement.style.setProperty("--accent", entry.accent);
+        document.documentElement.style.setProperty("--accent-glow", entry.glow);
+      }
+
+      // ---- Navigation ----
+      const navItems = Array.from(document.querySelectorAll("[data-view]"));
+      const views = Array.from(document.querySelectorAll(".view"));
+
+      function activate(viewName, { focusView = false } = {}) {
+        views.forEach((v) => v.classList.toggle("active", v.id === `${viewName}-view`));
+
+        navItems.forEach((n) => {
+          const isActive = n.getAttribute("data-view") === viewName;
+          n.classList.toggle("active", isActive);
+          if (n.getAttribute("role") === "tab") n.setAttribute("aria-selected", String(isActive));
+        });
+
+        setAccent(viewName);
+        icons();
+
+        // Optional focus management for keyboard users
+        if (focusView) {
+          const panel = document.getElementById(`${viewName}-view`);
+          if (panel) panel.focus?.();
+        }
+      }
+
+      navItems.forEach((item) => {
+        item.addEventListener("click", () => activate(item.getAttribute("data-view")));
+      });
+
+      // Keyboard: ⌘/Ctrl + 1–5 to switch views
+      window.addEventListener("keydown", (e) => {
+        const cmd = e.metaKey || e.ctrlKey;
+        if (!cmd) return;
+        const key = e.key;
+        const map = { "1": "home", "2": "moments", "3": "messages", "4": "connect", "5": "us" };
+        if (map[key]) {
+          e.preventDefault();
+          activate(map[key], { focusView: false });
+        }
+      });
+
+      // ---- Home: clocks ----
+      function updateTime() {
+        const now = new Date();
+        const sf = document.getElementById("time-sf");
+        const ny = document.getElementById("time-ny");
+        if (!sf || !ny) return;
+        sf.innerText = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/Los_Angeles" });
+        ny.innerText = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
+      }
+
+      // ---- Whisper: press & hold ----
+      function initWhispers() {
+        const whispers = Array.from(document.querySelectorAll(".whisper-container"));
+        whispers.forEach((w) => {
+          const reveal = () => w.classList.add("reveal");
+          const hide = () => w.classList.remove("reveal");
+
+          w.addEventListener("pointerdown", (e) => {
+            // Avoid text selection on long-press
+            e.preventDefault();
+            reveal();
+            w.setPointerCapture?.(e.pointerId);
+          });
+          w.addEventListener("pointerup", hide);
+          w.addEventListener("pointercancel", hide);
+          w.addEventListener("pointerleave", hide);
+
+          // Keyboard access
+          w.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              w.classList.toggle("reveal");
+            }
+            if (e.key === "Escape") hide();
+          });
+        });
+      }
+
+      // ---- Featured tilt (premium feel; respects reduced motion) ----
+      function initTilt() {
+        const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduce) return;
+
+        const hero = document.getElementById("featured-hero");
+        const stack = document.getElementById("card-stack");
+        if (!hero || !stack) return;
+
+        let raf = null;
+        function onMove(e) {
+          const rect = hero.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+
+          const rotY = (x - 0.5) * 14; // -7..7
+          const rotX = (0.5 - y) * 10; // -5..5
+
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(() => {
+            stack.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+          });
+        }
+
+        function reset() {
+          stack.style.transform = "rotateY(0deg) rotateX(0deg)";
+        }
+
+        hero.addEventListener("pointermove", onMove);
+        hero.addEventListener("pointerleave", reset);
+        hero.addEventListener("pointerup", reset);
+      }
+
+      // ---- Draw card modal ----
+      const questions = [
+        "What’s something you wish I understood without you having to explain it?",
+        "When do you feel most loved by me lately?",
+        "What’s a tiny habit we could start that would make us feel closer?",
+        "What’s one memory with me you replay when you miss me?",
+        "If we had a ‘reset’ button for one recurring argument, what would we change?",
+      ];
+
+      function pickQuestion() {
+        return `“${questions[Math.floor(Math.random() * questions.length)]}”`;
+      }
+
+      function initModal() {
+        const modal = document.getElementById("card-modal");
+        const openBtn = document.getElementById("draw-card-btn");
+        const closeBtn = document.getElementById("close-modal");
+        const nextBtn = document.getElementById("next-question");
+        const copyBtn = document.getElementById("copy-question");
+        const qEl = document.getElementById("modal-question");
+        const stack = document.getElementById("card-stack");
+        const shuffle = document.getElementById("shuffle-btn");
+
+        if (!modal || !openBtn || !closeBtn || !nextBtn || !copyBtn || !qEl) return;
+
+        function open() {
+          qEl.textContent = pickQuestion();
+          modal.classList.add("active");
+          closeBtn.focus();
+        }
+
+        function close() {
+          modal.classList.remove("active");
+          openBtn.focus();
+        }
+
+        openBtn.addEventListener("click", open);
+        stack?.addEventListener("click", open);
+        stack?.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+        });
+
+        closeBtn.addEventListener("click", close);
+        modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+
+        window.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && modal.classList.contains("active")) close();
+        });
+
+        nextBtn.addEventListener("click", () => { qEl.textContent = pickQuestion(); });
+
+        copyBtn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(qEl.textContent.replace(/[“”]/g, '"'));
+            copyBtn.innerHTML = '<i data-lucide="check" style="width:16px"></i> Copied';
+            icons();
+            setTimeout(() => { copyBtn.innerHTML = '<i data-lucide="copy" style="width:16px"></i> Copy'; icons(); }, 1100);
+          } catch (_) {
+            copyBtn.innerHTML = '<i data-lucide="alert-circle" style="width:16px"></i> Copy failed';
+            icons();
+            setTimeout(() => { copyBtn.innerHTML = '<i data-lucide="copy" style="width:16px"></i> Copy'; icons(); }, 1400);
+          }
+        });
+
+        // Shuffle microinteraction
+        shuffle?.addEventListener("click", () => {
+          const card = document.getElementById("card-stack");
+          if (!card) return;
+          card.animate(
+            [
+              { transform: "rotateY(0deg) rotateX(0deg)" },
+              { transform: "rotateY(-12deg) rotateX(8deg) translateY(-4px)" },
+              { transform: "rotateY(10deg) rotateX(-6deg) translateY(1px)" },
+              { transform: "rotateY(0deg) rotateX(0deg)" },
+            ],
+            { duration: 520, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+          );
+        });
+      }
+
+      // Public helper to preserve your original API
+      window.navigateTo = function (viewName) {
+        const first = document.querySelector(`.nav-item[data-view="${viewName}"]`) || document.querySelector(`.nav-mobile-item[data-view="${viewName}"]`);
+        first?.click();
+      };
+
+      document.addEventListener("DOMContentLoaded", () => {
+        icons();
+        updateTime();
+        setInterval(updateTime, 1000);
+        setAccent("home");
+
+        initWhispers();
+        initTilt();
+        initModal();
+      });
+    })();
+  </script>
+</body>
+</html>
