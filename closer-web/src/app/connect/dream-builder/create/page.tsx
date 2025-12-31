@@ -18,10 +18,10 @@ export default function CreateDreamPage() {
     const [selectedImage, setSelectedImage] = useState("");
 
     const categories = [
-        { id: "Travel", icon: Globe, color: "#3B82F6", label: "Travel & Adventure" },
-        { id: "Home", icon: Home, color: "#10B981", label: "Home & Living" },
-        { id: "Financial", icon: DollarSign, color: "#F59E0B", label: "Financial Goals" },
-        { id: "Life", icon: Sparkles, color: "#8B5CF6", label: "Life Milestones" },
+        { id: "Travel", icon: Globe, color: "var(--mist)", label: "Travel & Adventure" },
+        { id: "Home", icon: Home, color: "var(--clay)", label: "Home & Living" },
+        { id: "Financial", icon: DollarSign, color: "var(--gold)", label: "Financial Goals" },
+        { id: "Life", icon: Sparkles, color: "var(--love)", label: "Life Milestones" },
     ];
 
     const stockImages = [
@@ -95,12 +95,12 @@ export default function CreateDreamPage() {
                                         padding: 20, borderRadius: 20,
                                         display: 'flex', alignItems: 'center', gap: 16,
                                         border: category === cat.id ? `2px solid ${cat.color}` : '1px solid var(--border-subtle)',
-                                        background: category === cat.id ? `${cat.color}10` : undefined,
+                                        background: category === cat.id ? 'var(--surface-2)' : undefined,
                                         textAlign: 'left'
                                     }}
                                 >
                                     <div style={{
-                                        width: 48, height: 48, borderRadius: '50%', background: `${cat.color}20`,
+                                        width: 48, height: 48, borderRadius: '50%', background: 'var(--surface-active)',
                                         color: cat.color, display: 'flex', alignItems: 'center', justifyContent: 'center'
                                     }}>
                                         <cat.icon size={20} />

@@ -40,12 +40,17 @@ export default function ConnectPage() {
 
   function resetTilt() {
     if (!stackRef.current) return;
+    // Enable transition for smooth reset
+    stackRef.current.style.transition = "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)";
     stackRef.current.style.transform = "rotateY(0deg) rotateX(0deg)";
   }
 
   function onHeroPointerMove(e: ReactPointerEvent<HTMLElement>) {
     if (reduceMotionRef.current) return;
     if (!stackRef.current) return;
+
+    // Disable transition for 1:1 tracking
+    stackRef.current.style.transition = "none";
 
     const hero = e.currentTarget;
     const rect = hero.getBoundingClientRect();

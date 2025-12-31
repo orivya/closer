@@ -1,19 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Gift, Star, X } from "lucide-react";
+import { ArrowLeft, Gift, Star, X, Flower2, Coffee, Sparkles, Ticket, Heart, Package } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
-const GIFTS: Record<string, { name: string, icon: string, color: string }> = {
-    'rose-1': { name: 'Digital Rose', icon: '🌹', color: '#f43f5e' },
-    'coffee-1': { name: 'Morning Coffee', icon: '☕', color: '#ea580c' },
-    'massage-1': { name: 'Massage Coupon', icon: '💆‍♀️', color: '#8b5cf6' },
-    'date-1': { name: 'Date Night Pass', icon: '🎟️', color: '#db2777' },
-    'choco-1': { name: 'Box of Chocolates', icon: '🍫', color: '#78350f' },
-    'clean-1': { name: 'Chore Pass', icon: '🧹', color: '#10b981' },
-    'kiss-1': { name: '1000 Kisses', icon: '💋', color: '#e11d48' },
-    'mystery-1': { name: 'Mystery Box', icon: '🎁', color: '#6366f1' },
+const GIFTS: Record<string, { name: string, icon: any, color: string }> = {
+    'rose-1': { name: 'Digital Rose', icon: <Flower2 size={100} />, color: '#f43f5e' },
+    'coffee-1': { name: 'Morning Coffee', icon: <Coffee size={100} />, color: '#ea580c' },
+    'massage-1': { name: 'Massage Coupon', icon: <Sparkles size={100} />, color: '#8b5cf6' },
+    'date-1': { name: 'Date Night Pass', icon: <Ticket size={100} />, color: '#db2777' },
+    'choco-1': { name: 'Sweet Treat', icon: <Heart size={100} />, color: '#78350f' },
+    'clean-1': { name: 'Chore Pass', icon: <Package size={100} />, color: '#10b981' },
+    'kiss-1': { name: '1000 Kisses', icon: <Heart size={100} fill="currentColor" />, color: '#e11d48' },
+    'mystery-1': { name: 'Mystery Box', icon: <Gift size={100} />, color: '#6366f1' },
 };
 
 export default function UnwrapGiftPage() {

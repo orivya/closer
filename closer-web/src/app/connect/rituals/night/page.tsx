@@ -53,7 +53,7 @@ export default function GoodnightPage() {
                     <ArrowLeft aria-hidden="true" />
                 </Link>
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 11, color: '#60a5fa', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                    <div style={{ fontSize: 11, color: 'var(--mist)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                         Goodnight Kiss
                     </div>
                 </div>
@@ -65,10 +65,10 @@ export default function GoodnightPage() {
                 <div style={{ marginBottom: 40, textAlign: 'center' }}>
                     <div style={{
                         margin: '0 auto 24px', width: 80, height: 80, borderRadius: '50%',
-                        background: 'rgba(96, 165, 250, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 0 40px rgba(96, 165, 250, 0.1)'
+                        background: 'var(--mist-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 0 40px var(--mist-glow)'
                     }}>
-                        <Moon size={40} color="#93c5fd" />
+                        <Moon size={40} color="var(--mist)" />
                     </div>
                     <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 28, color: 'var(--sand)', marginBottom: 8 }}>
                         Sleep Well
@@ -84,7 +84,7 @@ export default function GoodnightPage() {
                     {progress > 0 && !completed && (
                         <div style={{
                             position: 'absolute', inset: -20, borderRadius: '50%',
-                            background: 'rgba(239, 68, 68, 0.2)',
+                            background: 'var(--love-glow)',
                             transform: `scale(${1 + (progress / 100)})`,
                             opacity: 1 - (progress / 100),
                             transition: 'all 0.1s'
@@ -99,7 +99,7 @@ export default function GoodnightPage() {
                         className="pressable focus-ring"
                         style={{
                             width: 140, height: 140, borderRadius: '50%',
-                            background: completed ? '#ef4444' : 'rgba(255,255,255,0.05)',
+                            background: completed ? 'var(--love)' : 'rgba(255,255,255,0.05)',
                             border: '1px solid rgba(255,255,255,0.1)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             position: 'relative', overflow: 'hidden', cursor: 'pointer',
@@ -109,18 +109,18 @@ export default function GoodnightPage() {
                         {/* Fill */}
                         <div style={{
                             position: 'absolute', bottom: 0, left: 0, right: 0,
-                            height: `${progress}%`, background: '#ef4444', // Red for heart/kiss
+                            height: `${progress}%`, background: 'var(--love)', // Red for heart/kiss
                             opacity: 0.5, transition: 'height 0.1s linear'
                         }} />
 
                         <Heart
                             size={48}
-                            color={completed ? '#fff' : '#ef4444'}
-                            fill={completed ? '#fff' : 'rgba(239, 68, 68, 0.2)'}
+                            color={completed ? '#fff' : 'var(--love)'}
+                            fill={completed ? '#fff' : 'var(--love-glow)'}
                             style={{ position: 'relative', zIndex: 10, transform: completed ? 'scale(1.2)' : 'scale(1)' }}
                         />
                     </button>
-                    <div style={{ textAlign: 'center', marginTop: 16, fontSize: 12, color: '#60a5fa', fontWeight: 600, letterSpacing: '0.05em' }}>
+                    <div style={{ textAlign: 'center', marginTop: 16, fontSize: 12, color: 'var(--mist)', fontWeight: 600, letterSpacing: '0.05em' }}>
                         {completed ? "KISS SENT!" : "HOLD TO SEND"}
                     </div>
                 </div>

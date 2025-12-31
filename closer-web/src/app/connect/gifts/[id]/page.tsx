@@ -1,26 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Coins, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Coins, ShoppingBag, Flower2, Coffee, Sparkles, Ticket, Heart, Package, Gift } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
-// Mock Data (Duplicated for simplicity in this prototype phase)
-const GIFTS: Record<string, { name: string, price: number, icon: string, desc: string, color: string }> = {
-    'rose-1': { name: 'Digital Rose', price: 50, icon: '🌹', desc: 'A timeless symbol of romance.', color: '#f43f5e' },
-    'coffee-1': { name: 'Morning Coffee', price: 25, icon: '☕', desc: 'Voucher for one coffee in bed.', color: '#ea580c' },
-    'massage-1': { name: 'Massage Coupon', price: 100, icon: '💆‍♀️', desc: 'Good for a 20-minute relax session.', color: '#8b5cf6' },
-    'date-1': { name: 'Date Night Pass', price: 200, icon: '🎟️', desc: 'Ticket to a date of your choice.', color: '#db2777' },
-    'choco-1': { name: 'Box of Chocolates', price: 75, icon: '🍫', desc: 'Sweet treats for a sweet heart.', color: '#78350f' },
-    'clean-1': { name: 'Chore Pass', price: 150, icon: '🧹', desc: 'I will handle one chore for you.', color: '#10b981' },
-    'kiss-1': { name: '1000 Kisses', price: 500, icon: '💋', desc: 'Redeemable anytime, anywhere.', color: '#e11d48' },
-    'mystery-1': { name: 'Mystery Box', price: 50, icon: '🎁', desc: 'What could be inside?', color: '#6366f1' },
-};
+import { getGiftById } from "@/data/giftData";
 
 export default function GiftDetailPage() {
     const params = useParams();
     const router = useRouter();
     const id = params.id as string;
-    const gift = GIFTS[id];
+    const gift = getGiftById(id);
 
     if (!gift) return null;
 

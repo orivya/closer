@@ -34,7 +34,7 @@ export default function MorningHelloPage() {
                     <ArrowLeft aria-hidden="true" />
                 </Link>
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 11, color: '#f97316', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                    <div style={{ fontSize: 11, color: 'var(--clay)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                         Morning Hello
                     </div>
                 </div>
@@ -49,10 +49,10 @@ export default function MorningHelloPage() {
                     width: 120, height: 120, display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}>
                     <div style={{
-                        position: 'absolute', inset: 0, background: '#fb923c', borderRadius: '50%',
+                        position: 'absolute', inset: 0, background: 'var(--clay)', borderRadius: '50%',
                         opacity: 0.1, filter: 'blur(20px)', animation: 'pulse-slow 4s infinite'
                     }} />
-                    <Sun size={64} color="#f97316" className="spin-slow" style={{ animationDuration: '20s' }} />
+                    <Sun size={64} color="var(--clay)" className="spin-slow" style={{ animationDuration: '20s' }} />
                 </div>
 
                 <div className="glass" style={{
@@ -70,7 +70,7 @@ export default function MorningHelloPage() {
                         min="0" max="100"
                         value={mood}
                         onChange={(e) => setMood(Number(e.target.value))}
-                        style={{ width: '100%', marginBottom: 16, accentColor: '#f97316' }}
+                        style={{ width: '100%', marginBottom: 16, accentColor: 'var(--clay)' }}
                     />
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--stone)', fontWeight: 600 }}>
                         <span>Tired</span>
@@ -102,8 +102,8 @@ export default function MorningHelloPage() {
                         className="btn focus-ring pressable"
                         style={{
                             width: '100%', padding: 16, borderRadius: 16,
-                            background: '#f97316', color: '#fff', fontSize: 16, fontWeight: 600,
-                            justifyContent: 'center', boxShadow: '0 4px 12px rgba(249, 115, 22, 0.3)',
+                            background: 'var(--clay)', color: '#000', fontSize: 16, fontWeight: 600,
+                            justifyContent: 'center', boxShadow: '0 4px 12px var(--clay-glow)',
                             border: 'none', cursor: 'pointer'
                         }}
                     >

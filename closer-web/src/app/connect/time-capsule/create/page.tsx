@@ -12,6 +12,7 @@ export default function CreateCapsulePage() {
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [message, setMessage] = useState("");
+    const [effect, setEffect] = useState("sparkle"); // Default effect
     const [isSealing, setIsSealing] = useState(false);
 
     function handleSeal() {
@@ -125,7 +126,7 @@ export default function CreateCapsulePage() {
                             Leave a message
                         </h2>
 
-                        <div style={{ flex: 1, position: 'relative' }}>
+                        <div style={{ flex: 1, position: 'relative', marginBottom: 24 }}>
                             <textarea
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
@@ -137,6 +138,35 @@ export default function CreateCapsulePage() {
                                     color: 'var(--sand)', fontSize: 16, lineHeight: 1.6, resize: 'none', outline: 'none'
                                 }}
                             />
+                        </div>
+
+                        {/* Special Effect Selector */}
+                        <div style={{ marginBottom: 24 }}>
+                            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--stone)', letterSpacing: '0.05em', marginBottom: 12, textTransform: 'uppercase' }}>
+                                ADD SEALING MAGIC
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+                                {[
+                                    { id: 'sparkle', label: 'Sparkle', icon: <Sparkles size={16} /> },
+                                    { id: 'warp', label: 'Time Warp', icon: <Rocket size={16} /> },
+                                    { id: 'lock', label: 'Classic', icon: <Lock size={16} /> }
+                                ].map(fx => (
+                                    <button
+                                        key={fx.id}
+                                        onClick={() => setEffect(fx.id)}
+                                        className="pressable focus-ring"
+                                        style={{
+                                            padding: 12, borderRadius: 12, border: effect === fx.id ? '1px solid var(--gold)' : '1px solid var(--border-subtle)',
+                                            background: effect === fx.id ? 'rgba(212, 175, 55, 0.1)' : 'rgba(255,255,255,0.02)',
+                                            color: effect === fx.id ? 'var(--gold)' : 'var(--stone)',
+                                            fontSize: 13, fontWeight: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6
+                                        }}
+                                    >
+                                        {fx.icon}
+                                        {fx.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
                         <div style={{ marginTop: 24 }}>

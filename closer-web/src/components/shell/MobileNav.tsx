@@ -21,12 +21,12 @@ const items: Array<{
   label: string;
   Icon: typeof Home;
 }> = [
-  { view: "home", href: "/", label: "Home", Icon: Home },
-  { view: "moments", href: "/moments", label: "Moments", Icon: Aperture },
-  { view: "messages", href: "/messages", label: "Messages", Icon: MessageCircle },
-  { view: "connect", href: "/connect", label: "Connect", Icon: Sparkles },
-  { view: "us", href: "/us", label: "Us", Icon: User },
-];
+    { view: "home", href: "/", label: "Home", Icon: Home },
+    { view: "moments", href: "/moments", label: "Moments", Icon: Aperture },
+    { view: "connect", href: "/connect", label: "Connect", Icon: Sparkles },
+    { view: "messages", href: "/messages", label: "Messages", Icon: MessageCircle },
+    { view: "us", href: "/us", label: "Us", Icon: User },
+  ];
 
 export function MobileNav() {
   const pathname = usePathname();
@@ -35,19 +35,28 @@ export function MobileNav() {
   return (
     <nav className="nav-mobile" aria-label="Primary mobile">
       <div className="nav-mobile-inner" role="tablist" aria-label="Views">
-        {items.map(({ view, href, label, Icon }) => {
+        {items.map(({ view, href, label, Icon }, i) => {
           const isActive = view === activeView;
+          // Connect is the center item
+          const isCenter = view === 'connect';
+
           return (
             <Link
               key={view}
               href={href}
-              className={`nav-mobile-item focus-ring${isActive ? " active" : ""}`}
+              className={`nav-mobile-item focus-ring${isActive ? " active" : ""}${isCenter ? " nav-center" : ""}`}
               aria-controls={`${view}-view`}
               aria-selected={isActive}
               role="tab"
+              title={label}
             >
-              <Icon aria-hidden="true" />
-              <span className="sr-only">{label}</span>
+              <div className="nav-icon-wrap">
+                {/* Use thinner stroke for premium feel */}
+                <Icon aria-hidden="true" size={isCenter ? 28 : 24} strokeWidth={isCenter ? 1.5 : 1.5} />
+                {isCenter && <div className="nav-center-glow" />}
+              </div>
+              {/* Hide label for center item as requested */}
+              {!isCenter && <span className="sr-only">{label}</span>}
             </Link>
           );
         })}

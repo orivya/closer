@@ -90,6 +90,36 @@ export default function SendGiftPage() {
                     </div>
                 </div>
 
+                {/* Delivery Method (NEW) */}
+                <div style={{ marginBottom: 32 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--stone)', letterSpacing: '0.05em', marginBottom: 16, textTransform: 'uppercase' }}>
+                        Delivery Method
+                    </div>
+                    <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 4 }}>
+                        {['Instant Sparkle', 'Owl Post', 'Midnight Surprise'].map((method) => (
+                            <button
+                                key={method}
+                                className="pressable focus-ring"
+                                style={{
+                                    padding: '12px 20px', borderRadius: 12,
+                                    background: 'rgba(255,255,255,0.05)',
+                                    border: '1px solid var(--border-subtle)',
+                                    color: 'var(--sand)', fontSize: 13, fontWeight: 600,
+                                    whiteSpace: 'nowrap'
+                                }}
+                                onClick={(e) => {
+                                    // Visual toggle for prototype
+                                    e.currentTarget.style.borderColor = 'var(--clay)';
+                                    e.currentTarget.style.background = 'rgba(224, 159, 125, 0.1)';
+                                }}
+                            >
+                                {method}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+
                 {/* Message */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--stone)', letterSpacing: '0.05em', marginBottom: 16, textTransform: 'uppercase' }}>

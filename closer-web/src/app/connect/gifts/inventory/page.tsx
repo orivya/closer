@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Gift, ArrowUpRight, ArrowDownLeft, Clock } from "lucide-react";
+import { ArrowLeft, Gift, ArrowUpRight, ArrowDownLeft, Clock, Flower2, Coffee, Ticket, Heart, Package } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Mock History Data
 const HISTORY = [
-    { id: '1', giftId: 'rose-1', name: 'Digital Rose', type: 'sent', date: 'Just now', icon: '🌹', color: '#f43f5e' },
-    { id: '2', giftId: 'mystery-1', name: 'Mystery Box', type: 'received', date: '2h ago', icon: '🎁', color: '#6366f1', unwrapped: false },
-    { id: '3', giftId: 'coffee-1', name: 'Morning Coffee', type: 'received', date: 'Yesterday', icon: '☕', color: '#ea580c', unwrapped: true },
-    { id: '4', giftId: 'date-1', name: 'Date Night Pass', type: 'sent', date: '3 days ago', icon: '🎟️', color: '#db2777' },
+    { id: '1', giftId: 'rose-1', name: 'Digital Rose', type: 'sent', date: 'Just now', icon: <Flower2 size={24} />, color: '#f43f5e' },
+    { id: '2', giftId: 'mystery-1', name: 'Mystery Box', type: 'received', date: '2h ago', icon: <Gift size={24} />, color: '#6366f1', unwrapped: false },
+    { id: '3', giftId: 'coffee-1', name: 'Morning Coffee', type: 'received', date: 'Yesterday', icon: <Coffee size={24} />, color: '#ea580c', unwrapped: true },
+    { id: '4', giftId: 'date-1', name: 'Date Night Pass', type: 'sent', date: '3 days ago', icon: <Ticket size={24} />, color: '#db2777' },
 ];
 
 export default function GiftInventoryPage() {

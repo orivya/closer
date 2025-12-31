@@ -15,6 +15,7 @@ import {
   Quote,
   Search,
   Share2,
+  Sparkles,
   Trophy,
   X,
 } from "lucide-react";
@@ -162,6 +163,38 @@ function getMomentIcon(kind: MomentKind) {
 }
 
 type LightboxState = { photoIds: string[]; index: number };
+
+function OnThisDayHero({ moments }: { moments: Moment[] }) {
+  // Mock logic: Find a moment from "1 year ago" (relaxed logic for prototype: find any moment older than 30 days)
+  const memory = useMemo(() => {
+    // In a real app, match exact date (MM-DD) across years.
+    // For demo, just pick the 'oldest' photo or a specific one.
+    return moments.find(m => m.id === "m-001") || moments[0];
+  }, [moments]);
+
+  if (!memory || memory.kind !== 'photo') return null;
+
+  return (
+    <div className="moments-hero">
+      <div className="moments-hero-bg">
+        <img src={memory.imageUrl} alt="" />
+        <div className="overlay" />
+      </div>
+      <div className="moments-hero-content">
+        <div className="hero-badge">
+          <Sparkles size={12} color="#D4AF37" />
+          <span>ON THIS DAY</span>
+        </div>
+        <h2 className="hero-title">Do you remember this?</h2>
+        <p className="hero-date">{formatLongDate(memory.dateKey)}</p>
+        <button className="hero-btn focus-ring pressable">
+          <Share2 size={14} />
+          <span>Share Memory</span>
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export function MomentsClient() {
   const plan: Plan = "free";
@@ -619,6 +652,8 @@ export function MomentsClient() {
 
         {viewMode === "timeline" ? (
           <>
+            <OnThisDayHero moments={moments} />
+
             <div className="calendar-strip no-scrollbar" aria-label="Calendar strip">
               {calendarStripDays.map((day) => {
                 const isActive = day.dateKey === selectedDateKey;
