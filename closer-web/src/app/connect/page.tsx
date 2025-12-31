@@ -11,6 +11,7 @@ import {
   Moon,
   Smile,
   Sun,
+  Gift,
 } from "lucide-react";
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -190,6 +191,15 @@ export default function ConnectPage() {
                 <div className="tile-desc">Future plans</div>
               </div>
             </Link>
+            <Link href="/connect/gifts" className="game-tile focus-ring" role="button">
+              <div className="game-icon icon-love">
+                <Gift aria-hidden="true" />
+              </div>
+              <div>
+                <div className="tile-title">Gift Shop</div>
+                <div className="tile-desc">Surprise them</div>
+              </div>
+            </Link>
           </div>
         </section>
 
@@ -204,18 +214,11 @@ export default function ConnectPage() {
               <Smile size={16} style={{ width: 16, color: "var(--mist)" }} aria-hidden="true" />
               <span className="ritual-name">Gratitude</span>
             </Link>
-            <Link href="/connect/rituals/goodnight" className="ritual-pill focus-ring" role="button">
+            <Link href="/connect/rituals/night" className="ritual-pill focus-ring" role="button">
               <Moon size={16} style={{ width: 16, color: "var(--mist)" }} aria-hidden="true" />
               <span className="ritual-name">Goodnight</span>
             </Link>
-            <Link href="/connect/rituals/thinking" className="ritual-pill focus-ring" role="button">
-              <Heart size={16} style={{ width: 16, color: "var(--clay)" }} aria-hidden="true" />
-              <span className="ritual-name">Thinking of You</span>
-            </Link>
-            <Link href="/connect/rituals/weekly" className="ritual-pill focus-ring" role="button">
-              <Calendar size={16} style={{ width: 16, color: "var(--sand)" }} aria-hidden="true" />
-              <span className="ritual-name">Weekly Check‑in</span>
-            </Link>
+
           </div>
         </section>
       </div>
